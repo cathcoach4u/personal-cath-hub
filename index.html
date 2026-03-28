@@ -764,13 +764,20 @@
   sb.auth.onAuthStateChange(function(event, session) {
     if (event === 'SIGNED_OUT') showLogin();
     if (event === 'PASSWORD_RECOVERY') {
-      // Show password reset form
       var newPass = prompt('Enter your new password:');
       if (newPass && newPass.length >= 6) {
         sb.auth.updateUser({ password: newPass }).then(function(res) {
-          if (res.error) alert('Error: ' + res.error.message);
-          else { alert('Password updated!'); showApp(); }
+          if (res.error) { alert('Error: ' + res.error.message); }
+          else {
+            alert('Password updated! Please sign in with your new password.');
+            sb.auth.signOut().then(function() {
+              window.location.href = window.location.origin;
+            });
+          }
         });
+      } else {
+        alert('Password must be at least 6 characters.');
+        window.location.href = window.location.origin;
       }
     }
     if (event === 'SIGNED_IN' && session) showApp();
