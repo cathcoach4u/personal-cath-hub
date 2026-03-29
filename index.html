@@ -461,14 +461,17 @@
     <div class="screen active" id="ch-home">
       <h2 style="font-size:20px !important;margin-bottom:16px !important;">Dashboard</h2>
 
-      <!-- Quick navigation dropdown -->
-      <select id="dash-quick-nav" onchange="dashQuickNav(this)" style="width:100% !important;padding:14px 16px !important;font-size:16px !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;background:white !important;color:#1e293b !important;appearance:auto !important;-webkit-appearance:listbox !important;margin-bottom:16px !important;">
-        <option value="">Quick jump...</option>
-        <option value="shopping">&#x1F6D2; Shopping List</option>
-        <option value="receipt">&#x1F9FE; Upload Receipt</option>
-        <option value="mentalhealth">&#x1F9E0; Mental Health</option>
-        <option value="filing">&#x1F4C1; Filing System (OneDrive)</option>
-      </select>
+      <!-- Quick navigation buttons -->
+      <div style="display:flex !important;flex-direction:column !important;gap:8px !important;margin-bottom:16px !important;">
+        <div style="display:flex !important;gap:8px !important;">
+          <button class="am-btn" onclick="dashQuickNav({value:'shopping'})" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F6D2; Shopping List</button>
+          <button class="am-btn" onclick="dashQuickNav({value:'receipt'})" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F9FE; Upload Receipt</button>
+        </div>
+        <div style="display:flex !important;gap:8px !important;">
+          <button class="am-btn" onclick="dashQuickNav({value:'mentalhealth'})" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F9E0; Mental Health</button>
+          <button class="am-btn" onclick="dashQuickNav({value:'filing'})" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F4C1; Filing System</button>
+        </div>
+      </div>
 
       <div class="dash-section">
         <div style="display:flex !important;justify-content:space-between !important;align-items:center !important;margin-bottom:12px !important;">
@@ -497,17 +500,24 @@
       <h2>&#x1F6D2; AisleMate</h2>
       <div class="am-subscreen active" id="am-home">
         <input class="am-search" type="text" placeholder="Search items to add...">
-        <select onchange="if(this.value){amGo(this.value);this.value='';}" style="width:100% !important;padding:14px 16px !important;font-size:16px !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;background:white !important;color:#1e293b !important;appearance:auto !important;-webkit-appearance:listbox !important;margin-bottom:12px !important;">
-          <option value="">Select a section...</option>
-          <option value="weekly">&#x1F6D2; Weekly Shop</option>
-          <option value="select">&#x2705; Master List</option>
-          <option value="shopinfo">&#x2139; Shop Info &amp; Rewards</option>
-          <option value="family">&#x1F46A; Family Items</option>
-          <option value="receipts">&#x1F9FE; Receipts — Scan &amp; import</option>
-          <option value="spending">&#x1F4B0; Spending — By store</option>
-          <option value="history">&#x1F4C5; History — Past purchases</option>
-          <option value="meals">&#x1F372; Meal Plan — Weekly meals</option>
-        </select>
+        <div style="display:flex !important;flex-direction:column !important;gap:8px !important;margin-bottom:12px !important;">
+          <div style="display:flex !important;gap:8px !important;">
+            <button class="am-btn" onclick="amGo('weekly')" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F6D2; Weekly Shop</button>
+            <button class="am-btn" onclick="amGo('select')" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x2705; Master List</button>
+          </div>
+          <div style="display:flex !important;gap:8px !important;">
+            <button class="am-btn" onclick="amGo('shopinfo')" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x2139; Shop Info</button>
+            <button class="am-btn" onclick="amGo('family')" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F46A; Family</button>
+          </div>
+          <div style="display:flex !important;gap:8px !important;">
+            <button class="am-btn" onclick="amGo('receipts')" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F9FE; Receipts</button>
+            <button class="am-btn" onclick="amGo('spending')" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F4B0; Spending</button>
+          </div>
+          <div style="display:flex !important;gap:8px !important;">
+            <button class="am-btn" onclick="amGo('history')" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F4C5; History</button>
+            <button class="am-btn" onclick="amGo('meals')" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F372; Meal Plan</button>
+          </div>
+        </div>
         <div class="am-progress">
           <span class="prog-label">Shopping Progress</span>
           <div class="am-progress-bar"><div class="am-progress-fill" id="am-prog-fill" style="width:0%"></div></div>
