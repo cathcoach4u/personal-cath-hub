@@ -1075,8 +1075,8 @@
         // 1. Upload image to storage
         var now = new Date();
         var prefix = now.getFullYear() + '' + String(now.getMonth()+1).padStart(2,'0') + '' + String(now.getDate()).padStart(2,'0');
-        var fileName = prefix + '_' + file.name;
-        var { error: uploadErr } = await sb.storage.from('receipts').upload(fileName, file);
+        var fileName = prefix + '_' + Date.now() + '_' + file.name;
+        var { error: uploadErr } = await sb.storage.from('receipts').upload(fileName, file, { upsert: true });
         if (uploadErr) { alert('Upload failed: ' + uploadErr.message); continue; }
         var { data: urlData } = sb.storage.from('receipts').getPublicUrl(fileName);
 
