@@ -435,6 +435,7 @@
           <div class="am-tile" onclick="amGo('receipts')"><div class="tile-icon" style="font-size:24px !important;">&#x1F9FE;</div><div class="tile-title" style="font-size:13px !important;">Receipts</div><div class="tile-sub">Scan &amp; import</div></div>
           <div class="am-tile" onclick="amGo('spending')"><div class="tile-icon" style="font-size:24px !important;">&#x1F4B0;</div><div class="tile-title" style="font-size:13px !important;">Spending</div><div class="tile-sub">By store &amp; month</div></div>
           <div class="am-tile" onclick="amGo('history')"><div class="tile-icon" style="font-size:24px !important;">&#x1F4C5;</div><div class="tile-title" style="font-size:13px !important;">Shop History</div><div class="tile-sub">Past purchases</div></div>
+          <div class="am-tile" onclick="amGo('shopinfo')"><div class="tile-icon" style="font-size:24px !important;">&#x2139;</div><div class="tile-title" style="font-size:13px !important;">Shop Info</div><div class="tile-sub">Links &amp; rewards</div></div>
         </div>
         <div class="am-progress">
           <span class="prog-label">Shopping Progress</span>
@@ -514,6 +515,47 @@
         <h3 style="font-size:18px !important;font-weight:700 !important;margin-bottom:16px !important;">&#x1F4C5; Shopping History</h3>
         <p style="color:#64748b !important;font-size:13px !important;margin-bottom:16px !important;">Past purchases from scanned receipts. Tap a receipt to see items.</p>
         <div id="am-history-container"></div>
+      </div>
+      <div class="am-subscreen" id="am-shopinfo">
+        <button class="am-back" onclick="amGo('home')">&#x2190; Back</button>
+        <h3 style="font-size:18px !important;font-weight:700 !important;margin-bottom:16px !important;">&#x2139; Shopping Info</h3>
+
+        <div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:16px !important;margin-bottom:12px !important;">
+          <div style="display:flex !important;align-items:center !important;gap:8px !important;margin-bottom:10px !important;">
+            <span class="mi-store woolworths">WOOLWORTHS</span>
+            <span style="font-size:14px !important;font-weight:600 !important;">Woolworths</span>
+          </div>
+          <div style="font-size:13px !important;color:#64748b !important;margin-bottom:8px !important;">
+            <a href="https://www.woolworths.com.au/shop/myaccount" target="_blank" style="color:#3b82f6 !important;">Login to My Account &rarr;</a>
+          </div>
+          <div style="font-size:13px !important;color:#64748b !important;margin-bottom:8px !important;">
+            <a href="https://www.everyday.com.au/" target="_blank" style="color:#3b82f6 !important;">Everyday Rewards &rarr;</a>
+          </div>
+          <div style="font-size:12px !important;color:#94a3b8 !important;background:#f8fafc !important;border-radius:6px !important;padding:10px !important;">
+            <strong style="color:#64748b !important;">eReceipts:</strong> Scan your Everyday Rewards card when shopping. Then open the app &rarr; Activity tab &rarr; select your transaction &rarr; view eReceipt. May take up to 20 min to appear.
+          </div>
+        </div>
+
+        <div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:16px !important;margin-bottom:12px !important;">
+          <div style="display:flex !important;align-items:center !important;gap:8px !important;margin-bottom:10px !important;">
+            <span class="mi-store aldi">ALDI</span>
+            <span style="font-size:14px !important;font-weight:600 !important;">Aldi</span>
+          </div>
+          <div style="font-size:12px !important;color:#94a3b8 !important;background:#f8fafc !important;border-radius:6px !important;padding:10px !important;">
+            Receipts only available in-store (paper). Take a photo of your receipt and upload in the Receipts section to scan items and prices.
+          </div>
+        </div>
+
+        <div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:16px !important;margin-bottom:12px !important;">
+          <div style="display:flex !important;align-items:center !important;gap:8px !important;margin-bottom:10px !important;">
+            <span style="font-size:10px !important;padding:2px 6px !important;border-radius:4px !important;font-weight:600 !important;text-transform:uppercase !important;background:#fce7f3 !important;color:#9d174d !important;">BUNNINGS</span>
+            <span style="font-size:14px !important;font-weight:600 !important;">Bunnings</span>
+          </div>
+          <div style="font-size:12px !important;color:#94a3b8 !important;background:#f8fafc !important;border-radius:6px !important;padding:10px !important;">
+            Dog &amp; cat food purchased here.
+          </div>
+        </div>
+
       </div>
       <div class="am-subscreen" id="am-settings">
         <button class="am-back" onclick="amGo('home')">&#x2190; Back</button>
