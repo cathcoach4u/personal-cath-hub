@@ -483,7 +483,7 @@
       <div class="dash-section">
         <div style="display:flex !important;justify-content:space-between !important;align-items:center !important;margin-bottom:12px !important;">
           <h3 style="margin-bottom:0 !important;">&#x1F9E0; Mental Health Summary</h3>
-          <span style="font-size:12px !important;color:#3b82f6 !important;cursor:pointer !important;" onclick="chNav('medical',document.querySelectorAll('#cathHub .nav-item')[3])">View all &rarr;</span>
+          <span style="font-size:12px !important;color:#3b82f6 !important;cursor:pointer !important;" onclick="chNav('medical',document.querySelectorAll('#cathHub .nav-item')[3]);setTimeout(function(){medGo('mentalhealth')},100)">View all &rarr;</span>
         </div>
         <div class="dash-mh-summary" id="dash-mh-summary">
           <div class="dash-mh-stat"><div class="mh-num" id="dash-mh-total">-</div><div class="mh-label">Total Sessions</div></div>
@@ -700,102 +700,121 @@
     <div class="screen" id="ch-medical">
       <h2>&#x1FA7A; Medical</h2>
 
-      <!-- Two-column grid of boxes -->
-      <div style="display:grid !important;grid-template-columns:1fr 1fr !important;gap:16px !important;margin-bottom:16px !important;">
+      <!-- HOME: Tile grid (like AisleMate) -->
+      <div class="am-subscreen active" id="med-home">
+        <div class="am-grid" style="grid-template-columns: repeat(4, 1fr) !important; gap:8px !important;">
+          <div class="am-tile" style="padding:14px 10px !important;" onclick="medGo('documents')"><div class="tile-icon" style="font-size:20px !important;">&#x1F4C1;</div><div class="tile-title" style="font-size:12px !important;">Documents</div><div class="tile-sub" style="font-size:10px !important;">Upload &amp; file</div></div>
+          <div class="am-tile" style="padding:14px 10px !important;" onclick="medGo('contacts')"><div class="tile-icon" style="font-size:20px !important;">&#x1F4DE;</div><div class="tile-title" style="font-size:12px !important;">Contacts</div><div class="tile-sub" style="font-size:10px !important;">Doctors &amp; clinics</div></div>
+          <div class="am-tile" style="padding:14px 10px !important;" onclick="medGo('medications')"><div class="tile-icon" style="font-size:20px !important;">&#x1F48A;</div><div class="tile-title" style="font-size:12px !important;">Medications</div><div class="tile-sub" style="font-size:10px !important;">Current plan</div></div>
+          <div class="am-tile" style="padding:14px 10px !important;" onclick="medGo('mentalhealth')"><div class="tile-icon" style="font-size:20px !important;">&#x1F9E0;</div><div class="tile-title" style="font-size:12px !important;">Mental Health</div><div class="tile-sub" style="font-size:10px !important;" id="med-mh-tile-sub">Sessions</div></div>
+        </div>
+      </div>
 
-        <!-- BOX 1: Documents -->
-        <div class="med-section" style="margin-bottom:0 !important;">
-          <div class="med-section-header">
-            <h3 style="font-size:14px !important;">&#x1F4C1; Documents</h3>
-            <a class="doc-sharepoint-btn" href="https://netorgft4053847.sharepoint.com/:f:/s/bakerpersonal-CathPersonal/IgAEdQrlyL4-Qa4rSlz4-SwPAWV2ALT9bZECNDOJyLgPUlU?e=mvuWfJ" target="_blank" rel="noopener" style="font-size:11px !important;padding:6px 12px !important;">&#x1F4C2; Open Folder &rarr;</a>
-          </div>
-          <div class="doc-section-body" style="padding:14px !important;">
-            <div style="display:flex !important;gap:8px !important;align-items:center !important;margin-bottom:8px !important;flex-wrap:wrap !important;">
-              <button class="am-btn" onclick="document.getElementById('med-file-input').click()" style="background:#3b82f6 !important;color:white !important;font-size:12px !important;padding:6px 12px !important;">&#x1F4C4; Choose File</button>
-              <span style="font-size:11px !important;color:#94a3b8 !important;" id="med-file-chosen">No file selected</span>
+      <!-- SUB: Documents -->
+      <div class="am-subscreen" id="med-documents">
+        <button class="am-back" onclick="medGo('home')">&#x2190; Back</button>
+        <div class="am-header-bar">
+          <h3>&#x1F4C1; Documents</h3>
+          <a class="doc-sharepoint-btn" href="https://netorgft4053847.sharepoint.com/:f:/s/bakerpersonal-CathPersonal/IgAEdQrlyL4-Qa4rSlz4-SwPAWV2ALT9bZECNDOJyLgPUlU?e=mvuWfJ" target="_blank" rel="noopener" style="font-size:12px !important;padding:8px 14px !important;">&#x1F4C2; Open Folder &rarr;</a>
+        </div>
+        <div class="med-section" style="margin-top:12px !important;">
+          <div class="doc-section-body">
+            <p class="doc-hint">Select a file, enter a name, and it will be renamed <strong>yyyymmdd yourname.ext</strong> then downloaded. The OneDrive folder opens automatically.</p>
+            <div style="display:flex !important;gap:8px !important;align-items:center !important;margin-bottom:12px !important;flex-wrap:wrap !important;">
+              <button class="am-btn" onclick="document.getElementById('med-file-input').click()" style="background:#3b82f6 !important;color:white !important;">&#x1F4C4; Choose File</button>
+              <span style="font-size:12px !important;color:#94a3b8 !important;" id="med-file-chosen">No file selected</span>
             </div>
-            <div style="display:flex !important;gap:6px !important;align-items:center !important;margin-bottom:8px !important;">
-              <span style="font-size:11px !important;font-weight:600 !important;color:#64748b !important;white-space:nowrap !important;" id="med-date-preview"></span>
-              <input class="hab-form-input" id="med-custom-name" type="text" placeholder="File name..." style="flex:1 !important;font-size:12px !important;padding:6px 8px !important;">
-              <button class="am-btn" onclick="docRenameAndDownload()" style="background:#10b981 !important;color:white !important;white-space:nowrap !important;font-size:11px !important;padding:6px 10px !important;">Save</button>
+            <div style="display:flex !important;gap:8px !important;align-items:center !important;margin-bottom:12px !important;">
+              <span style="font-size:13px !important;font-weight:600 !important;color:#64748b !important;white-space:nowrap !important;" id="med-date-preview"></span>
+              <input class="hab-form-input" id="med-custom-name" type="text" placeholder="Enter file name (e.g. blood results)" style="flex:1 !important;">
+              <button class="am-btn" onclick="docRenameAndDownload()" style="background:#10b981 !important;color:white !important;white-space:nowrap !important;">Rename &amp; Save</button>
             </div>
             <input type="file" id="med-file-input" style="display:none !important;" onchange="docFileSelected(this)">
             <div class="doc-renamed-list" id="med-renamed-list"></div>
           </div>
         </div>
+      </div>
 
-        <!-- BOX 2: Key Contacts -->
-        <div class="med-section" style="margin-bottom:0 !important;">
-          <div class="med-section-header">
-            <h3 style="font-size:14px !important;">&#x1F4DE; Key Contacts</h3>
-          </div>
-          <div style="padding:14px !important;">
-            <div style="background:#f8fafc !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;padding:12px !important;margin-bottom:8px !important;">
-              <div style="font-size:10px !important;font-weight:700 !important;text-transform:uppercase !important;color:#7c3aed !important;margin-bottom:4px !important;">GP / Clinic</div>
-              <div style="font-size:13px !important;font-weight:700 !important;margin-bottom:6px !important;">Belrose Medical Centre</div>
-              <div style="font-size:11px !important;color:#475569 !important;line-height:1.6 !important;">
-                &#x1F4CD; Shop MB2, Glencoe Village, 56&ndash;58 Glen St, Belrose 2085<br>
-                &#x1F4DE; <a href="tel:0283297830" style="color:#3b82f6 !important;">02 8329 7830</a> &nbsp; &#x1F4E0; Fax: 02 8209 4880<br>
+      <!-- SUB: Key Contacts -->
+      <div class="am-subscreen" id="med-contacts">
+        <button class="am-back" onclick="medGo('home')">&#x2190; Back</button>
+        <h3 style="font-size:18px !important;font-weight:700 !important;margin-bottom:16px !important;">&#x1F4DE; Key Contacts</h3>
+        <div class="med-section">
+          <div style="padding:20px !important;">
+            <div style="background:#f8fafc !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:16px !important;margin-bottom:12px !important;">
+              <div style="font-size:10px !important;font-weight:700 !important;text-transform:uppercase !important;color:#7c3aed !important;margin-bottom:6px !important;">GP / Clinic</div>
+              <div style="font-size:15px !important;font-weight:700 !important;margin-bottom:8px !important;">Belrose Medical Centre</div>
+              <div style="font-size:13px !important;color:#475569 !important;line-height:1.8 !important;">
+                &#x1F4CD; Shop MB2, Glencoe Village, 56&ndash;58 Glen Street, Belrose NSW 2085<br>
+                &#x1F4DE; <a href="tel:0283297830" style="color:#3b82f6 !important;">02 8329 7830</a><br>
+                &#x1F4E0; Fax: 02 8209 4880<br>
                 &#x2709;&#xFE0F; <a href="mailto:info@belrosemedical.com.au" style="color:#3b82f6 !important;">info@belrosemedical.com.au</a>
               </div>
             </div>
-            <div style="background:#f8fafc !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;padding:12px !important;">
-              <div style="font-size:10px !important;font-weight:700 !important;text-transform:uppercase !important;color:#7c3aed !important;margin-bottom:4px !important;">Neurologist</div>
-              <div style="font-size:13px !important;font-weight:700 !important;margin-bottom:2px !important;">Vertigo &amp; Neurology</div>
-              <div style="font-size:11px !important;color:#475569 !important;font-style:italic !important;margin-bottom:4px !important;">Dr Chao Wang</div>
-              <div style="font-size:11px !important;">&#x2709;&#xFE0F; <a href="mailto:info@vertigoandneurology.com.au" style="color:#3b82f6 !important;">info@vertigoandneurology.com.au</a></div>
+            <div style="background:#f8fafc !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:16px !important;">
+              <div style="font-size:10px !important;font-weight:700 !important;text-transform:uppercase !important;color:#7c3aed !important;margin-bottom:6px !important;">Neurologist</div>
+              <div style="font-size:15px !important;font-weight:700 !important;margin-bottom:4px !important;">Vertigo &amp; Neurology</div>
+              <div style="font-size:13px !important;color:#475569 !important;font-style:italic !important;margin-bottom:6px !important;">Dr Chao Wang</div>
+              <div style="font-size:13px !important;">&#x2709;&#xFE0F; <a href="mailto:info@vertigoandneurology.com.au" style="color:#3b82f6 !important;">info@vertigoandneurology.com.au</a></div>
             </div>
           </div>
         </div>
-
       </div>
 
-      <!-- BOX 3: Medication Plan (full width) -->
-      <div class="med-section">
-        <div class="med-section-header">
-          <h3 style="font-size:14px !important;">&#x1F48A; Current Medication Plan</h3>
-        </div>
-        <table class="med-table">
-          <thead>
-            <tr>
-              <th>Medication</th>
-              <th>Dose</th>
-              <th>Schedule</th>
-              <th>Conditions</th>
-              <th>Purpose</th>
-            </tr>
-          </thead>
-          <tbody id="med-meds-body"></tbody>
-        </table>
-      </div>
-
-      <!-- BOX 4: Mental Health (stats + sessions together) -->
-      <div class="med-section">
-        <div class="med-section-header">
-          <h3 style="font-size:14px !important;">&#x1F9E0; Mental Health</h3>
-        </div>
-        <div style="padding:14px !important;">
-          <div style="display:grid !important;grid-template-columns:repeat(3, 1fr) !important;gap:10px !important;margin-bottom:14px !important;">
-            <div style="text-align:center !important;background:#f5f3ff !important;border-radius:8px !important;padding:10px !important;">
-              <div style="font-size:22px !important;font-weight:700 !important;color:#7c3aed !important;" id="med-total">-</div>
-              <div style="font-size:10px !important;color:#64748b !important;">Total Sessions</div>
-            </div>
-            <div style="text-align:center !important;background:#f5f3ff !important;border-radius:8px !important;padding:10px !important;">
-              <div style="font-size:22px !important;font-weight:700 !important;color:#7c3aed !important;" id="med-mhp">-</div>
-              <div style="font-size:10px !important;color:#64748b !important;">Mental Health Plan</div>
-            </div>
-            <div style="text-align:center !important;background:#f5f3ff !important;border-radius:8px !important;padding:10px !important;">
-              <div style="font-size:22px !important;font-weight:700 !important;color:#7c3aed !important;" id="med-ndis">-</div>
-              <div style="font-size:10px !important;color:#64748b !important;">NDIS Sessions</div>
-            </div>
+      <!-- SUB: Medications -->
+      <div class="am-subscreen" id="med-medications">
+        <button class="am-back" onclick="medGo('home')">&#x2190; Back</button>
+        <h3 style="font-size:18px !important;font-weight:700 !important;margin-bottom:16px !important;">&#x1F48A; Current Medication Plan</h3>
+        <div class="med-section">
+          <div style="overflow-x:auto !important;">
+            <table class="med-table">
+              <thead>
+                <tr>
+                  <th>Medication</th>
+                  <th>Dose</th>
+                  <th>Schedule</th>
+                  <th>Conditions</th>
+                  <th>Purpose</th>
+                </tr>
+              </thead>
+              <tbody id="med-meds-body"></tbody>
+            </table>
           </div>
-          <div style="font-size:12px !important;color:#94a3b8 !important;margin-bottom:6px !important;text-align:right !important;">Most recent first</div>
-          <table class="med-table">
-            <thead><tr><th>Date</th><th>Duration</th><th>Plan</th><th>Practitioner</th></tr></thead>
-            <tbody id="med-sessions-body"></tbody>
-          </table>
         </div>
       </div>
+
+      <!-- SUB: Mental Health -->
+      <div class="am-subscreen" id="med-mentalhealth">
+        <button class="am-back" onclick="medGo('home')">&#x2190; Back</button>
+        <h3 style="font-size:18px !important;font-weight:700 !important;margin-bottom:16px !important;">&#x1F9E0; Mental Health</h3>
+        <div style="display:grid !important;grid-template-columns:repeat(3, 1fr) !important;gap:10px !important;margin-bottom:16px !important;">
+          <div style="text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:14px !important;">
+            <div style="font-size:24px !important;font-weight:700 !important;color:#7c3aed !important;" id="med-total">-</div>
+            <div style="font-size:11px !important;color:#64748b !important;">Total Sessions</div>
+          </div>
+          <div style="text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:14px !important;">
+            <div style="font-size:24px !important;font-weight:700 !important;color:#7c3aed !important;" id="med-mhp">-</div>
+            <div style="font-size:11px !important;color:#64748b !important;">Mental Health Plan</div>
+          </div>
+          <div style="text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:14px !important;">
+            <div style="font-size:24px !important;font-weight:700 !important;color:#7c3aed !important;" id="med-ndis">-</div>
+            <div style="font-size:11px !important;color:#64748b !important;">NDIS Sessions</div>
+          </div>
+        </div>
+        <div class="med-section">
+          <div class="med-section-header">
+            <h3 style="font-size:14px !important;">Session History</h3>
+            <span style="font-size:12px !important;color:#94a3b8 !important;">Most recent first</span>
+          </div>
+          <div style="overflow-x:auto !important;">
+            <table class="med-table">
+              <thead><tr><th>Date</th><th>Duration</th><th>Plan</th><th>Practitioner</th></tr></thead>
+              <tbody id="med-sessions-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- ═══ HABITS ═══ -->
@@ -1010,6 +1029,7 @@
     document.getElementById('ch-' + name).classList.add('active');
     btn.classList.add('active');
     if(name === 'aislemate') amGo('home');
+    if(name === 'medical') medGo('home');
     if(name === 'home') dashLoad();
   };
 
@@ -1972,6 +1992,12 @@
   };
 
   wlRender();
+
+  // ─── MEDICAL NAVIGATION ───
+  window.medGo = function(sub) {
+    document.querySelectorAll('#ch-medical .am-subscreen').forEach(function(s){ s.classList.remove('active'); });
+    document.getElementById('med-' + sub).classList.add('active');
+  };
 
   // ─── MEDICAL (from Supabase) ───
   (async function loadMedical(){
