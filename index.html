@@ -718,6 +718,7 @@
           <button class="am-btn" onclick="medGo('contacts')" style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F4DE; Contacts <span style="margin-left:auto !important;color:#94a3b8 !important;font-size:12px !important;">Doctors &amp; clinics &rarr;</span></button>
           <button class="am-btn" onclick="medGo('medications')" style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F48A; Medications <span style="margin-left:auto !important;color:#94a3b8 !important;font-size:12px !important;">Current plan &rarr;</span></button>
           <button class="am-btn" onclick="medGo('mentalhealth')" style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F9E0; Mental Health <span style="margin-left:auto !important;color:#94a3b8 !important;font-size:12px !important;">Sessions &rarr;</span></button>
+          <button class="am-btn" onclick="chNav('habits')" style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F48A; Medication Habits <span style="margin-left:auto !important;color:#94a3b8 !important;font-size:12px !important;">Track daily &rarr;</span></button>
         </div>
       </div>
 
@@ -2344,7 +2345,7 @@
       // Auto-populate habit_meds from medications table if not already present
       try {
         var { data: allMeds } = await sb.from('medications').select('name, schedule');
-        var { data: existingHabs } = await sb.from('habit_meds').select('name');
+        var { data: existingHabs } = await sb.from('habit_meds').select('id, name, freq');
         var existingNames = (existingHabs || []).map(function(m){ return m.name.toLowerCase(); });
         var dailyMedNames = ['Vyvanse', 'Valtrex', 'Levothyroxine', 'Xobet'];
         for (var i = 0; i < (allMeds || []).length; i++) {
@@ -2355,6 +2356,13 @@
             await sb.from('habit_meds').insert({ id: Date.now() + i, name: m.name, freq: freq });
           }
         }
+        // Fix any meds that should be daily but are set to weekly (e.g. Xobet)
+        (existingHabs || []).forEach(function(h) {
+          var shouldBeDaily = dailyMedNames.some(function(d) { return h.name.toLowerCase().indexOf(d.toLowerCase()) !== -1; });
+          if (shouldBeDaily && h.freq === 'weekly') {
+            sb.from('habit_meds').update({ freq: 'daily' }).eq('id', h.id);
+          }
+        });
       } catch(e) {}
     }
 
