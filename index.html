@@ -833,12 +833,10 @@
   };
 
   window.amCheck = async function(el) {
-    el.classList.toggle('done');
-    el.nextElementSibling.classList.toggle('checked');
     var id = el.closest('.shop-item').dataset.id;
-    var isDone = el.classList.contains('done');
+    var isDone = !el.classList.contains('done');
     await sb.from('shopping_items').update({ checked: isDone }).eq('id', id);
-    amUpdateCounts();
+    amLoadItems();
   };
 
   window.amDeleteItem = async function(id) {
@@ -858,7 +856,12 @@
   };
 
   window.amRefresh = async function(){
-    await sb.from('shopping_items').update({ checked: false }).neq('id', '');
+    var { data } = await sb.from('shopping_items').select('id');
+    if (data && data.length) {
+      for (var i = 0; i < data.length; i++) {
+        await sb.from('shopping_items').update({ checked: false }).eq('id', data[i].id);
+      }
+    }
     amLoadItems();
   };
 
