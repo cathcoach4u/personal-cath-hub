@@ -467,7 +467,7 @@
           </select>
           <button class="am-btn" onclick="amAddItem()" style="background:#3b82f6 !important;color:white !important;">Add</button>
         </div>
-        <button class="am-btn" id="am-repeat-btn" onclick="amRepeatLastShop()" style="margin-top:12px !important;width:100% !important;justify-content:center !important;background:#fef3c7 !important;border:1px solid #f59e0b !important;color:#92400e !important;padding:10px !important;font-weight:600 !important;">&#x1F504; Repeat Last Shop</button>
+        <button class="am-btn" id="am-repeat-btn" onclick="amRepeatLastShop()" style="margin-top:12px !important;width:100% !important;justify-content:center !important;background:#fef3c7 !important;border:1px solid #f59e0b !important;color:#92400e !important;padding:10px !important;font-weight:600 !important;">&#x1F504; Same as Last Week</button>
       </div>
       <div class="am-subscreen" id="am-family">
         <button class="am-back" onclick="amGo('home')">&#x2190; Back</button>
@@ -864,96 +864,105 @@
 
   window.amSelectUser = function(el){ document.querySelectorAll('#cathHub .user-option').forEach(function(u){ u.classList.remove('selected'); }); el.classList.add('selected'); };
 
+  function renderShopItem(item) {
+    var storeCls = (item.store || '').toLowerCase().replace(/[^a-z]/g,'');
+    var h = '<div class="shop-item" data-id="' + item.id + '" style="' + (item.checked ? 'opacity:0.5 !important;' : '') + '">';
+    h += '<div class="shop-check' + (item.checked ? ' done' : '') + '" onclick="amCheck(this)"></div>';
+    h += '<span class="shop-name' + (item.checked ? ' checked' : '') + '">' + esc(item.name) + '</span>';
+    if (item.store) h += '<span class="store-tag ' + storeCls + '">' + esc(item.store) + '</span>';
+    h += '<button class="shop-delete" onclick="amDeleteItem(\'' + item.id + '\')">&#x1F5D1;</button>';
+    h += '</div>';
+    return h;
+  }
+
   async function amLoadItems() {
     var { data: items } = await sb.from('shopping_items').select('*').order('created_at');
     items = items || [];
-    // Check which items are in the master list
     var { data: masterData } = await sb.from('master_items').select('name');
     var masterNames = (masterData || []).map(function(m) { return m.name.toLowerCase(); });
     var container = document.getElementById('am-items-container');
-    // Split into master list items and quick-add items
-    var masterItems = items.filter(function(i) { return masterNames.indexOf(i.name.toLowerCase()) !== -1; });
-    var quickItems = items.filter(function(i) { return masterNames.indexOf(i.name.toLowerCase()) === -1; });
+
+    // Split unchecked and checked
+    var unchecked = items.filter(function(i) { return !i.checked; });
+    var checked = items.filter(function(i) { return i.checked; });
+
     var html = '';
-    // Render master list items grouped by category
-    if (masterItems.length) {
+
+    // Render unchecked items grouped by category
+    if (unchecked.length) {
       var cats = {};
-      masterItems.forEach(function(item) {
-        var cat = item.category || 'Other';
+      unchecked.forEach(function(item) {
+        var isMaster = masterNames.indexOf(item.name.toLowerCase()) !== -1;
+        var cat = isMaster ? (item.category || 'Other') : '✏ Quick Adds';
         if (!cats[cat]) cats[cat] = [];
         cats[cat].push(item);
       });
-      Object.keys(cats).forEach(function(cat) {
-        var catItems = cats[cat];
+      CAT_ORDER.forEach(function(cat) {
+        if (!cats[cat] || !cats[cat].length) return;
         var catIcon = CAT_ICONS[cat] || '&#x1F96B;';
-        var catDone = catItems.filter(function(i){ return i.checked; }).length;
         html += '<div class="cat-group">';
-        html += '<div class="cat-header"><span>' + catIcon + ' ' + esc(cat) + '</span><span class="cat-count">' + catDone + '/' + catItems.length + '</span></div>';
-        catItems.forEach(function(item) {
-          var storeCls = (item.store || '').toLowerCase().replace(/[^a-z]/g,'');
-          html += '<div class="shop-item" data-id="' + item.id + '">';
-          html += '<div class="shop-check' + (item.checked ? ' done' : '') + '" onclick="amCheck(this)"></div>';
-          html += '<span class="shop-name' + (item.checked ? ' checked' : '') + '">' + esc(item.name) + '</span>';
-          if (item.store) html += '<span class="store-tag ' + storeCls + '">' + esc(item.store) + '</span>';
-          html += '<button class="shop-delete" onclick="amDeleteItem(\'' + item.id + '\')">&#x1F5D1;</button>';
-          html += '</div>';
-        });
+        html += '<div class="cat-header"><span>' + catIcon + ' ' + esc(cat) + '</span><span class="cat-count">' + cats[cat].length + '</span></div>';
+        cats[cat].forEach(function(item) { html += renderShopItem(item); });
         html += '</div>';
       });
+      // Quick adds
+      if (cats['✏ Quick Adds'] && cats['✏ Quick Adds'].length) {
+        html += '<div class="cat-group" style="border-left:3px solid #f59e0b !important;padding-left:8px !important;">';
+        html += '<div class="cat-header"><span>&#x270F; Quick Adds</span><span class="cat-count">' + cats['✏ Quick Adds'].length + '</span></div>';
+        cats['✏ Quick Adds'].forEach(function(item) { html += renderShopItem(item); });
+        html += '</div>';
+      }
     }
-    // Render quick-add items in their own section
-    if (quickItems.length) {
-      var qDone = quickItems.filter(function(i){ return i.checked; }).length;
-      html += '<div class="cat-group" style="border-left:3px solid #f59e0b !important;padding-left:8px !important;">';
-      html += '<div class="cat-header"><span>&#x270F; Quick Adds</span><span class="cat-count">' + qDone + '/' + quickItems.length + '</span></div>';
-      quickItems.forEach(function(item) {
-        var storeCls = (item.store || '').toLowerCase().replace(/[^a-z]/g,'');
-        html += '<div class="shop-item" data-id="' + item.id + '">';
-        html += '<div class="shop-check' + (item.checked ? ' done' : '') + '" onclick="amCheck(this)"></div>';
-        html += '<span class="shop-name' + (item.checked ? ' checked' : '') + '">' + esc(item.name) + '</span>';
-        if (item.store) html += '<span class="store-tag ' + storeCls + '">' + esc(item.store) + '</span>';
-        html += '<button class="shop-delete" onclick="amDeleteItem(\'' + item.id + '\')">&#x1F5D1;</button>';
-        html += '</div>';
-      });
+
+    // Render checked items at bottom
+    if (checked.length) {
+      html += '<div class="cat-group" style="margin-top:16px !important;border-top:2px solid #e2e8f0 !important;padding-top:12px !important;">';
+      html += '<div class="cat-header"><span>&#x2705; Collected</span><span class="cat-count">' + checked.length + '</span></div>';
+      checked.forEach(function(item) { html += renderShopItem(item); });
       html += '</div>';
     }
-    if (!items.length) html = '<div style="text-align:center;padding:20px;color:#94a3b8;">No items yet — pick from the Master List or tap + Add Item</div>';
+
+    if (!items.length) html = '<div style="text-align:center;padding:20px;color:#94a3b8;">No items yet — pick from the Master List or type below to add</div>';
     container.innerHTML = html;
     amUpdateCounts();
   }
 
   window.amRepeatLastShop = async function() {
-    // Get the most recent receipt with items
-    var { data: receipts } = await sb.from('receipts').select('*, receipt_items(*)').order('uploaded_at', { ascending: false }).limit(1);
-    if (!receipts || !receipts.length || !receipts[0].receipt_items || !receipts[0].receipt_items.length) {
-      alert('No previous shop found. Scan a receipt first to use this feature.');
+    // Get all receipts from the last 7 days
+    var weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 7);
+    var { data: receipts } = await sb.from('receipts').select('*, receipt_items(*)').gte('uploaded_at', weekAgo.toISOString()).order('uploaded_at', { ascending: false });
+    if (!receipts || !receipts.length) {
+      alert('No receipts from the last 7 days. Scan a receipt first to use this feature.');
       return;
     }
-    var receipt = receipts[0];
-    var items = receipt.receipt_items;
     // Get master list for category/store lookup
     var { data: master } = await sb.from('master_items').select('name, category, store');
     var masterMap = {};
     (master || []).forEach(function(m) { masterMap[m.name.toLowerCase()] = m; });
-    // Build shopping items from receipt
+    // Collect all items from all receipts, deduplicated
     var rows = [];
     var seen = {};
-    items.forEach(function(item) {
-      if (item.price <= 0) return; // skip discounts
-      var key = item.item_name.toLowerCase();
-      if (seen[key]) return;
-      seen[key] = true;
-      var mi = masterMap[key];
-      rows.push({
-        name: item.item_name,
-        category: mi ? mi.category : 'Other',
-        store: mi ? mi.store : (receipt.store || '')
+    var stores = [];
+    receipts.forEach(function(receipt) {
+      if (receipt.store && stores.indexOf(receipt.store) === -1) stores.push(receipt.store);
+      (receipt.receipt_items || []).forEach(function(item) {
+        if (item.price <= 0) return;
+        var key = item.item_name.toLowerCase();
+        if (seen[key]) return;
+        seen[key] = true;
+        var mi = masterMap[key];
+        rows.push({
+          name: item.item_name,
+          category: mi ? mi.category : 'Other',
+          store: mi ? mi.store : (receipt.store || '')
+        });
       });
     });
     if (rows.length) {
       await sb.from('shopping_items').insert(rows);
       amLoadItems();
-      alert(rows.length + ' items added from your last shop at ' + (receipt.store || 'unknown store') + '!');
+      alert(rows.length + ' items added from last week (' + stores.join(' + ') + ')!');
     }
   };
 
