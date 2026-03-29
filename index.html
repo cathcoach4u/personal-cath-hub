@@ -898,10 +898,11 @@
   };
 
   window.amRefresh = async function(){
+    if (!confirm('Clear the entire shopping list and start fresh?')) return;
     var { data } = await sb.from('shopping_items').select('id');
     if (data && data.length) {
       for (var i = 0; i < data.length; i++) {
-        await sb.from('shopping_items').update({ checked: false }).eq('id', data[i].id);
+        await sb.from('shopping_items').delete().eq('id', data[i].id);
       }
     }
     amLoadItems();
