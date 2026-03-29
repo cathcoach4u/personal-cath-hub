@@ -706,13 +706,17 @@
           <a class="doc-sharepoint-btn" href="https://netorgft4053847.sharepoint.com/:f:/s/bakerpersonal-CathPersonal/IgAEdQrlyL4-Qa4rSlz4-SwPAWV2ALT9bZECNDOJyLgPUlU?e=mvuWfJ" target="_blank" rel="noopener">&#x1F4C2; Open Documents Folder &rarr;</a>
         </div>
         <div class="doc-section-body">
-          <p class="doc-hint">Select or drop a file below — it will be renamed <strong>yyyymmdd filename.ext</strong> and downloaded, ready to upload to SharePoint.</p>
-          <div class="doc-drop-zone" id="med-drop" onclick="document.getElementById('med-file-input').click()">
-            <div class="doc-drop-icon">&#x1F4C4;</div>
-            <div class="doc-drop-title">Drop a file here or click to select</div>
-            <div class="doc-drop-sub" id="med-drop-sub">e.g. blood results.pdf &rarr; <strong id="med-date-preview"></strong> blood results.pdf</div>
+          <p class="doc-hint">Select a file, enter a name, and it will be renamed <strong>yyyymmdd yourname.ext</strong> then downloaded. The OneDrive folder opens automatically.</p>
+          <div style="display:flex !important;gap:8px !important;align-items:center !important;margin-bottom:12px !important;flex-wrap:wrap !important;">
+            <button class="am-btn" onclick="document.getElementById('med-file-input').click()" style="background:#3b82f6 !important;color:white !important;">&#x1F4C4; Choose File</button>
+            <span style="font-size:12px !important;color:#94a3b8 !important;" id="med-file-chosen">No file selected</span>
           </div>
-          <input type="file" id="med-file-input" multiple style="display:none !important;" onchange="docHandleFiles(this.files,'med')">
+          <div style="display:flex !important;gap:8px !important;align-items:center !important;margin-bottom:12px !important;">
+            <span style="font-size:13px !important;font-weight:600 !important;color:#64748b !important;white-space:nowrap !important;" id="med-date-preview"></span>
+            <input class="hab-form-input" id="med-custom-name" type="text" placeholder="Enter file name (e.g. blood results)" style="flex:1 !important;">
+            <button class="am-btn" onclick="docRenameAndDownload()" style="background:#10b981 !important;color:white !important;white-space:nowrap !important;">Rename &amp; Save</button>
+          </div>
+          <input type="file" id="med-file-input" style="display:none !important;" onchange="docFileSelected(this)">
           <div class="doc-renamed-list" id="med-renamed-list"></div>
         </div>
       </div>
@@ -2004,38 +2008,52 @@
     var preview = document.getElementById('med-date-preview');
     if (preview) preview.textContent = datePrefix;
 
-    window.docHandleFiles = function(files, zoneId) {
-      var list = document.getElementById(zoneId + '-renamed-list');
-      Array.from(files).forEach(function(file) {
-        var newName = datePrefix + ' ' + file.name;
-        // Trigger download with new name
-        var url = URL.createObjectURL(file);
-        var a = document.createElement('a');
-        a.href = url;
-        a.download = newName;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
-        // Show in list
-        var item = document.createElement('div');
-        item.className = 'doc-renamed-item';
-        item.innerHTML = '<span class="doc-renamed-tag">&#x2713; Renamed</span><span class="doc-renamed-name">' + esc(newName) + '</span>';
-        list.insertBefore(item, list.firstChild);
-      });
+    var docSelectedFile = null;
+
+    window.docFileSelected = function(input) {
+      if (input.files && input.files.length) {
+        docSelectedFile = input.files[0];
+        document.getElementById('med-file-chosen').textContent = docSelectedFile.name;
+        // Pre-fill name without extension
+        var nameParts = docSelectedFile.name.split('.');
+        nameParts.pop();
+        document.getElementById('med-custom-name').value = nameParts.join('.');
+        document.getElementById('med-custom-name').focus();
+      }
     };
 
-    // Drag and drop
-    var zone = document.getElementById('med-drop');
-    if (zone) {
-      zone.addEventListener('dragover', function(e){ e.preventDefault(); zone.classList.add('dragover'); });
-      zone.addEventListener('dragleave', function(){ zone.classList.remove('dragover'); });
-      zone.addEventListener('drop', function(e){
-        e.preventDefault();
-        zone.classList.remove('dragover');
-        docHandleFiles(e.dataTransfer.files, 'med');
-      });
-    }
+    window.docRenameAndDownload = function() {
+      if (!docSelectedFile) { alert('Please choose a file first.'); return; }
+      var customName = document.getElementById('med-custom-name').value.trim();
+      if (!customName) { alert('Please enter a file name.'); return; }
+      // Get extension from original file
+      var ext = docSelectedFile.name.split('.').pop();
+      var newName = datePrefix + ' ' + customName + '.' + ext;
+      // Download with new name
+      var url = URL.createObjectURL(docSelectedFile);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = newName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
+      // Show in list
+      var list = document.getElementById('med-renamed-list');
+      var item = document.createElement('div');
+      item.className = 'doc-renamed-item';
+      item.innerHTML = '<span class="doc-renamed-tag">&#x2713; Saved</span><span class="doc-renamed-name">' + esc(newName) + '</span>';
+      list.insertBefore(item, list.firstChild);
+      // Open OneDrive folder
+      setTimeout(function(){
+        window.open('https://netorgft4053847.sharepoint.com/:f:/s/bakerpersonal-CathPersonal/IgAEdQrlyL4-Qa4rSlz4-SwPAWV2ALT9bZECNDOJyLgPUlU?e=mvuWfJ', '_blank');
+      }, 500);
+      // Reset
+      docSelectedFile = null;
+      document.getElementById('med-file-chosen').textContent = 'No file selected';
+      document.getElementById('med-custom-name').value = '';
+      document.getElementById('med-file-input').value = '';
+    };
   })();
 
 
