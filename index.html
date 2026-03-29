@@ -500,7 +500,7 @@
           <div class="doc-drop-title">Drop a receipt here or click to select</div>
           <div class="doc-drop-sub">Photos or images of your receipts &mdash; items &amp; prices extracted automatically</div>
         </div>
-        <input type="file" id="am-receipt-input" accept="image/*" style="display:none !important;" onchange="amUploadReceipts(this.files)">
+        <input type="file" id="am-receipt-input" accept="image/*,.pdf" style="display:none !important;" onchange="amUploadReceipts(this.files)">
         <div id="am-scan-status" style="display:none !important;text-align:center !important;padding:20px !important;"><div style="font-size:24px !important;margin-bottom:8px !important;">&#x1F50D;</div><div style="color:#3b82f6 !important;font-weight:600 !important;">Scanning receipt...</div><div style="color:#94a3b8 !important;font-size:12px !important;">Extracting items and prices</div></div>
         <h4 style="font-size:15px !important;font-weight:600 !important;margin-top:24px !important;margin-bottom:12px !important;">Receipt History</h4>
         <div id="am-receipt-list"></div>
@@ -1045,7 +1045,9 @@
         messages: [{
           role: 'user',
           content: [
-            { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } },
+            mediaType === 'application/pdf'
+              ? { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: base64 } }
+              : { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } },
             { type: 'text', text: 'Extract all items and prices from this receipt. Return ONLY valid JSON in this exact format, no other text:\n{"store":"Store Name","date":"DD/MM/YYYY","items":[{"name":"Item Name","price":1.99,"quantity":1}],"total":99.99}\n\nRules:\n- Use the actual store name from the receipt\n- Date in DD/MM/YYYY format\n- Price as a number (not string)\n- Include ALL items, even discounts (as negative prices)\n- Total is the final amount paid' }
           ]
         }]
