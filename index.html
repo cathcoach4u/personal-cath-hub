@@ -1309,33 +1309,44 @@
       (todayLogs || []).forEach(function(l){ takenIds[l.med_id] = l; });
 
       var mh = '';
-      // Show daily meds with taken/not taken
+      // Build unified list: daily meds + as-needed doses
+      var allEntries = [];
+
+      // Daily meds
       dailyMeds.forEach(function(m) {
         var taken = !!takenIds[m.id];
-        var time = taken && takenIds[m.id].created_at ? new Date(takenIds[m.id].created_at).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' }) : '';
-        mh += '<div style="display:flex !important;align-items:center !important;gap:8px !important;padding:5px 0 !important;">';
-        mh += '<span style="font-size:14px !important;">' + (taken ? '&#x2705;' : '&#x2B1C;') + '</span>';
-        mh += '<span style="font-size:13px !important;flex:1 !important;' + (taken ? '' : 'color:#94a3b8 !important;') + '">' + esc(m.name) + '</span>';
-        if (time) mh += '<span style="font-size:11px !important;color:#94a3b8 !important;">' + esc(time) + '</span>';
-        mh += '</div>';
+        var time = taken && takenIds[m.id].created_at ? new Date(takenIds[m.id].created_at).getTime() : null;
+        var timeStr = time ? new Date(time).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' }) : '';
+        allEntries.push({ name: m.name, taken: taken, time: time, timeStr: timeStr, icon: taken ? '&#x2705;' : '&#x2B1C;', dimmed: !taken });
       });
 
-      // Show as-needed doses taken today
-      var asNeededToday = (todayLogs || []).filter(function(l) {
+      // As-needed doses taken today
+      (todayLogs || []).forEach(function(l) {
         var med = medMap[l.med_id];
-        return med && med.freq === 'asneeded';
+        if (med && med.freq === 'asneeded') {
+          var time = l.created_at ? new Date(l.created_at).getTime() : null;
+          var timeStr = time ? new Date(time).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' }) : '';
+          allEntries.push({ name: med.name, taken: true, time: time, timeStr: timeStr, icon: '&#x1F48A;', dimmed: false });
+        }
       });
-      if (asNeededToday.length) {
-        asNeededToday.forEach(function(l) {
-          var med = medMap[l.med_id];
-          var time = l.created_at ? new Date(l.created_at).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' }) : '';
-          mh += '<div style="display:flex !important;align-items:center !important;gap:8px !important;padding:5px 0 !important;">';
-          mh += '<span style="font-size:14px !important;">&#x1F48A;</span>';
-          mh += '<span style="font-size:13px !important;flex:1 !important;">' + esc(med ? med.name : 'Unknown') + '</span>';
-          if (time) mh += '<span style="font-size:11px !important;color:#94a3b8 !important;">' + esc(time) + '</span>';
-          mh += '</div>';
-        });
-      }
+
+      // Sort: taken first, then by time
+      allEntries.sort(function(a, b) {
+        if (a.taken && !b.taken) return -1;
+        if (!a.taken && b.taken) return 1;
+        if (a.time && b.time) return a.time - b.time;
+        if (a.time) return -1;
+        if (b.time) return 1;
+        return 0;
+      });
+
+      allEntries.forEach(function(e) {
+        mh += '<div style="display:flex !important;align-items:center !important;gap:8px !important;padding:5px 0 !important;">';
+        mh += '<span style="font-size:14px !important;">' + e.icon + '</span>';
+        mh += '<span style="font-size:13px !important;flex:1 !important;' + (e.dimmed ? 'color:#94a3b8 !important;' : '') + '">' + esc(e.name) + '</span>';
+        if (e.timeStr) mh += '<span style="font-size:11px !important;color:#94a3b8 !important;">' + esc(e.timeStr) + '</span>';
+        mh += '</div>';
+      });
 
       if (!mh) {
         mh = '<div style="text-align:center !important;padding:12px !important;color:#94a3b8 !important;font-size:13px !important;">No medications tracked yet</div>';
