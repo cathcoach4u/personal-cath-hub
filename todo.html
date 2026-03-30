@@ -39,6 +39,7 @@
   .clear-done:hover { background: #f8fafc; }
 
   .empty { padding: 40px 20px; text-align: center; color: #94a3b8; font-size: 14px; }
+  .task-cat { font-size: 11px; color: #94a3b8; margin-top: 2px; }
 
   /* Auto-add from URL param */
   .auto-add-banner { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; text-align: center; font-size: 14px; color: #16a34a; font-weight: 600; display: none; }
@@ -81,13 +82,34 @@
 
   function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
+  var TD_CATEGORIES = {
+    'Health': ['doctor','dentist','physio','appointment','medication','pharmacy','prescription','medical','gp','specialist','blood test','xray','scan','therapy','psychologist','chiropractor','optometrist'],
+    'Shopping': ['buy','pick up','order','return item','exchange','shop','woolworths','coles','aldi','kmart','bunnings','target','chemist','officeworks'],
+    'Home': ['clean','fix','repair','organise','sort','tidy','laundry','dishes','vacuum','mop','garden','mow','bin','rubbish','declutter','paint','plumber','electrician'],
+    'Work': ['email','call','meeting','invoice','client','coaching','session','prepare','send','follow up','presentation','deadline','submit','report'],
+    'Finance': ['pay','bill','transfer','bank','tax','accountant','insurance','superannuation','budget','refund','claim'],
+    'Family': ['andrew','sarah','russell','school','lunch','dinner','cook','pick up kids','birthday','present','gift']
+  };
+  var TD_CAT_ICONS = { 'Health': '\uD83E\uDE7A', 'Shopping': '\uD83D\uDED2', 'Home': '\uD83C\uDFE0', 'Work': '\uD83D\uDCBC', 'Finance': '\uD83D\uDCB0', 'Family': '\uD83D\uDC6A', 'General': '\uD83D\uDCCB' };
+
+  function autoCategory(task) {
+    var lower = task.toLowerCase();
+    for (var cat in TD_CATEGORIES) {
+      for (var i = 0; i < TD_CATEGORIES[cat].length; i++) {
+        if (lower.indexOf(TD_CATEGORIES[cat][i]) !== -1) return cat;
+      }
+    }
+    return 'General';
+  }
+
   // Auto-add from URL param: todo.html?add=Buy+milk
   var params = new URLSearchParams(window.location.search);
   var autoAdd = params.get('add');
   if (autoAdd) {
     autoAdd = autoAdd.trim();
     if (autoAdd) {
-      await sb.from('personal_todos').insert({ id: Date.now(), task: autoAdd, done: false });
+      var autoCat = autoCategory(autoAdd);
+      await sb.from('personal_todos').insert({ id: Date.now(), task: autoAdd, done: false, category: autoCat, created_at: new Date().toISOString() });
       var banner = document.getElementById('auto-banner');
       banner.textContent = '\u2705 Added: ' + autoAdd;
       banner.style.display = 'block';
@@ -126,9 +148,10 @@
       pendingLabel.style.display = pending.length ? 'block' : 'none';
       var ph = '';
       pending.forEach(function(t) {
+        var icon = TD_CAT_ICONS[t.category] || TD_CAT_ICONS['General'];
         ph += '<div class="task-item">';
         ph += '<div class="task-check pending" onclick="toggleTask(' + t.id + ')"></div>';
-        ph += '<div class="task-text">' + esc(t.task) + '</div>';
+        ph += '<div style="flex:1;"><div class="task-text">' + esc(t.task) + '</div><div class="task-cat">' + icon + ' ' + esc(t.category || 'General') + '</div></div>';
         ph += '<div class="task-del" onclick="deleteTask(' + t.id + ')" title="Delete">&#x2715;</div>';
         ph += '</div>';
       });
@@ -138,9 +161,10 @@
       clearBtn.style.display = done.length ? 'block' : 'none';
       var dh = '';
       done.forEach(function(t) {
+        var icon = TD_CAT_ICONS[t.category] || TD_CAT_ICONS['General'];
         dh += '<div class="task-item done">';
         dh += '<div class="task-check checked" onclick="toggleTask(' + t.id + ')"></div>';
-        dh += '<div class="task-text checked">' + esc(t.task) + '</div>';
+        dh += '<div style="flex:1;"><div class="task-text checked">' + esc(t.task) + '</div><div class="task-cat">' + icon + ' ' + esc(t.category || 'General') + '</div></div>';
         dh += '<div class="task-del" onclick="deleteTask(' + t.id + ')" title="Delete">&#x2715;</div>';
         dh += '</div>';
       });
@@ -153,7 +177,8 @@
   window.addTask = async function() {
     var task = input.value.trim();
     if (!task) return;
-    await sb.from('personal_todos').insert({ id: Date.now(), task: task, done: false });
+    var category = autoCategory(task);
+    await sb.from('personal_todos').insert({ id: Date.now(), task: task, done: false, category: category, created_at: new Date().toISOString() });
     input.value = '';
     loadTasks();
   };

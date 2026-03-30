@@ -487,7 +487,7 @@
       <div class="dash-section">
         <div style="display:flex !important;justify-content:space-between !important;align-items:center !important;margin-bottom:12px !important;">
           <h3 style="margin-bottom:0 !important;">&#x2705; My To-Do</h3>
-          <span style="font-size:12px !important;color:#3b82f6 !important;cursor:pointer !important;" onclick="window.open('todo.html','_blank')">Open list &rarr;</span>
+          <span style="font-size:12px !important;color:#3b82f6 !important;cursor:pointer !important;" onclick="chNav('hometab',document.querySelectorAll('#cathHub .nav-item')[6]);setTimeout(function(){hmGo('todo')},100)">View all &rarr;</span>
         </div>
         <div id="dash-todo-summary">
           <div style="font-size:13px !important;color:#94a3b8 !important;">Loading...</div>
@@ -1075,6 +1075,7 @@
       <!-- HOME: Navigation -->
       <div class="am-subscreen active" id="hm-home">
         <div style="display:flex !important;flex-direction:column !important;gap:10px !important;">
+          <button class="am-btn" onclick="hmGo('todo')" style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x2705; My To-Do <span style="margin-left:auto !important;color:#94a3b8 !important;font-size:12px !important;" id="hm-todo-badge">0 items</span></button>
           <button class="am-btn" onclick="hmGo('fiona')" style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F9F9; Fiona's List <span style="margin-left:auto !important;color:#94a3b8 !important;font-size:12px !important;" id="hm-fiona-badge">0 tasks</span></button>
           <button class="am-btn" disabled style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#94a3b8 !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F527; Maintenance Tasks <span style="margin-left:auto !important;font-size:12px !important;">Coming soon</span></button>
           <button class="am-btn" disabled style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#94a3b8 !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F4E6; Home Inventory <span style="margin-left:auto !important;font-size:12px !important;">Coming soon</span></button>
@@ -1112,6 +1113,48 @@
           <div style="display:flex !important;gap:8px !important;align-items:center !important;">
             <input type="text" readonly id="fi-link" style="flex:1 !important;padding:8px 10px !important;border:1px solid #e2e8f0 !important;border-radius:6px !important;font-size:11px !important;color:#475569 !important;background:white !important;">
             <button class="am-btn" onclick="fiCopyLink()" style="padding:8px 12px !important;font-size:12px !important;white-space:nowrap !important;">Copy</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ MY TO-DO SUBSCREEN ═══ -->
+      <div class="am-subscreen" id="hm-todo">
+        <button class="am-back" onclick="hmGo('home')">&#x2190; Back</button>
+        <h3 style="font-size:18px !important;font-weight:700 !important;margin-bottom:4px !important;">&#x2705; My To-Do</h3>
+        <p style="font-size:12px !important;color:#94a3b8 !important;margin-bottom:16px !important;">Personal tasks. Items auto-categorise as you add them.</p>
+
+        <!-- Add task -->
+        <div style="display:flex !important;gap:8px !important;margin-bottom:12px !important;">
+          <input type="text" id="td-task-input" placeholder="Add a task..." style="flex:1 !important;padding:12px 14px !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;font-size:14px !important;box-sizing:border-box !important;" onkeydown="if(event.key==='Enter')tdAddTask()">
+          <button class="am-btn" onclick="tdAddTask()" style="background:#3b82f6 !important;color:white !important;border-color:#3b82f6 !important;padding:12px 16px !important;font-size:14px !important;white-space:nowrap !important;">+ Add</button>
+        </div>
+
+        <!-- Category filter -->
+        <div style="display:flex !important;gap:6px !important;flex-wrap:wrap !important;margin-bottom:12px !important;" id="td-cat-filters"></div>
+
+        <!-- Task count -->
+        <div style="display:flex !important;align-items:center !important;justify-content:space-between !important;margin-bottom:12px !important;">
+          <div style="font-size:13px !important;color:#64748b !important;" id="td-task-count">0 items</div>
+          <button class="am-btn" onclick="tdClearDone()" id="td-clear-btn" style="background:#ef4444 !important;color:white !important;border-color:#ef4444 !important;padding:8px 14px !important;font-size:12px !important;display:none !important;">Clear completed</button>
+        </div>
+
+        <!-- Pending list -->
+        <div style="font-size:12px !important;font-weight:600 !important;color:#64748b !important;text-transform:uppercase !important;margin-bottom:8px !important;">To Do</div>
+        <div id="td-pending-list" style="display:flex !important;flex-direction:column !important;gap:6px !important;margin-bottom:16px !important;">
+          <div style="padding:20px !important;text-align:center !important;color:#94a3b8 !important;font-size:13px !important;">Loading...</div>
+        </div>
+
+        <!-- Done list -->
+        <div style="font-size:12px !important;font-weight:600 !important;color:#64748b !important;text-transform:uppercase !important;margin-bottom:8px !important;">Done</div>
+        <div id="td-done-list" style="display:flex !important;flex-direction:column !important;gap:6px !important;margin-bottom:16px !important;"></div>
+
+        <!-- Standalone link -->
+        <div style="margin-top:20px !important;padding:14px 16px !important;background:#f8fafc !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;">
+          <div style="font-size:12px !important;font-weight:600 !important;color:#64748b !important;margin-bottom:6px !important;">&#x1F517; Quick Access Link</div>
+          <div style="font-size:12px !important;color:#94a3b8 !important;margin-bottom:8px !important;">Use this URL in Apple Shortcuts to quick-add items</div>
+          <div style="display:flex !important;gap:8px !important;align-items:center !important;">
+            <input type="text" readonly id="td-link" style="flex:1 !important;padding:8px 10px !important;border:1px solid #e2e8f0 !important;border-radius:6px !important;font-size:11px !important;color:#475569 !important;background:white !important;">
+            <button class="am-btn" onclick="tdCopyLink()" style="padding:8px 12px !important;font-size:12px !important;white-space:nowrap !important;">Copy</button>
           </div>
         </div>
       </div>
@@ -3114,6 +3157,7 @@
     document.querySelectorAll('#ch-hometab .am-subscreen').forEach(function(s){ s.classList.remove('active'); });
     document.getElementById('hm-' + sub).classList.add('active');
     if (sub === 'fiona') fiLoad();
+    if (sub === 'todo') tdLoad();
   };
 
   // ─── FIONA'S LIST ───
@@ -3187,6 +3231,147 @@
 
     window.fiCopyLink = function() {
       var inp = document.getElementById('fi-link');
+      inp.select();
+      document.execCommand('copy');
+      alert('Link copied!');
+    };
+  })();
+
+  // ─── PERSONAL TO-DO ───
+  (function(){
+    var TD_CATEGORIES = {
+      'Health': ['doctor','dentist','physio','appointment','medication','pharmacy','prescription','medical','gp','specialist','blood test','xray','scan','therapy','psychologist','chiropractor','optometrist'],
+      'Shopping': ['buy','pick up','order','return item','exchange','shop','woolworths','coles','aldi','kmart','bunnings','target','chemist','officeworks'],
+      'Home': ['clean','fix','repair','organise','sort','tidy','laundry','dishes','vacuum','mop','garden','mow','bin','rubbish','declutter','paint','plumber','electrician'],
+      'Work': ['email','call','meeting','invoice','client','coaching','session','prepare','send','follow up','presentation','deadline','submit','report'],
+      'Finance': ['pay','bill','transfer','bank','tax','accountant','insurance','superannuation','budget','refund','claim'],
+      'Family': ['andrew','sarah','russell','school','lunch','dinner','cook','pick up kids','birthday','present','gift']
+    };
+    var TD_CAT_ICONS = { 'Health': '&#x1FA7A;', 'Shopping': '&#x1F6D2;', 'Home': '&#x1F3E0;', 'Work': '&#x1F4BC;', 'Finance': '&#x1F4B0;', 'Family': '&#x1F46A;', 'General': '&#x1F4CB;' };
+    var tdFilterCat = 'All';
+
+    function tdAutoCategory(task) {
+      var lower = task.toLowerCase();
+      for (var cat in TD_CATEGORIES) {
+        for (var i = 0; i < TD_CATEGORIES[cat].length; i++) {
+          if (lower.indexOf(TD_CATEGORIES[cat][i]) !== -1) return cat;
+        }
+      }
+      return 'General';
+    }
+
+    function tdEsc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+    window.tdLoad = async function() {
+      try {
+        var { data, error } = await sb.from('personal_todos').select('*').order('created_at', { ascending: true });
+        if (error) throw error;
+        var tasks = data || [];
+        var pendingList = document.getElementById('td-pending-list');
+        var doneList = document.getElementById('td-done-list');
+        var countEl = document.getElementById('td-task-count');
+        var clearBtn = document.getElementById('td-clear-btn');
+        var badge = document.getElementById('hm-todo-badge');
+        var filterDiv = document.getElementById('td-cat-filters');
+
+        var pending = tasks.filter(function(t){ return !t.done; });
+        var done = tasks.filter(function(t){ return t.done; });
+
+        countEl.textContent = pending.length + ' pending, ' + done.length + ' done';
+        clearBtn.style.display = done.length > 0 ? 'inline-flex' : 'none';
+        if (badge) badge.textContent = pending.length + ' item' + (pending.length !== 1 ? 's' : '');
+
+        // Build category filter buttons
+        var cats = { 'All': tasks.length };
+        tasks.forEach(function(t) {
+          var c = t.category || 'General';
+          cats[c] = (cats[c] || 0) + 1;
+        });
+        var fh = '';
+        for (var c in cats) {
+          var active = (c === tdFilterCat);
+          var icon = c === 'All' ? '' : (TD_CAT_ICONS[c] || '') + ' ';
+          fh += '<button onclick="tdSetFilter(\'' + c + '\')" style="padding:6px 12px !important;font-size:12px !important;border-radius:20px !important;border:1px solid ' + (active ? '#3b82f6' : '#e2e8f0') + ' !important;background:' + (active ? '#3b82f6' : 'white') + ' !important;color:' + (active ? 'white' : '#64748b') + ' !important;cursor:pointer !important;white-space:nowrap !important;">' + icon + c + ' (' + cats[c] + ')</button>';
+        }
+        filterDiv.innerHTML = fh;
+
+        // Filter tasks
+        var filteredPending = tdFilterCat === 'All' ? pending : pending.filter(function(t){ return (t.category || 'General') === tdFilterCat; });
+        var filteredDone = tdFilterCat === 'All' ? done : done.filter(function(t){ return (t.category || 'General') === tdFilterCat; });
+
+        // Render pending
+        if (!filteredPending.length) {
+          pendingList.innerHTML = '<div style="padding:16px !important;text-align:center !important;color:#94a3b8 !important;font-size:13px !important;">No pending tasks' + (tdFilterCat !== 'All' ? ' in ' + tdFilterCat : '') + '</div>';
+        } else {
+          var ph = '';
+          filteredPending.forEach(function(t) {
+            var catIcon = TD_CAT_ICONS[t.category] || TD_CAT_ICONS['General'];
+            ph += '<div style="display:flex !important;align-items:center !important;gap:10px !important;padding:12px 14px !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;">';
+            ph += '<div onclick="tdToggle('+t.id+')" style="width:22px !important;height:22px !important;border-radius:6px !important;border:2px solid #cbd5e1 !important;background:transparent !important;cursor:pointer !important;display:flex !important;align-items:center !important;justify-content:center !important;flex-shrink:0 !important;"></div>';
+            ph += '<div style="flex:1 !important;"><div style="font-size:14px !important;color:#1e293b !important;">'+tdEsc(t.task)+'</div><div style="font-size:11px !important;color:#94a3b8 !important;margin-top:2px !important;">'+catIcon+' '+tdEsc(t.category || 'General')+'</div></div>';
+            ph += '<div onclick="tdDelete('+t.id+')" style="color:#94a3b8 !important;cursor:pointer !important;font-size:16px !important;padding:0 4px !important;" title="Remove">&#x1F5D1;</div>';
+            ph += '</div>';
+          });
+          pendingList.innerHTML = ph;
+        }
+
+        // Render done
+        if (!filteredDone.length) {
+          doneList.innerHTML = '<div style="padding:12px !important;text-align:center !important;color:#94a3b8 !important;font-size:13px !important;">No completed tasks</div>';
+        } else {
+          var dh = '';
+          filteredDone.forEach(function(t) {
+            var catIcon = TD_CAT_ICONS[t.category] || TD_CAT_ICONS['General'];
+            dh += '<div style="display:flex !important;align-items:center !important;gap:10px !important;padding:12px 14px !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;opacity:0.6 !important;">';
+            dh += '<div onclick="tdToggle('+t.id+')" style="width:22px !important;height:22px !important;border-radius:6px !important;border:2px solid #10b981 !important;background:#10b981 !important;cursor:pointer !important;display:flex !important;align-items:center !important;justify-content:center !important;flex-shrink:0 !important;color:white !important;font-size:13px !important;">&#x2713;</div>';
+            dh += '<div style="flex:1 !important;"><div style="font-size:14px !important;text-decoration:line-through !important;color:#94a3b8 !important;">'+tdEsc(t.task)+'</div><div style="font-size:11px !important;color:#94a3b8 !important;margin-top:2px !important;">'+catIcon+' '+tdEsc(t.category || 'General')+'</div></div>';
+            dh += '<div onclick="tdDelete('+t.id+')" style="color:#94a3b8 !important;cursor:pointer !important;font-size:16px !important;padding:0 4px !important;" title="Remove">&#x1F5D1;</div>';
+            dh += '</div>';
+          });
+          doneList.innerHTML = dh;
+        }
+      } catch(e) {
+        document.getElementById('td-pending-list').innerHTML = '<div style="padding:20px !important;text-align:center !important;color:#ef4444 !important;font-size:13px !important;">Could not load tasks. The table may not be set up yet.</div>';
+      }
+
+      var linkEl = document.getElementById('td-link');
+      if (linkEl) linkEl.value = window.location.origin + '/cath-hub/todo.html?add=Your+task+here';
+    };
+
+    window.tdSetFilter = function(cat) {
+      tdFilterCat = cat;
+      tdLoad();
+    };
+
+    window.tdAddTask = async function() {
+      var inp = document.getElementById('td-task-input');
+      var task = inp.value.trim();
+      if (!task) return;
+      var category = tdAutoCategory(task);
+      await sb.from('personal_todos').insert({ id: Date.now(), task: task, done: false, category: category, created_at: new Date().toISOString() });
+      inp.value = '';
+      tdLoad();
+    };
+
+    window.tdToggle = async function(id) {
+      var { data } = await sb.from('personal_todos').select('done').eq('id', id).single();
+      await sb.from('personal_todos').update({ done: !data.done }).eq('id', id);
+      tdLoad();
+    };
+
+    window.tdDelete = async function(id) {
+      await sb.from('personal_todos').delete().eq('id', id);
+      tdLoad();
+    };
+
+    window.tdClearDone = async function() {
+      if (!confirm('Remove all completed items?')) return;
+      await sb.from('personal_todos').delete().eq('done', true);
+      tdLoad();
+    };
+
+    window.tdCopyLink = function() {
+      var inp = document.getElementById('td-link');
       inp.select();
       document.execCommand('copy');
       alert('Link copied!');
