@@ -484,6 +484,16 @@
         <button class="am-btn" onclick="dashQuickNav({value:'filing'})" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F4C1; Filing System</button>
       </div>
 
+      <div class="dash-section">
+        <div style="display:flex !important;justify-content:space-between !important;align-items:center !important;margin-bottom:12px !important;">
+          <h3 style="margin-bottom:0 !important;">&#x2705; My To-Do</h3>
+          <span style="font-size:12px !important;color:#3b82f6 !important;cursor:pointer !important;" onclick="window.open('todo.html','_blank')">Open list &rarr;</span>
+        </div>
+        <div id="dash-todo-summary">
+          <div style="font-size:13px !important;color:#94a3b8 !important;">Loading...</div>
+        </div>
+      </div>
+
 
       <div class="dash-section">
         <div style="display:flex !important;justify-content:space-between !important;align-items:center !important;margin-bottom:12px !important;">
@@ -1273,6 +1283,34 @@
       var checked = items.filter(function(i){ return i.checked; }).length;
       html = '<div style="font-size:12px;color:#64748b;margin-bottom:8px;">' + checked + ' of ' + items.length + ' checked</div>' + html;
       container.innerHTML = html;
+    }
+
+    // Personal To-Do summary
+    try {
+      var { data: todoTasks } = await sb.from('personal_todos').select('*').order('created_at', { ascending: true });
+      todoTasks = todoTasks || [];
+      var todoContainer = document.getElementById('dash-todo-summary');
+      var todoTotal = todoTasks.length;
+      var todoDone = todoTasks.filter(function(t){ return t.done; }).length;
+      var todoPending = todoTotal - todoDone;
+      if (!todoTotal) {
+        todoContainer.innerHTML = '<div style="text-align:center !important;padding:12px !important;color:#94a3b8 !important;font-size:13px !important;">No to-do items yet</div>';
+      } else {
+        var th = '<div style="font-size:12px !important;color:#64748b !important;margin-bottom:8px !important;">' + todoPending + ' pending, ' + todoDone + ' done</div>';
+        var todoPendingTasks = todoTasks.filter(function(t){ return !t.done; });
+        if (todoPendingTasks.length) {
+          todoPendingTasks.slice(0, 5).forEach(function(t) {
+            th += '<div style="display:flex !important;align-items:center !important;gap:8px !important;padding:6px 0 !important;">';
+            th += '<span style="color:#94a3b8 !important;font-size:12px !important;">&#x25CB;</span>';
+            th += '<span style="font-size:13px !important;">' + esc(t.task) + '</span>';
+            th += '</div>';
+          });
+          if (todoPendingTasks.length > 5) th += '<div style="font-size:12px !important;color:#94a3b8 !important;padding-top:4px !important;">+ ' + (todoPendingTasks.length - 5) + ' more</div>';
+        }
+        todoContainer.innerHTML = th;
+      }
+    } catch(e) {
+      document.getElementById('dash-todo-summary').innerHTML = '<div style="text-align:center !important;padding:12px !important;color:#94a3b8 !important;font-size:13px !important;">Could not load to-do items</div>';
     }
 
     // Fiona's List summary
