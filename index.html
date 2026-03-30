@@ -1336,7 +1336,7 @@
         if (med && med.freq === 'asneeded') {
           var time = l.created_at ? new Date(l.created_at).getTime() : null;
           var timeStr = time ? new Date(time).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' }) : '';
-          allEntries.push({ name: med.name, taken: true, time: time, timeStr: timeStr, icon: '&#x1F48A;', dimmed: false });
+          allEntries.push({ name: med.name, taken: true, time: time, timeStr: timeStr, icon: '&#x2705;', dimmed: false });
         }
       });
 
