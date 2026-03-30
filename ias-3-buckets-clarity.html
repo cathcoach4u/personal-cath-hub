@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IAS - 3 Buckets Clarity Document</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8f9fa; color: #333; }
+        
+        .page { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
+        
+        /* Header */
+        .header { text-align: center; margin-bottom: 48px; padding-bottom: 24px; border-bottom: 3px solid #e0e0e0; }
+        .header h1 { font-size: 32px; color: #1a1a2e; margin-bottom: 6px; }
+        .header p { font-size: 16px; color: #777; }
+        .header .date { font-size: 13px; color: #aaa; margin-top: 8px; }
+
+        /* Bucket Card */
+        .bucket { border-radius: 16px; padding: 32px; margin-bottom: 32px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); page-break-inside: avoid; }
+
+        /* Bucket 1 */
+        .bucket-1 { background: #f1f8e9; border: 2px solid #7cb342; }
+        .bucket-1 .bucket-badge { background: #7cb342; }
+        .bucket-1 .bucket-title { color: #33691e; }
+        .bucket-1 .highlight { color: #33691e; }
+        .bucket-1 .detail-row .icon { background: #7cb342; }
+        .bucket-1 .deliverable-item::before { background: #7cb342; }
+        .bucket-1 .talk-track { background: rgba(124,179,66,0.12); border-left: 4px solid #7cb342; }
+
+        /* Bucket 2 */
+        .bucket-2 { background: #fff8e1; border: 2px solid #ffb300; }
+        .bucket-2 .bucket-badge { background: #ffb300; }
+        .bucket-2 .bucket-title { color: #e65100; }
+        .bucket-2 .highlight { color: #e65100; }
+        .bucket-2 .detail-row .icon { background: #ffb300; }
+        .bucket-2 .deliverable-item::before { background: #ffb300; }
+        .bucket-2 .talk-track { background: rgba(255,179,0,0.12); border-left: 4px solid #ffb300; }
+
+        /* Bucket 3 */
+        .bucket-3 { background: #e8eaf6; border: 2px solid #5c6bc0; }
+        .bucket-3 .bucket-badge { background: #5c6bc0; }
+        .bucket-3 .bucket-title { color: #1a237e; }
+        .bucket-3 .highlight { color: #1a237e; }
+        .bucket-3 .detail-row .icon { background: #5c6bc0; }
+        .bucket-3 .deliverable-item::before { background: #5c6bc0; }
+        .bucket-3 .talk-track { background: rgba(92,107,192,0.12); border-left: 4px solid #5c6bc0; }
+
+        /* Bucket Header */
+        .bucket-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+        .bucket-badge { color: white; padding: 6px 16px; border-radius: 24px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; }
+        .bucket-title { font-size: 24px; font-weight: 800; }
+        .bucket-scope-tag { padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-left: auto; }
+        .in-scope { background: #c8e6c9; color: #2e7d32; }
+        .out-scope { background: #ffcdd2; color: #c62828; }
+
+        /* Detail Rows */
+        .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 32px; margin-bottom: 24px; }
+        .detail-row { display: flex; align-items: center; gap: 10px; }
+        .detail-row .icon { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .detail-row .label { font-size: 13px; color: #888; min-width: 70px; }
+        .detail-row .value { font-size: 15px; font-weight: 600; }
+
+        /* Deliverables */
+        .section-label { font-size: 14px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; margin-top: 8px; }
+        .deliverables { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px; margin-bottom: 24px; }
+        .deliverable-item { padding: 6px 0 6px 20px; position: relative; font-size: 14px; line-height: 1.6; }
+        .deliverable-item::before { content: ''; position: absolute; left: 0; top: 14px; width: 8px; height: 8px; border-radius: 50%; }
+
+        /* What It's NOT */
+        .not-section { margin-bottom: 24px; }
+        .not-items { display: flex; flex-wrap: wrap; gap: 8px; }
+        .not-tag { background: rgba(0,0,0,0.06); color: #888; padding: 4px 14px; border-radius: 20px; font-size: 13px; text-decoration: line-through; }
+
+        /* Talk Track */
+        .talk-track { padding: 16px 20px; border-radius: 8px; margin-top: 8px; }
+        .talk-track-label { font-size: 12px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .talk-track p { font-size: 14px; line-height: 1.7; font-style: italic; }
+
+        /* Boundary Section */
+        .boundary { background: white; border-radius: 16px; padding: 32px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 32px; border: 2px solid #e0e0e0; }
+        .boundary h2 { font-size: 22px; color: #c62828; margin-bottom: 20px; }
+        .boundary-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+        .boundary-card { padding: 20px; border-radius: 12px; background: #fafafa; text-align: center; }
+        .boundary-card h4 { font-size: 14px; margin-bottom: 12px; color: #555; }
+        .boundary-card .arrow { font-size: 24px; margin: 8px 0; }
+        .boundary-card p { font-size: 13px; color: #666; line-height: 1.5; }
+        .b-green { border-top: 4px solid #7cb342; }
+        .b-orange { border-top: 4px solid #ffb300; }
+        .b-blue { border-top: 4px solid #5c6bc0; }
+
+        /* Quick Ref Summary */
+        .summary { background: #1a1a2e; color: white; border-radius: 16px; padding: 32px; margin-bottom: 32px; }
+        .summary h2 { font-size: 22px; margin-bottom: 24px; }
+        .summary-table { width: 100%; border-collapse: collapse; }
+        .summary-table th { text-align: left; padding: 12px 16px; font-size: 13px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .summary-table td { padding: 14px 16px; font-size: 14px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .summary-table tr:last-child td { border-bottom: none; }
+        .row-1 td:first-child { color: #aed581; font-weight: 600; }
+        .row-2 td:first-child { color: #ffca28; font-weight: 600; }
+        .row-3 td:first-child { color: #7986cb; font-weight: 600; }
+        .tag-yes { background: #2e7d32; color: white; padding: 2px 10px; border-radius: 12px; font-size: 12px; }
+        .tag-no { background: #c62828; color: white; padding: 2px 10px; border-radius: 12px; font-size: 12px; }
+        .tag-tbd { background: #ef6c00; color: white; padding: 2px 10px; border-radius: 12px; font-size: 12px; }
+
+        @media print {
+            .page { padding: 20px; }
+            .bucket { box-shadow: none; border-width: 1px; }
+            .summary { color: black; background: #eee; }
+            .summary-table th, .summary-table td { color: black; }
+        }
+
+        @media (max-width: 768px) {
+            .details-grid { grid-template-columns: 1fr; }
+            .deliverables { grid-template-columns: 1fr; }
+            .boundary-grid { grid-template-columns: 1fr; }
+            .bucket-scope-tag { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    <div class="header">
+        <h1>IAS Engagement - 3 Buckets</h1>
+        <p>Clear scope boundaries for discussion</p>
+        <div class="date">Prepared: 30 March 2026</div>
+    </div>
+
+    <!-- ==================== BUCKET 1 ==================== -->
+    <div class="bucket bucket-1">
+        <div class="bucket-header">
+            <span class="bucket-badge">Bucket 1</span>
+            <span class="bucket-title">AI Efficiency & Integration</span>
+            <span class="bucket-scope-tag in-scope">WITHIN CURRENT SCOPE</span>
+        </div>
+
+        <div class="details-grid">
+            <div class="detail-row">
+                <span class="icon"></span>
+                <span class="label">Fee</span>
+                <span class="value">$2,345/mo (ex GST)</span>
+            </div>
+            <div class="detail-row">
+                <span class="icon"></span>
+                <span class="label">Time</span>
+                <span class="value">1hr/week with Lou (4hrs/mo)</span>
+            </div>
+            <div class="detail-row">
+                <span class="icon"></span>
+                <span class="label">Funding</span>
+                <span class="value">Redirected coaching fees</span>
+            </div>
+            <div class="detail-row">
+                <span class="icon"></span>
+                <span class="label">Type</span>
+                <span class="value">Custom consulting & build</span>
+            </div>
+        </div>
+
+        <div class="section-label">What's Included</div>
+        <div class="deliverables">
+            <div class="deliverable-item">IAS-specific efficiency tools</div>
+            <div class="deliverable-item">AI agents & automated workflows</div>
+            <div class="deliverable-item">IAS Efficiencies App</div>
+            <div class="deliverable-item">Security-first architecture</div>
+            <div class="deliverable-item">Training & enablement (Leah & Lou)</div>
+            <div class="deliverable-item">Digital transformation advisory</div>
+            <div class="deliverable-item">AI capability development</div>
+            <div class="deliverable-item">Lou's weekly collaboration sessions</div>
+        </div>
+
+        <div class="not-section">
+            <div class="section-label">What It's NOT</div>
+            <div class="not-items">
+                <span class="not-tag">Coach4U product development</span>
+                <span class="not-tag">Filing system project</span>
+                <span class="not-tag">Off-the-shelf software</span>
+            </div>
+        </div>
+
+        <div class="talk-track">
+            <div class="talk-track-label">How to explain it</div>
+            <p>"This is the custom work we're building specifically for IAS. It replaced the coaching sessions and covers all AI efficiency tools, workflows, and training that are purpose-built for your business. Everything we build in these sessions belongs to IAS."</p>
+        </div>
+    </div>
+
+    <!-- ==================== BUCKET 2 ==================== -->
+    <div class="bucket bucket-2">
+        <div class="bucket-header">
+            <span class="bucket-badge">Bucket 2</span>
+            <span class="bucket-title">Filing System Project</span>
+            <span class="bucket-scope-tag out-scope">SEPARATE PROJECT</span>
+        </div>
+
+        <div class="details-grid">
+            <div class="detail-row">
+                <span class="icon"></span>
+                <span class="label">Fee</span>
+                <span class="value">$2,200 (one-off)</span>
+            </div>
+            <div class="detail-row">
+                <span class="icon"></span>
+                <span class="label">Status</span>
+                <span class="value">Scoped & quoted</span>
+            </div>
+            <div class="detail-row">
+                <span class="icon"></span>
+                <span class="label">Funding</span>
+                <span class="value">Additional - not from coaching fees</span>
+            </div>
+            <div class="detail-row">
+                <span class="icon"></span>
+                <span class="label">Type</span>
+                <span class="value">Standalone project</span>
+            </div>
+        </div>
+
+        <div class="section-label">What's Included</div>
+        <div class="deliverables">
+            <div class="deliverable-item">Solving the specific filing challenge</div>
+            <div class="deliverable-item">Defined deliverables & scope</div>
+            <div class="deliverable-item">Separate timeline from weekly sessions</div>
+            <div class="deliverable-item">Completion-based (not ongoing)</div>
+        </div>
+
+        <div class="not-section">
+            <div class="section-label">What It's NOT</div>
+            <div class="not-items">
+                <span class="not-tag">Part of monthly engagement</span>
+                <span class="not-tag">Ongoing retainer work</span>
+                <span class="not-tag">Covered by coaching redirect</span>
+            </div>
+        </div>
+
+        <div class="talk-track">
+            <div class="talk-track-label">How to explain it</div>
+            <p>"The filing challenge is a separate, scoped project with its own deliverables. It's not something that fits within the weekly AI sessions — it needs dedicated time and has been quoted accordingly at $2,200."</p>
+        </div>
+    </div>
+
+    <!-- ==================== BUCKET 3 ==================== -->
+    <div class="bucket bucket-3">
+        <div class="bucket-header">
+            <span class="bucket-badge">Bucket 3</span>
+            <span class="bucket-title">Coach4U Business Coaching App</span>
+            <span class="bucket-scope-tag out-scope">SEPARATE PRODUCT</span>
+        </div>
+
+        <div class="details-grid">
+            <div class="detail-row">
+                <span class="icon"></span>
+                <span class="label">Fee</span>
+                <span class="value">TBD - Product licence</span>
+            </div>
+            <div class="detail-row">
+                <span class="icon"></span>
+                <span class="label">Status</span>
+                <span class="value">Independently developed</span>
+            </div>
+            <div class="detail-row">
+                <span class="icon"></span>
+                <span class="label">Funding</span>
+                <span class="value">NOT funded by IAS</span>
+            </div>
+            <div class="detail-row">
+                <span class="icon"></span>
+                <span class="label">Type</span>
+                <span class="value">Coach4U IP / SaaS product</span>
+            </div>
+        </div>
+
+        <div class="section-label">What It Is</div>
+        <div class="deliverables">
+            <div class="deliverable-item">Cath's own product & intellectual property</div>
+            <div class="deliverable-item">Business coaching & planning application</div>
+            <div class="deliverable-item">Built independently, outside IAS time</div>
+            <div class="deliverable-item">Available to multiple clients, not just IAS</div>
+            <div class="deliverable-item">Demonstrated to IAS as a capability showcase</div>
+            <div class="deliverable-item">Optional for IAS to purchase/licence</div>
+        </div>
+
+        <div class="not-section">
+            <div class="section-label">What It's NOT</div>
+            <div class="not-items">
+                <span class="not-tag">Built during IAS sessions</span>
+                <span class="not-tag">Funded by IAS fees</span>
+                <span class="not-tag">Part of agreed AI project scope</span>
+                <span class="not-tag">A deliverable of the engagement</span>
+            </div>
+        </div>
+
+        <div class="talk-track">
+            <div class="talk-track-label">How to explain it</div>
+            <p>"The Coach4U app is software I've developed separately as my own product — like any SaaS tool you might purchase. I showed it to you because I thought it could add value, not because it was being built as part of our engagement. Think of it like this: our weekly sessions are like hiring a builder for your renovation. The Coach4U app is like a furniture brand I also sell — related, but a separate purchase."</p>
+        </div>
+    </div>
+
+    <!-- ==================== BOUNDARY LINES ==================== -->
+    <div class="boundary">
+        <h2>Why The Confusion Happened</h2>
+        <div class="boundary-grid">
+            <div class="boundary-card b-green">
+                <h4>The Overlap</h4>
+                <p>Both Bucket 1 and Bucket 3 involve "business planning" and "AI tools" — the language sounds the same even though they're different things.</p>
+            </div>
+            <div class="boundary-card b-orange">
+                <h4>The Trigger</h4>
+                <p>Demoing the Coach4U app inside an IAS session blurred the line between "what we're building for you" and "what I've built separately."</p>
+            </div>
+            <div class="boundary-card b-blue">
+                <h4>The Fix</h4>
+                <p>Be explicit going forward: "This is IAS work (Bucket 1)" vs "This is something I offer as a separate product (Bucket 3)." Clear labels, clear boundaries.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== QUICK REFERENCE ==================== -->
+    <div class="summary">
+        <h2>Quick Reference</h2>
+        <table class="summary-table">
+            <thead>
+                <tr>
+                    <th>Bucket</th>
+                    <th>Cost</th>
+                    <th>In Current Scope?</th>
+                    <th>Paid By</th>
+                    <th>IP Ownership</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="row-1">
+                    <td>AI Efficiency & Integration</td>
+                    <td>$2,345/mo</td>
+                    <td><span class="tag-yes">YES</span></td>
+                    <td>Redirected coaching fees</td>
+                    <td>IAS-specific deliverables</td>
+                </tr>
+                <tr class="row-2">
+                    <td>Filing System Project</td>
+                    <td>$2,200 once</td>
+                    <td><span class="tag-no">NO</span></td>
+                    <td>Additional quote</td>
+                    <td>IAS deliverable</td>
+                </tr>
+                <tr class="row-3">
+                    <td>Coach4U Business App</td>
+                    <td>TBD</td>
+                    <td><span class="tag-no">NO</span></td>
+                    <td>Licence/subscription</td>
+                    <td>Coach4U IP</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+</body>
+</html>
