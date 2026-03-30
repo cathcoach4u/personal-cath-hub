@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workout Log - Cath Hub</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #f0f4f8; color: #1e293b; min-height: 100vh; }
+.header { background: #1e293b; color: white; padding: 16px 20px; display: flex; align-items: center; gap: 10px; }
+.header h1 { font-size: 18px; font-weight: 700; }
+.container { max-width: 550px; margin: 0 auto; padding: 16px; }
+
+.date-bar { background: white; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.date-label { font-size: 16px; font-weight: 700; }
+.date-sub { font-size: 13px; color: #64748b; margin-top: 2px; }
+.ex-count { font-size: 13px; color: #64748b; }
+
+.prog-wrap { margin-bottom: 16px; }
+.prog-top { display: flex; justify-content: space-between; font-size: 13px; color: #64748b; margin-bottom: 6px; }
+.prog-top strong { color: #1e293b; }
+.prog-bar { height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+.prog-fill { height: 100%; background: #3b82f6; border-radius: 4px; transition: width 0.4s; }
+
+.empty { background: white; border: 1px solid #e2e8f0; border-radius: 14px; padding: 48px 24px; text-align: center; color: #94a3b8; margin-bottom: 16px; }
+.empty-icon { font-size: 40px; margin-bottom: 12px; }
+
+.ex-card { background: white; border: 1px solid #e2e8f0; border-radius: 14px; margin-bottom: 14px; overflow: hidden; }
+.ex-card.all-done { border-color: #10b981; }
+.ex-top { padding: 16px 20px 12px; display: flex; align-items: flex-start; gap: 10px; }
+.ex-info { flex: 1; }
+.ex-name { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.ex-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.type-badge { font-size: 11px; padding: 2px 8px; border-radius: 99px; font-weight: 600; }
+.type-badge.cardio { background: #fff7ed; color: #ea580c; }
+.type-badge.weights { background: #eff6ff; color: #2563eb; }
+.type-badge.custom { background: #f0fdf4; color: #16a34a; }
+.ex-target { font-size: 12px; color: #94a3b8; }
+.ex-remove { color: #cbd5e1; font-size: 16px; cursor: pointer; padding: 2px 6px; border: none; background: none; border-radius: 6px; }
+.ex-remove:hover { background: #fef2f2; color: #ef4444; }
+
+.sets-wrap { padding: 0 16px 14px; }
+.sets-head { display: grid; grid-template-columns: 36px 1fr 1fr 38px; gap: 6px; padding: 0 10px 6px; font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; }
+.set-row { display: grid; grid-template-columns: 36px 1fr 1fr 38px; gap: 6px; align-items: center; padding: 5px 10px; border-radius: 8px; margin-bottom: 4px; background: #f8fafc; }
+.set-row.done { background: #f0fdf4; }
+.set-num { width: 26px; height: 26px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #64748b; }
+.set-row.done .set-num { background: #10b981; color: white; }
+.set-input { width: 100%; padding: 7px 8px; border: 1px solid #e2e8f0; border-radius: 7px; font-size: 13px; text-align: center; background: white; outline: none; font-family: inherit; }
+.set-input:focus { border-color: #3b82f6; }
+.set-row.done .set-input { background: #dcfce7; border-color: #86efac; }
+.set-tick { width: 32px; height: 32px; border: 2px solid #cbd5e1; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; background: white; -webkit-tap-highlight-color: transparent; }
+.set-tick:hover { border-color: #10b981; }
+.set-tick.done { background: #10b981; border-color: #10b981; }
+.set-tick.done::after { content: '\2713'; color: white; font-size: 14px; font-weight: 700; }
+.add-set-btn { margin-top: 6px; width: 100%; padding: 8px; border: 1.5px dashed #cbd5e1; border-radius: 8px; font-size: 12px; font-weight: 600; color: #94a3b8; cursor: pointer; background: none; font-family: inherit; }
+.add-set-btn:hover { border-color: #3b82f6; color: #3b82f6; }
+.notes-strip { padding: 0 20px 14px; font-size: 12px; color: #94a3b8; font-style: italic; border-top: 1px solid #f8fafc; padding-top: 10px; }
+
+.add-btn { width: 100%; padding: 14px; background: #1e293b; color: white; border: none; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; margin-bottom: 32px; }
+.add-btn:hover { background: #334155; }
+
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 200; display: none; }
+.overlay.open { display: block; }
+.picker { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-radius: 20px 20px 0 0; box-shadow: 0 -8px 32px rgba(0,0,0,0.15); max-height: 72vh; overflow-y: auto; z-index: 201; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.32,0.72,0,1); }
+.picker.open { transform: translateY(0); }
+.picker-drag { width: 40px; height: 4px; background: #e2e8f0; border-radius: 2px; margin: 12px auto 0; }
+.picker-top { padding: 16px 20px; position: sticky; top: 0; background: white; z-index: 1; border-bottom: 1px solid #f1f5f9; }
+.picker-top h3 { font-size: 17px; font-weight: 700; margin-bottom: 12px; }
+.picker-search { width: 100%; padding: 11px 16px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px; outline: none; background: #f8fafc; font-family: inherit; }
+.picker-search:focus { border-color: #3b82f6; background: white; }
+.picker-custom { margin-top: 8px; padding: 9px 14px; background: #f0fdf4; border: 1px dashed #86efac; border-radius: 9px; font-size: 13px; font-weight: 600; color: #16a34a; cursor: pointer; display: none; }
+.picker-custom.show { display: flex; align-items: center; gap: 6px; }
+.picker-group { padding: 10px 20px 4px; font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.07em; }
+.picker-item { padding: 12px 20px; display: flex; align-items: center; gap: 12px; cursor: pointer; border-top: 1px solid #f8fafc; }
+.picker-item:hover { background: #f8fafc; }
+.picker-item.added { opacity: 0.45; pointer-events: none; }
+.picker-item-name { font-size: 14px; font-weight: 600; flex: 1; }
+.picker-item-sub { font-size: 12px; color: #94a3b8; }
+.picker-plus { width: 28px; height: 28px; border-radius: 50%; background: #3b82f6; color: white; font-size: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.picker-item.added .picker-plus { background: #e2e8f0; color: #94a3b8; font-size: 14px; }
+.picker-empty { padding: 32px 20px; text-align: center; color: #94a3b8; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span style="font-size: 22px;">&#x1F4AA;</span>
+  <h1>Workout Log</h1>
+</div>
+
+<div class="container">
+  <div class="date-bar">
+    <div>
+      <div class="date-label" id="date-label">Today's Workout</div>
+      <div class="date-sub" id="date-sub"></div>
+    </div>
+    <div class="ex-count" id="ex-count">0 exercises</div>
+  </div>
+
+  <div class="prog-wrap">
+    <div class="prog-top">
+      <span>Sets completed</span>
+      <strong id="prog-label">0 / 0</strong>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+
+  <div id="session-list"></div>
+
+  <button class="add-btn" onclick="openPicker()">&#x2795; Add Exercise</button>
+</div>
+
+<div class="overlay" id="overlay" onclick="closePicker()"></div>
+<div class="picker" id="picker">
+  <div class="picker-drag"></div>
+  <div class="picker-top">
+    <h3>Add Exercise</h3>
+    <input class="picker-search" id="search" type="text" placeholder="Search or type a custom exercise..." oninput="filterPicker(this.value)">
+    <div class="picker-custom" id="custom-row" onclick="addCustom()"></div>
+  </div>
+  <div id="picker-body"></div>
+</div>
+
+<script>
+(function(){
+  function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+  var WL = {
+    library: {
+      cardio: [
+        {name:'SkiErg',       sets:3, target:'250', unit:'m',        weight:null,  notes:'Continuous pull \u00b7 full range'},
+        {name:'Air Bike',     sets:3, target:'60',  unit:'sec',      weight:null,  notes:'Push & pull \u00b7 max effort'},
+        {name:'Rower',        sets:3, target:'200', unit:'m',        weight:null,  notes:'Strong leg drive \u00b7 smooth stroke'},
+        {name:'Ball Slams',   sets:3, target:'12',  unit:'reps',     weight:'12',  notes:'12kg ball \u00b7 slam with force'},
+        {name:'Battle Ropes', sets:1, target:'50',  unit:'reps',     weight:null,  notes:'Both ropes \u00b7 full body up & down'},
+        {name:'Lunges',       sets:1, target:'8\u20132', unit:'each leg', weight:'7', notes:'Dumbbells 6\u20137kg \u00b7 controlled step'}
+      ],
+      weights: [
+        {name:'Squat and Row',       sets:3, target:'8',  unit:'reps', weight:null,  notes:'Lower into squat row as you rise. Squeeze shoulder blades together at top.'},
+        {name:'Bench Push-Ups',      sets:3, target:'10', unit:'reps', weight:null,  notes:'Hands on bench feet on floor. Keep hips down body in straight line.'},
+        {name:'Hip Thruster',        sets:3, target:'10', unit:'reps', weight:'20',  notes:'Glute drive machine \u00b7 10kg each end. Drive through heels.'},
+        {name:'Leg Press',           sets:3, target:'12', unit:'reps', weight:'100', notes:'50kg each end. Back flat against pad feet shoulder-width. Lower until knees at 90\u00b0.'},
+        {name:'Smith Machine Bench', sets:3, target:'8',  unit:'reps', weight:'26',  notes:'7kg each end + 12kg bar. Grip slightly wider than shoulders. Lower to mid-chest.'},
+        {name:'Lunge',               sets:3, target:'20', unit:'reps', weight:'16',  notes:'8kg dumbbell each hand. Step forward into lunge lower back knee to floor. Alternate legs.'},
+        {name:'Pull Down',           sets:3, target:'8',  unit:'reps', weight:'30',  notes:'Hammer strength \u00b7 15kg each side. Pull down smoothly to upper chest.'},
+        {name:'Side Planks',         sets:3, target:'45', unit:'sec',  weight:null,  notes:'45 seconds each side. Elbow under shoulder body in straight line.'}
+      ]
+    },
+    session: [],
+    getExByName: function(n) { return WL.library.cardio.concat(WL.library.weights).find(function(e){ return e.name === n; }) || null; },
+    getType: function(n) { if (WL.library.cardio.find(function(e){ return e.name === n; })) return 'cardio'; if (WL.library.weights.find(function(e){ return e.name === n; })) return 'weights'; return 'custom'; },
+    added: function() { return WL.session.map(function(s){ return s.name; }); }
+  };
+
+  // Set date
+  var now = new Date();
+  var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('date-sub').textContent = days[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
+
+  function makeSet(w, r) { return {weight: w || '', reps: r || '', done: false}; }
+
+  window.addExercise = function(name, type) {
+    if (WL.added().indexOf(name) !== -1) { closePicker(); return; }
+    var ex = WL.getExByName(name);
+    var sets = [];
+    for (var i = 0; i < (ex ? ex.sets : 3); i++) sets.push(makeSet(ex ? (ex.weight||'') : '', ex ? ex.target : ''));
+    WL.session.push({ name: name, type: type || WL.getType(name), targetLabel: ex ? (ex.sets+' \u00d7 '+ex.target+' '+ex.unit+(ex.weight?' \u00b7 '+ex.weight+'kg':'')) : '', notes: ex ? ex.notes : '', sets: sets });
+    render(); closePicker();
+  };
+
+  window.removeEx = function(i) { WL.session.splice(i, 1); render(); };
+  window.addSet = function(i) { var last = WL.session[i].sets[WL.session[i].sets.length-1]||{}; WL.session[i].sets.push(makeSet(last.weight, last.reps)); render(); };
+  window.tickSet = function(ei, si) { WL.session[ei].sets[si].done = !WL.session[ei].sets[si].done; render(); };
+  window.setField = function(ei, si, f, v) { WL.session[ei].sets[si][f] = v; updateProgress(); };
+
+  function render() {
+    var c = document.getElementById('session-list');
+    if (!WL.session.length) {
+      c.innerHTML = '<div class="empty"><div class="empty-icon">&#x1F3CB;</div><div>Tap <strong>Add Exercise</strong> to start</div></div>';
+      document.getElementById('ex-count').textContent = '0 exercises';
+      updateProgress(); return;
+    }
+    var h = '';
+    WL.session.forEach(function(ex, idx) {
+      var allDone = ex.sets.length > 0 && ex.sets.every(function(s){ return s.done; });
+      h += '<div class="ex-card'+(allDone?' all-done':'')+'">';
+      h += '<div class="ex-top"><div class="ex-info"><div class="ex-name">'+esc(ex.name)+'</div><div class="ex-meta">';
+      h += '<span class="type-badge '+ex.type+'">'+(ex.type==='cardio'?'\u{1F525} Cardio':ex.type==='weights'?'\u{1F3CB} Weights':'\u270F Custom')+'</span>';
+      if (ex.targetLabel) h += '<span class="ex-target">Target: '+esc(ex.targetLabel)+'</span>';
+      h += '</div></div><button class="ex-remove" onclick="removeEx('+idx+')">\u2715</button></div>';
+      h += '<div class="sets-wrap"><div class="sets-head"><span>Set</span><span>Weight (kg)</span><span>Reps / Amt</span><span></span></div>';
+      ex.sets.forEach(function(s, si) {
+        h += '<div class="set-row'+(s.done?' done':'')+'">';
+        h += '<div class="set-num">'+(si+1)+'</div>';
+        h += '<input class="set-input" type="text" inputmode="decimal" value="'+esc(s.weight)+'" placeholder="\u2014" onchange="setField('+idx+','+si+',\'weight\',this.value)">';
+        h += '<input class="set-input" type="text" inputmode="decimal" value="'+esc(s.reps)+'" placeholder="\u2014" onchange="setField('+idx+','+si+',\'reps\',this.value)">';
+        h += '<div class="set-tick'+(s.done?' done':'')+'" onclick="tickSet('+idx+','+si+')"></div></div>';
+      });
+      h += '<button class="add-set-btn" onclick="addSet('+idx+')">+ Add Set</button></div>';
+      if (ex.notes) h += '<div class="notes-strip">\u{1F4AC} '+esc(ex.notes)+'</div>';
+      h += '</div>';
+    });
+    c.innerHTML = h;
+    document.getElementById('ex-count').textContent = WL.session.length+' exercise'+(WL.session.length!==1?'s':'');
+    updateProgress();
+  }
+
+  function updateProgress() {
+    var total = 0, done = 0;
+    WL.session.forEach(function(ex){ ex.sets.forEach(function(s){ total++; if(s.done) done++; }); });
+    var pct = total ? Math.round((done/total)*100) : 0;
+    document.getElementById('prog-fill').style.width = pct+'%';
+    document.getElementById('prog-label').textContent = done+' / '+total;
+  }
+
+  window.openPicker = function() {
+    document.getElementById('overlay').classList.add('open');
+    document.getElementById('picker').classList.add('open');
+    var s = document.getElementById('search'); s.value = ''; filterPicker('');
+    setTimeout(function(){ s.focus(); }, 300);
+  };
+
+  window.closePicker = function() {
+    document.getElementById('overlay').classList.remove('open');
+    document.getElementById('picker').classList.remove('open');
+  };
+
+  window.filterPicker = function(q) {
+    q = (q||'').trim(); var added = WL.added();
+    var cr = document.getElementById('custom-row');
+    if (q.length > 0) { cr.classList.add('show'); cr.innerHTML = '\u270F Add \u201c'+esc(q)+'\u201d as custom exercise'; } else { cr.classList.remove('show'); }
+    var ql = q.toLowerCase(), h = '';
+    var fc = WL.library.cardio.filter(function(e){ return !ql||e.name.toLowerCase().indexOf(ql)!==-1; });
+    var fw = WL.library.weights.filter(function(e){ return !ql||e.name.toLowerCase().indexOf(ql)!==-1; });
+    if (fc.length) {
+      h += '<div class="picker-group">\u{1F525} Cardio</div>';
+      fc.forEach(function(ex) { var a = added.indexOf(ex.name)!==-1; h += '<div class="picker-item'+(a?' added':'')+'" onclick="addExercise(\''+esc(ex.name)+'\',\'cardio\')"><div class="picker-item-name">'+esc(ex.name)+'</div><div class="picker-item-sub">'+ex.sets+' sets \u00b7 '+ex.target+' '+ex.unit+(ex.weight?' \u00b7 '+ex.weight+'kg':'')+'</div><div class="picker-plus">'+(a?'\u2713':'+')+'</div></div>'; });
+    }
+    if (fw.length) {
+      h += '<div class="picker-group">\u{1F3CB} Weights</div>';
+      fw.forEach(function(ex) { var a = added.indexOf(ex.name)!==-1; h += '<div class="picker-item'+(a?' added':'')+'" onclick="addExercise(\''+esc(ex.name)+'\',\'weights\')"><div class="picker-item-name">'+esc(ex.name)+'</div><div class="picker-item-sub">'+ex.sets+' sets \u00b7 '+ex.target+' '+ex.unit+(ex.weight?' \u00b7 '+ex.weight+'kg':'')+'</div><div class="picker-plus">'+(a?'\u2713':'+')+'</div></div>'; });
+    }
+    if (!fc.length && !fw.length) h = '<div class="picker-empty">No matching exercises'+(q?' \u2014 use the option above to add as custom.':'.')+'</div>';
+    document.getElementById('picker-body').innerHTML = h;
+  };
+
+  window.addCustom = function() {
+    var q = document.getElementById('search').value.trim();
+    if (!q) return;
+    WL.session.push({ name: q, type: 'custom', targetLabel: '', notes: '', sets: [makeSet('',''), makeSet('',''), makeSet('','')] });
+    render(); closePicker();
+  };
+
+  render();
+})();
+</script>
+</body>
+</html>

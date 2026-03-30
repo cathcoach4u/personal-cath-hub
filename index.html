@@ -908,14 +908,14 @@
       <div class="am-subscreen" id="med-tracking">
         <button class="am-back" onclick="medGo('home')">&#x2190; Back</button>
 
-        <!-- Missed yesterday alert (dismissable) -->
+        <!-- Missed yesterday alert -->
         <div id="hab-missed-alert" style="display:none !important;background:#fef2f2 !important;border:1px solid #fecaca !important;border-radius:10px !important;padding:12px 16px !important;margin-bottom:12px !important;font-size:13px !important;color:#991b1b !important;">
           <div style="display:flex !important;align-items:center !important;gap:8px !important;margin-bottom:6px !important;">
             <div style="flex:1 !important;" id="hab-missed-text"></div>
             <button onclick="habDismissMissed()" style="background:none !important;border:none !important;color:#991b1b !important;font-size:18px !important;cursor:pointer !important;padding:0 4px !important;line-height:1 !important;">&times;</button>
           </div>
           <div style="display:flex !important;gap:8px !important;">
-            <button onclick="habBackfillYesterday()" style="flex:1 !important;padding:8px 12px !important;font-size:12px !important;background:#10b981 !important;color:white !important;border:none !important;border-radius:6px !important;cursor:pointer !important;">I took them — mark as done</button>
+            <button onclick="habBackfillYesterday()" style="flex:1 !important;padding:8px 12px !important;font-size:12px !important;background:#10b981 !important;color:white !important;border:none !important;border-radius:6px !important;cursor:pointer !important;">I took them &mdash; mark as done</button>
             <button onclick="habDismissMissed()" style="padding:8px 12px !important;font-size:12px !important;background:#94a3b8 !important;color:white !important;border:none !important;border-radius:6px !important;cursor:pointer !important;">Dismiss</button>
           </div>
         </div>
@@ -923,64 +923,60 @@
         <!-- Morning banner -->
         <div id="hab-morning-banner"></div>
 
-        <!-- Daily tally calendar -->
-        <div class="hab-section" style="margin-bottom:16px !important;">
-          <div class="med-section-header" style="padding:12px 16px !important;">
-            <h3 style="font-size:14px !important;">&#x1F4C5; Daily Tally</h3>
-            <span style="font-size:11px !important;color:#94a3b8 !important;">Last 14 days</span>
-          </div>
-          <div id="hab-tally" style="padding:12px 16px !important;display:flex !important;gap:4px !important;flex-wrap:wrap !important;justify-content:center !important;"></div>
-        </div>
-
-        <!-- Quick action: Take all morning meds + undo -->
+        <!-- Quick actions -->
         <div style="display:flex !important;gap:8px !important;margin-bottom:16px !important;flex-wrap:wrap !important;">
-          <button class="am-btn" id="hab-take-all-btn" onclick="habTakeAllDaily()" style="flex:1 !important;justify-content:center !important;background:#10b981 !important;color:white !important;border-color:#10b981 !important;padding:12px 16px !important;font-size:14px !important;">&#x2600;&#xFE0F; Take All Morning Meds</button>
+          <button class="am-btn" id="hab-take-all-btn" onclick="habTakeAllDaily()" style="flex:1 !important;justify-content:center !important;background:#10b981 !important;color:white !important;border-color:#10b981 !important;padding:12px 16px !important;font-size:14px !important;">&#x2600;&#xFE0F; Take All Daily Meds</button>
           <button class="am-btn" id="hab-undo-btn" onclick="habUndoTakeAll()" style="display:none !important;background:#ef4444 !important;color:white !important;border-color:#ef4444 !important;padding:12px !important;font-size:12px !important;">Undo</button>
           <button class="am-btn" id="hab-notify-btn" onclick="habRequestReminder()" style="background:#f59e0b !important;color:white !important;border-color:#f59e0b !important;padding:12px !important;">&#x1F514;</button>
         </div>
 
-        <div class="hab-summary">
-          <div class="hab-stat"><div class="hab-stat-num" id="hab-daily-done">0</div><div class="hab-stat-label">Daily taken today</div></div>
-          <div class="hab-stat"><div class="hab-stat-num" id="hab-weekly-done">0</div><div class="hab-stat-label">Weekly this week</div></div>
-          <div class="hab-stat"><div class="hab-stat-num" id="hab-streak">&#x1F525; 0</div><div class="hab-stat-label">Best streak (days)</div></div>
+        <!-- 14-day tally -->
+        <div class="hab-section" style="margin-bottom:16px !important;">
+          <div class="med-section-header" style="padding:12px 16px !important;">
+            <h3 style="font-size:14px !important;">&#x1F4C5; 14-Day Tally</h3>
+          </div>
+          <div id="hab-tally" style="padding:12px 16px !important;display:flex !important;gap:4px !important;flex-wrap:wrap !important;justify-content:center !important;"></div>
         </div>
 
+        <!-- Stats -->
+        <div class="hab-summary">
+          <div class="hab-stat"><div class="hab-stat-num" id="hab-daily-done">0</div><div class="hab-stat-label">Daily today</div></div>
+          <div class="hab-stat"><div class="hab-stat-num" id="hab-weekly-done">0</div><div class="hab-stat-label">Weekly this week</div></div>
+          <div class="hab-stat"><div class="hab-stat-num" id="hab-streak">&#x1F525; 0</div><div class="hab-stat-label">Best streak</div></div>
+        </div>
+
+        <!-- DAILY Medications -->
         <div class="hab-section">
           <div class="hab-section-header">
             <h3>&#x2600; Daily Medications</h3>
-            <button class="hab-add-btn" onclick="habToggleForm('daily')">+ Add</button>
           </div>
           <div id="hab-daily-list"></div>
-          <div class="hab-add-form" id="hab-daily-form">
-            <select class="hab-form-select" id="hab-daily-select">
-              <option value="">-- Select medication --</option>
-              <option value="__custom">Custom habit...</option>
-            </select>
-            <input class="hab-form-input" id="hab-daily-name" type="text" placeholder="Custom habit name..." style="display:none !important;" onkeydown="if(event.key==='Enter')habAddMed('daily')">
-            <button class="hab-form-save" onclick="habAddMed('daily')">Add</button>
-          </div>
         </div>
+
+        <!-- WEEKLY Medications -->
         <div class="hab-section">
           <div class="hab-section-header">
             <h3>&#x1F4C5; Weekly Medications</h3>
-            <button class="hab-add-btn" onclick="habToggleForm('weekly')">+ Add</button>
           </div>
           <div id="hab-weekly-list"></div>
-          <div class="hab-add-form" id="hab-weekly-form">
-            <select class="hab-form-select" id="hab-weekly-select">
-              <option value="">-- Select medication --</option>
-              <option value="__custom">Custom habit...</option>
-            </select>
-            <input class="hab-form-input" id="hab-weekly-name" type="text" placeholder="Custom habit name..." style="display:none !important;" onkeydown="if(event.key==='Enter')habAddMed('weekly')">
-            <button class="hab-form-save" onclick="habAddMed('weekly')">Add</button>
-          </div>
         </div>
+
+        <!-- AS NEEDED Medications -->
         <div class="hab-section">
           <div class="hab-section-header">
-            <h3>&#x1F4DC; Medication History (Last 30 Days)</h3>
+            <h3>&#x1F48A; As Needed</h3>
+          </div>
+          <p style="padding:0 16px !important;font-size:12px !important;color:#94a3b8 !important;margin-bottom:8px !important;">Tap to record when taken. Each dose is logged with a timestamp.</p>
+          <div id="hab-asneeded-list"></div>
+        </div>
+
+        <!-- Medication Log (History) -->
+        <div class="hab-section">
+          <div class="hab-section-header">
+            <h3>&#x1F4DC; Medication Log (Last 30 Days)</h3>
           </div>
           <div style="padding:12px !important;" id="hab-history-container">
-            <div class="hab-empty">Loading history...</div>
+            <div class="hab-empty">Loading...</div>
           </div>
         </div>
       </div>
@@ -2585,8 +2581,21 @@
       habRender();
     };
 
+    // As-needed medications
+    var AS_NEEDED_MEDS = [
+      { name: 'Nurofen', dose: '2 tablets' },
+      { name: 'Panadol', dose: '2 tablets' },
+      { name: 'Nexium Antacid', dose: '' }
+    ];
+
+    var MED_TIMES = {
+      'vyvanse': 'Morning',
+      'valtrex': 'Morning',
+      'levothyroxine': 'Morning',
+      'xobet': 'Evening (apply)'
+    };
+
     async function habAutoPopulate() {
-      // Auto-populate habit_meds from medications table if not already present
       try {
         var { data: allMeds } = await sb.from('medications').select('name, schedule');
         var { data: existingHabs } = await sb.from('habit_meds').select('id, name, freq');
@@ -2600,22 +2609,33 @@
             await sb.from('habit_meds').insert({ id: Date.now() + i, name: m.name, freq: freq });
           }
         }
-        // Fix any meds that should be daily but are set to weekly (e.g. Xobet)
+        // Ensure as-needed meds exist
+        var { data: refreshed } = await sb.from('habit_meds').select('name');
+        var refreshedNames = (refreshed || []).map(function(m){ return m.name.toLowerCase(); });
+        for (var j = 0; j < AS_NEEDED_MEDS.length; j++) {
+          if (refreshedNames.indexOf(AS_NEEDED_MEDS[j].name.toLowerCase()) === -1) {
+            await sb.from('habit_meds').insert({ id: Date.now() + 100 + j, name: AS_NEEDED_MEDS[j].name, freq: 'asneeded' });
+          }
+        }
+        // Fix frequencies
         (existingHabs || []).forEach(function(h) {
           var shouldBeDaily = dailyMedNames.some(function(d) { return h.name.toLowerCase().indexOf(d.toLowerCase()) !== -1; });
-          if (shouldBeDaily && h.freq === 'weekly') {
+          if (shouldBeDaily && h.freq !== 'daily') {
             sb.from('habit_meds').update({ freq: 'daily' }).eq('id', h.id);
+          }
+          var shouldBeAsNeeded = AS_NEEDED_MEDS.some(function(a) { return h.name.toLowerCase() === a.name.toLowerCase(); });
+          if (shouldBeAsNeeded && h.freq !== 'asneeded') {
+            sb.from('habit_meds').update({ freq: 'asneeded' }).eq('id', h.id);
           }
         });
       } catch(e) {}
     }
 
-    // #3: AM/PM time labels for daily meds
-    var MED_TIMES = {
-      'vyvanse': 'Morning',
-      'valtrex': 'Morning',
-      'levothyroxine': 'Morning',
-      'xobet': 'Evening (apply)'
+    // Record an as-needed dose (always inserts — multiple doses per day allowed)
+    window.habRecordAsNeeded = async function(id) {
+      var today = todayKey();
+      await sb.from('habit_logs').insert({ med_id: id, date: today });
+      habRender();
     };
 
     async function habRender() {
@@ -2627,6 +2647,7 @@
       var today = todayKey(), wk = weekKeys(), tIdx = todayIdx();
       var daily = meds.filter(function(m){ return m.freq==='daily'; });
       var weekly = meds.filter(function(m){ return m.freq==='weekly'; });
+      var asneeded = meds.filter(function(m){ return m.freq==='asneeded'; });
 
       // #1: Morning reminder banner (inside meds section)
       var bannerEl = document.getElementById('hab-morning-banner');
@@ -2729,6 +2750,36 @@
           h += '</div>';
         });
         wl.innerHTML = h;
+      }
+
+      // As-Needed medications
+      var anl = document.getElementById('hab-asneeded-list');
+      if (anl) {
+        if (!asneeded.length) {
+          anl.innerHTML = '<div class="hab-empty">No as-needed medications configured.</div>';
+        } else {
+          var h = '';
+          for (var a = 0; a < asneeded.length; a++) {
+            var med = asneeded[a];
+            var asInfo = AS_NEEDED_MEDS.find(function(x){ return x.name.toLowerCase() === med.name.toLowerCase(); });
+            var doseLabel = asInfo && asInfo.dose ? ' (' + asInfo.dose + ')' : '';
+            // Count how many times taken today
+            var todayCount = 0;
+            try {
+              var { data: todayLogs } = await sb.from('habit_logs').select('created_at').eq('med_id', med.id).eq('date', today);
+              todayCount = (todayLogs || []).length;
+            } catch(e) {}
+            h += '<div class="hab-med-row">';
+            h += '<button class="am-btn" onclick="habRecordAsNeeded(' + med.id + ')" style="background:#3b82f6 !important;color:white !important;border-color:#3b82f6 !important;padding:6px 12px !important;font-size:12px !important;">Record dose</button>';
+            h += '<div style="flex:1 !important;"><div class="hab-med-name" style="margin-bottom:0 !important;">' + esc(med.name) + esc(doseLabel) + '</div>';
+            if (todayCount > 0) {
+              h += '<div style="font-size:11px !important;color:#10b981 !important;">' + todayCount + ' dose' + (todayCount > 1 ? 's' : '') + ' today</div>';
+            }
+            h += '</div>';
+            h += '</div>';
+          }
+          anl.innerHTML = h;
+        }
       }
 
       // Stats
