@@ -2571,7 +2571,7 @@
       var doneIds = (existing || []).map(function(l){ return l.med_id; });
       for (var i = 0; i < dailyMeds.length; i++) {
         if (doneIds.indexOf(dailyMeds[i].id) === -1) {
-          await sb.from('habit_logs').insert({ med_id: dailyMeds[i].id, date: yk });
+          await sb.from('habit_logs').insert({ med_id: dailyMeds[i].id, date: yk, created_at: new Date(yk + 'T08:00:00').toISOString() });
         }
       }
       document.getElementById('hab-missed-alert').style.display = 'none';
@@ -2659,7 +2659,7 @@
       var toInsert = meds.filter(function(m){ return doneIds.indexOf(m.id) === -1; });
       habUndoIds = [];
       for (var i = 0; i < toInsert.length; i++) {
-        await sb.from('habit_logs').insert({ med_id: toInsert[i].id, date: today });
+        await sb.from('habit_logs').insert({ med_id: toInsert[i].id, date: today, created_at: new Date().toISOString() });
         habUndoIds.push(toInsert[i].id);
       }
       habRender();
@@ -2715,7 +2715,7 @@
       if (data && data.length) {
         await sb.from('habit_logs').delete().eq('med_id', id).eq('date', today);
       } else {
-        await sb.from('habit_logs').insert({ med_id: id, date: today });
+        await sb.from('habit_logs').insert({ med_id: id, date: today, created_at: new Date().toISOString() });
       }
       habRender();
     };
@@ -2725,7 +2725,7 @@
       if (data && data.length) {
         await sb.from('habit_logs').delete().eq('med_id', id).eq('date', dk);
       } else {
-        await sb.from('habit_logs').insert({ med_id: id, date: dk });
+        await sb.from('habit_logs').insert({ med_id: id, date: dk, created_at: new Date().toISOString() });
       }
       habRender();
     };
@@ -2784,7 +2784,32 @@
     // Record an as-needed dose (always inserts — multiple doses per day allowed)
     window.habRecordAsNeeded = async function(id) {
       var today = todayKey();
-      await sb.from('habit_logs').insert({ med_id: id, date: today });
+      await sb.from('habit_logs').insert({ med_id: id, date: today, created_at: new Date().toISOString() });
+      habRender();
+    };
+
+    window.habChangeTime = async function(logId) {
+      var timeStr = prompt('Enter time (e.g. 8:30am, 14:00, 2:15pm):');
+      if (!timeStr) return;
+      // Parse common time formats
+      timeStr = timeStr.trim().toLowerCase();
+      var hours, mins;
+      var match = timeStr.match(/^(\d{1,2}):(\d{2})\s*(am|pm)?$/);
+      if (match) {
+        hours = parseInt(match[1]);
+        mins = parseInt(match[2]);
+        if (match[3] === 'pm' && hours < 12) hours += 12;
+        if (match[3] === 'am' && hours === 12) hours = 0;
+      } else {
+        alert('Could not understand that time. Try format like 8:30am or 14:00');
+        return;
+      }
+      // Get the log entry to find its date
+      var { data: log } = await sb.from('habit_logs').select('date').eq('id', logId).single();
+      if (!log) return;
+      var dt = new Date(log.date + 'T00:00:00');
+      dt.setHours(hours, mins, 0, 0);
+      await sb.from('habit_logs').update({ created_at: dt.toISOString() }).eq('id', logId);
       habRender();
     };
 
@@ -2868,10 +2893,26 @@
           var done = !!(logs[med.id] && logs[med.id][today]);
           var s = await streakFor(med.id, logs);
           var timeLabel = MED_TIMES[med.name.toLowerCase()] || '';
+          // Get time taken today
+          var takenTime = '';
+          var takenLogId = '';
+          if (done) {
+            try {
+              var { data: tLog } = await sb.from('habit_logs').select('id, created_at').eq('med_id', med.id).eq('date', today).limit(1);
+              if (tLog && tLog[0] && tLog[0].created_at) {
+                takenTime = new Date(tLog[0].created_at).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' });
+                takenLogId = tLog[0].id;
+              }
+            } catch(e) {}
+          }
           h += '<div class="hab-med-row">';
           h += '<div class="hab-check'+(done?' done':'')+'" onclick="habToggleDaily('+med.id+')"></div>';
           h += '<div style="flex:1 !important;"><div class="hab-med-name" style="margin-bottom:0 !important;">'+esc(med.name)+'</div>';
-          if (timeLabel) h += '<div style="font-size:10px !important;color:#94a3b8 !important;">'+timeLabel+'</div>';
+          if (done && takenTime) {
+            h += '<div style="font-size:10px !important;color:#10b981 !important;cursor:pointer !important;" onclick="habChangeTime(\''+takenLogId+'\')" title="Tap to change time">Taken at '+esc(takenTime)+' &#x270F;</div>';
+          } else if (timeLabel) {
+            h += '<div style="font-size:10px !important;color:#94a3b8 !important;">'+timeLabel+'</div>';
+          }
           h += '</div>';
           if (s > 1) h += '<div class="hab-streak">&#x1F525; '+s+'d</div>';
           h += '<div class="hab-del" onclick="habDeleteMed('+med.id+')">&#x1F5D1;</div>';
@@ -2917,16 +2958,20 @@
             var asInfo = AS_NEEDED_MEDS.find(function(x){ return x.name.toLowerCase() === med.name.toLowerCase(); });
             var doseLabel = asInfo && asInfo.dose ? ' (' + asInfo.dose + ')' : '';
             // Count how many times taken today
-            var todayCount = 0;
+            var todayLogs = [];
             try {
-              var { data: todayLogs } = await sb.from('habit_logs').select('*').eq('med_id', med.id).eq('date', today);
-              todayCount = (todayLogs || []).length;
+              var { data: tl } = await sb.from('habit_logs').select('*').eq('med_id', med.id).eq('date', today);
+              todayLogs = tl || [];
             } catch(e) {}
-            h += '<div class="hab-med-row">';
+            h += '<div class="hab-med-row" style="flex-wrap:wrap !important;">';
             h += '<button class="am-btn" onclick="habRecordAsNeeded(' + med.id + ')" style="background:#3b82f6 !important;color:white !important;border-color:#3b82f6 !important;padding:6px 12px !important;font-size:12px !important;">Record dose</button>';
             h += '<div style="flex:1 !important;"><div class="hab-med-name" style="margin-bottom:0 !important;">' + esc(med.name) + esc(doseLabel) + '</div>';
-            if (todayCount > 0) {
-              h += '<div style="font-size:11px !important;color:#10b981 !important;">' + todayCount + ' dose' + (todayCount > 1 ? 's' : '') + ' today</div>';
+            if (todayLogs.length > 0) {
+              var doseTexts = todayLogs.map(function(tl) {
+                var t = tl.created_at ? new Date(tl.created_at).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' }) : 'no time';
+                return '<span onclick="habChangeTime(\'' + tl.id + '\')" style="cursor:pointer !important;" title="Tap to change time">' + t + ' &#x270F;</span>';
+              });
+              h += '<div style="font-size:11px !important;color:#10b981 !important;">' + todayLogs.length + ' dose' + (todayLogs.length > 1 ? 's' : '') + ' today: ' + doseTexts.join(', ') + '</div>';
             }
             h += '</div>';
             h += '</div>';
@@ -3034,7 +3079,11 @@
             h += '<div style="display:flex !important;align-items:center !important;gap:8px !important;padding:4px 0 !important;">';
             h += '<span style="color:#10b981 !important;font-size:14px !important;">&#x2713;</span>';
             h += '<span style="font-size:13px !important;flex:1 !important;">' + esc(medName) + '</span>';
-            if (time) h += '<span style="font-size:11px !important;color:#94a3b8 !important;">' + esc(time) + '</span>';
+            if (time) {
+              h += '<span style="font-size:11px !important;color:#3b82f6 !important;cursor:pointer !important;" onclick="habChangeTime(\'' + l.id + '\')" title="Tap to change time">' + esc(time) + ' &#x270F;</span>';
+            } else {
+              h += '<span style="font-size:11px !important;color:#94a3b8 !important;cursor:pointer !important;" onclick="habChangeTime(\'' + l.id + '\')" title="Tap to set time">set time &#x270F;</span>';
+            }
             h += '</div>';
           });
           h += '</div>';
