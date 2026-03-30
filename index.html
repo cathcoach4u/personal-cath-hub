@@ -3336,10 +3336,30 @@
               if (due < today) dateStr = ' <span style="color:#ef4444 !important;">&#x1F4C5; ' + dp[2] + '/' + dp[1] + ' (overdue)</span>';
               else if (due.getTime() === today.getTime()) dateStr = ' <span style="color:#f59e0b !important;">&#x1F4C5; Today</span>';
             }
-            ph += '<div style="display:flex !important;align-items:center !important;gap:10px !important;padding:12px 14px !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;">';
+            ph += '<div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:12px 14px !important;margin-bottom:2px !important;">';
+            ph += '<div style="display:flex !important;align-items:center !important;gap:10px !important;">';
             ph += '<div onclick="tdToggle('+t.id+')" style="width:22px !important;height:22px !important;border-radius:6px !important;border:2px solid #cbd5e1 !important;background:transparent !important;cursor:pointer !important;display:flex !important;align-items:center !important;justify-content:center !important;flex-shrink:0 !important;"></div>';
             ph += '<div style="flex:1 !important;"><div style="font-size:14px !important;color:#1e293b !important;">'+tdEsc(t.task)+'</div><div style="font-size:11px !important;color:#94a3b8 !important;margin-top:2px !important;">'+catIcon+' '+tdEsc(t.category || 'General')+dateStr+'</div></div>';
+            ph += '<div onclick="tdEdit('+t.id+')" style="color:#94a3b8 !important;cursor:pointer !important;font-size:14px !important;padding:0 4px !important;" title="Edit">&#x270F;</div>';
             ph += '<div onclick="tdDelete('+t.id+')" style="color:#94a3b8 !important;cursor:pointer !important;font-size:16px !important;padding:0 4px !important;" title="Remove">&#x1F5D1;</div>';
+            ph += '</div>';
+            ph += '<div id="td-edit-'+t.id+'" style="display:none !important;margin-top:10px !important;padding-top:10px !important;border-top:1px solid #e2e8f0 !important;">';
+            ph += '<input type="text" id="td-edit-task-'+t.id+'" value="'+tdEsc(t.task).replace(/"/g,'&quot;')+'" style="width:100% !important;padding:8px 10px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:14px !important;margin-bottom:8px !important;box-sizing:border-box !important;">';
+            ph += '<div style="display:flex !important;gap:8px !important;margin-bottom:8px !important;">';
+            ph += '<select id="td-edit-cat-'+t.id+'" style="flex:1 !important;padding:8px 10px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:13px !important;background:white !important;appearance:auto !important;-webkit-appearance:listbox !important;">';
+            var tdCatList = ['General','Health','Home','Work','Shopping','Finance','Family','Admin','Personal'];
+            for (var ci = 0; ci < tdCatList.length; ci++) {
+              var sel = (t.category || 'General') === tdCatList[ci] ? ' selected' : '';
+              ph += '<option value="'+tdCatList[ci]+'"'+sel+'>'+tdCatList[ci]+'</option>';
+            }
+            ph += '</select>';
+            ph += '<input type="date" id="td-edit-date-'+t.id+'" value="'+(t.due_date || '')+'" style="flex:1 !important;padding:8px 10px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:13px !important;background:white !important;">';
+            ph += '</div>';
+            ph += '<div style="display:flex !important;gap:8px !important;">';
+            ph += '<button onclick="tdSaveEdit('+t.id+')" style="flex:1 !important;padding:8px !important;background:#3b82f6 !important;color:white !important;border:none !important;border-radius:8px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;">Save</button>';
+            ph += '<button onclick="tdCancelEdit('+t.id+')" style="flex:1 !important;padding:8px !important;background:#f1f5f9 !important;color:#64748b !important;border:none !important;border-radius:8px !important;font-size:13px !important;cursor:pointer !important;">Cancel</button>';
+            ph += '</div>';
+            ph += '</div>';
             ph += '</div>';
           });
           pendingList.innerHTML = ph;
@@ -3388,6 +3408,26 @@
       inp.value = '';
       catSelect.value = 'General';
       dateInput.value = '';
+      tdLoad();
+    };
+
+    window.tdEdit = function(id) {
+      var el = document.getElementById('td-edit-' + id);
+      if (!el) return;
+      el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    };
+
+    window.tdCancelEdit = function(id) {
+      var el = document.getElementById('td-edit-' + id);
+      if (el) el.style.display = 'none';
+    };
+
+    window.tdSaveEdit = async function(id) {
+      var task = document.getElementById('td-edit-task-' + id).value.trim();
+      var category = document.getElementById('td-edit-cat-' + id).value;
+      var dueDate = document.getElementById('td-edit-date-' + id).value || null;
+      if (!task) return;
+      await sb.from('personal_todos').update({ task: task, category: category, due_date: dueDate }).eq('id', id);
       tdLoad();
     };
 
