@@ -479,15 +479,18 @@
     <div class="screen active" id="ch-home">
       <h2 style="font-size:20px !important;margin-bottom:16px !important;">Dashboard</h2>
 
-      <!-- Quick navigation buttons -->
-      <div style="display:flex !important;flex-direction:column !important;gap:8px !important;margin-bottom:16px !important;">
-        <div style="display:flex !important;gap:8px !important;">
-          <button class="am-btn" onclick="dashQuickNav({value:'shopping'})" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F6D2; Shopping List</button>
-          <button class="am-btn" onclick="dashQuickNav({value:'receipt'})" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F9FE; Upload Receipt</button>
+      <div style="display:flex !important;gap:8px !important;margin-bottom:16px !important;">
+        <button class="am-btn" onclick="dashQuickNav({value:'receipt'})" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F9FE; Upload Receipt</button>
+        <button class="am-btn" onclick="dashQuickNav({value:'filing'})" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F4C1; Filing System</button>
+      </div>
+
+      <div class="dash-section">
+        <div style="display:flex !important;justify-content:space-between !important;align-items:center !important;margin-bottom:12px !important;">
+          <h3 style="margin-bottom:0 !important;">&#x2705; My To-Do</h3>
+          <span style="font-size:12px !important;color:#3b82f6 !important;cursor:pointer !important;" onclick="window.open('todo.html','_blank')">Open list &rarr;</span>
         </div>
-        <div style="display:flex !important;gap:8px !important;">
-          <button class="am-btn" onclick="dashQuickNav({value:'mentalhealth'})" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F9E0; Mental Health</button>
-          <button class="am-btn" onclick="dashQuickNav({value:'filing'})" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F4C1; Filing System</button>
+        <div id="dash-todo-summary">
+          <div style="font-size:13px !important;color:#94a3b8 !important;">Loading...</div>
         </div>
       </div>
 
@@ -516,21 +519,19 @@
           <h3 style="margin-bottom:0 !important;">&#x1F48A; Medication Today</h3>
           <span style="font-size:12px !important;color:#3b82f6 !important;cursor:pointer !important;" onclick="chNav('medical');setTimeout(function(){medGo('tracking')},100)">View all &rarr;</span>
         </div>
-        <div id="dash-hab-summary" style="display:flex !important;gap:10px !important;flex-wrap:wrap !important;">
-          <div style="flex:1 !important;min-width:80px !important;text-align:center !important;background:#f0fdf4 !important;border:1px solid #bbf7d0 !important;border-radius:10px !important;padding:12px 8px !important;">
-            <div style="font-size:20px !important;font-weight:700 !important;color:#16a34a !important;" id="dash-hab-taken">-</div>
-            <div style="font-size:10px !important;color:#64748b !important;">Taken today</div>
-          </div>
-          <div style="flex:1 !important;min-width:80px !important;text-align:center !important;background:#fefce8 !important;border:1px solid #fde68a !important;border-radius:10px !important;padding:12px 8px !important;">
-            <div style="font-size:20px !important;font-weight:700 !important;color:#ca8a04 !important;" id="dash-hab-streak">-</div>
-            <div style="font-size:10px !important;color:#64748b !important;">Streak</div>
-          </div>
-          <div style="flex:1 !important;min-width:80px !important;text-align:center !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:12px 8px !important;">
-            <div style="font-size:20px !important;font-weight:700 !important;color:#7c3aed !important;" id="dash-hab-status">-</div>
-            <div style="font-size:10px !important;color:#64748b !important;">Status</div>
-          </div>
+        <div id="dash-med-today">
+          <div style="font-size:13px !important;color:#94a3b8 !important;">Loading...</div>
         </div>
-        <div id="dash-hab-missed" style="display:none !important;margin-top:8px !important;background:#fef2f2 !important;border:1px solid #fecaca !important;border-radius:8px !important;padding:8px 12px !important;font-size:12px !important;color:#991b1b !important;"></div>
+      </div>
+
+      <div class="dash-section">
+        <div style="display:flex !important;justify-content:space-between !important;align-items:center !important;margin-bottom:12px !important;">
+          <h3 style="margin-bottom:0 !important;">&#x1F9F9; Fiona's List</h3>
+          <span style="font-size:12px !important;color:#3b82f6 !important;cursor:pointer !important;" onclick="chNav('hometab',document.querySelectorAll('#cathHub .nav-item')[6]);setTimeout(function(){hmGo('fiona')},100)">View all &rarr;</span>
+        </div>
+        <div id="dash-fiona-summary">
+          <div style="font-size:13px !important;color:#94a3b8 !important;">Loading...</div>
+        </div>
       </div>
 
     </div>
@@ -811,6 +812,22 @@
               <div style="font-size:13px !important;color:#475569 !important;font-style:italic !important;margin-bottom:6px !important;">Dr Chao Wang</div>
               <div style="font-size:13px !important;">&#x2709;&#xFE0F; <a href="mailto:info@vertigoandneurology.com.au" style="color:#3b82f6 !important;">info@vertigoandneurology.com.au</a></div>
             </div>
+            <div style="background:#f8fafc !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:16px !important;">
+              <div style="font-size:10px !important;font-weight:700 !important;text-transform:uppercase !important;color:#7c3aed !important;margin-bottom:6px !important;">Psychologist</div>
+              <div style="font-size:15px !important;font-weight:700 !important;margin-bottom:4px !important;">CCT Psychology</div>
+              <div style="font-size:13px !important;color:#475569 !important;font-style:italic !important;margin-bottom:6px !important;">Tamsen</div>
+              <div style="font-size:13px !important;">&#x1F517; <a href="https://clientportal.zandahealth.com/clientportal/cctpsychology/login/f-0" target="_blank" rel="noopener" style="color:#3b82f6 !important;">Client Portal</a></div>
+            </div>
+            <div style="background:#f8fafc !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:16px !important;">
+              <div style="font-size:10px !important;font-weight:700 !important;text-transform:uppercase !important;color:#7c3aed !important;margin-bottom:6px !important;">Appointments</div>
+              <div style="font-size:15px !important;font-weight:700 !important;margin-bottom:4px !important;">HotDoc</div>
+              <div style="font-size:13px !important;">&#x1F517; <a href="https://www.hotdoc.com.au" target="_blank" rel="noopener" style="color:#3b82f6 !important;">Book Appointment</a></div>
+            </div>
+            <div style="background:#f8fafc !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:16px !important;">
+              <div style="font-size:10px !important;font-weight:700 !important;text-transform:uppercase !important;color:#7c3aed !important;margin-bottom:6px !important;">Pathology</div>
+              <div style="font-size:15px !important;font-weight:700 !important;margin-bottom:4px !important;">myPRP</div>
+              <div style="font-size:13px !important;">&#x1F517; <a href="https://www.myprp.com.au" target="_blank" rel="noopener" style="color:#3b82f6 !important;">View Results</a></div>
+            </div>
           </div>
         </div>
       </div>
@@ -829,10 +846,32 @@
                   <th>Schedule</th>
                   <th>Conditions</th>
                   <th>Purpose</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody id="med-meds-body"></tbody>
             </table>
+          </div>
+        </div>
+
+        <!-- Add medication form -->
+        <div class="med-section" style="margin-top:12px !important;">
+          <div class="med-section-header" style="cursor:pointer !important;" onclick="document.getElementById('med-add-form').style.display=document.getElementById('med-add-form').style.display==='none'?'block':'none'">
+            <h3 style="font-size:14px !important;">+ Add Medication</h3>
+          </div>
+          <div id="med-add-form" style="display:none !important;padding:14px 16px !important;">
+            <div style="display:flex !important;flex-direction:column !important;gap:10px !important;">
+              <input type="text" id="med-add-name" placeholder="Medication name" style="width:100% !important;padding:10px 12px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:14px !important;box-sizing:border-box !important;">
+              <input type="text" id="med-add-dose" placeholder="Dose (e.g. 2 tablets)" style="width:100% !important;padding:10px 12px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:14px !important;box-sizing:border-box !important;">
+              <select id="med-add-schedule" style="width:100% !important;padding:10px 12px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:14px !important;">
+                <option value="As needed">As needed</option>
+                <option value="1 tablet daily">1 tablet daily</option>
+                <option value="Once weekly">Once weekly</option>
+                <option value="Apply as directed">Apply as directed</option>
+              </select>
+              <input type="text" id="med-add-purpose" placeholder="Purpose (optional)" style="width:100% !important;padding:10px 12px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:14px !important;box-sizing:border-box !important;">
+              <button class="am-btn" onclick="medAddMedication()" style="width:100% !important;padding:12px !important;background:#7c3aed !important;color:white !important;border-color:#7c3aed !important;font-size:14px !important;justify-content:center !important;border-radius:8px !important;">Save Medication</button>
+            </div>
           </div>
         </div>
       </div>
@@ -945,7 +984,6 @@
         <div style="display:flex !important;gap:8px !important;margin-bottom:16px !important;flex-wrap:wrap !important;">
           <button class="am-btn" id="hab-take-all-btn" onclick="habTakeAllDaily()" style="flex:1 !important;justify-content:center !important;background:#10b981 !important;color:white !important;border-color:#10b981 !important;padding:12px 16px !important;font-size:14px !important;">&#x2600;&#xFE0F; Take All Daily Meds</button>
           <button class="am-btn" id="hab-undo-btn" onclick="habUndoTakeAll()" style="display:none !important;background:#ef4444 !important;color:white !important;border-color:#ef4444 !important;padding:12px !important;font-size:12px !important;">Undo</button>
-          <button class="am-btn" id="hab-notify-btn" onclick="habRequestReminder()" style="background:#f59e0b !important;color:white !important;border-color:#f59e0b !important;padding:12px !important;" title="Enable reminder">&#x1F514;</button>
         </div>
 
         <!-- DAILY Medications -->
@@ -975,16 +1013,8 @@
           <div id="hab-weekly-list"></div>
         </div>
 
-        <!-- 14-day overview -->
-        <div class="hab-section" style="margin-top:8px !important;">
-          <div class="med-section-header" style="padding:12px 16px !important;">
-            <h3 style="font-size:14px !important;">&#x1F4CA; 14-Day Overview</h3>
-          </div>
-          <div id="hab-tally" style="padding:12px 16px !important;display:flex !important;gap:4px !important;flex-wrap:wrap !important;justify-content:center !important;"></div>
-        </div>
-
         <!-- Medication Log -->
-        <div class="hab-section">
+        <div class="hab-section" id="hab-history-section">
           <div class="hab-section-header">
             <h3>&#x1F4DC; Medication Log</h3>
             <span style="font-size:11px !important;color:#94a3b8 !important;">Last 30 days</span>
@@ -1040,18 +1070,51 @@
     <!-- ═══ HOME ═══ -->
     <div class="screen" id="ch-hometab">
       <h2>&#x1F3E0; Home</h2>
-      <div class="hm-card">
-        <h3>&#x1F527; Maintenance Tasks</h3>
-        <p>Track home maintenance tasks and schedules. Coming soon.</p>
+
+      <!-- HOME: Navigation -->
+      <div class="am-subscreen active" id="hm-home">
+        <div style="display:flex !important;flex-direction:column !important;gap:10px !important;">
+          <button class="am-btn" onclick="hmGo('fiona')" style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F9F9; Fiona's List <span style="margin-left:auto !important;color:#94a3b8 !important;font-size:12px !important;" id="hm-fiona-badge">0 tasks</span></button>
+          <button class="am-btn" disabled style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#94a3b8 !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F527; Maintenance Tasks <span style="margin-left:auto !important;font-size:12px !important;">Coming soon</span></button>
+          <button class="am-btn" disabled style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#94a3b8 !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F4E6; Home Inventory <span style="margin-left:auto !important;font-size:12px !important;">Coming soon</span></button>
+          <button class="am-btn" disabled style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#94a3b8 !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F4DE; Important Contacts <span style="margin-left:auto !important;font-size:12px !important;">Coming soon</span></button>
+        </div>
       </div>
-      <div class="hm-card">
-        <h3>&#x1F4E6; Home Inventory</h3>
-        <p>Keep an inventory of appliances, warranties, and important items. Coming soon.</p>
+
+      <!-- SUB: Fiona's List -->
+      <div class="am-subscreen" id="hm-fiona">
+        <button class="am-back" onclick="hmGo('home')">&#x2190; Back</button>
+        <h3 style="font-size:18px !important;font-weight:700 !important;margin-bottom:4px !important;">&#x1F9F9; Fiona's List</h3>
+        <p style="font-size:12px !important;color:#94a3b8 !important;margin-bottom:16px !important;">Sorting &amp; cleaning tasks for Fiona's next visit. Add tasks as you think of them.</p>
+
+        <!-- Add task -->
+        <div style="display:flex !important;gap:8px !important;margin-bottom:16px !important;">
+          <input type="text" id="fi-task-input" placeholder="Add a task..." style="flex:1 !important;padding:12px 14px !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;font-size:14px !important;box-sizing:border-box !important;" onkeydown="if(event.key==='Enter')fiAddTask()">
+          <button class="am-btn" onclick="fiAddTask()" style="background:#7c3aed !important;color:white !important;border-color:#7c3aed !important;padding:12px 16px !important;font-size:14px !important;white-space:nowrap !important;">+ Add</button>
+        </div>
+
+        <!-- Task count -->
+        <div style="display:flex !important;align-items:center !important;justify-content:space-between !important;margin-bottom:12px !important;">
+          <div style="font-size:13px !important;color:#64748b !important;" id="fi-task-count">0 tasks</div>
+          <button class="am-btn" onclick="fiClearAll()" id="fi-clear-btn" style="background:#ef4444 !important;color:white !important;border-color:#ef4444 !important;padding:8px 14px !important;font-size:12px !important;display:none !important;">&#x1F504; Clear All &amp; Refresh</button>
+        </div>
+
+        <!-- Task list -->
+        <div id="fi-task-list" style="display:flex !important;flex-direction:column !important;gap:6px !important;">
+          <div style="padding:20px !important;text-align:center !important;color:#94a3b8 !important;font-size:13px !important;">Loading...</div>
+        </div>
+
+        <!-- Standalone link -->
+        <div style="margin-top:20px !important;padding:14px 16px !important;background:#f8fafc !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;">
+          <div style="font-size:12px !important;font-weight:600 !important;color:#64748b !important;margin-bottom:6px !important;">&#x1F517; Quick Access Link</div>
+          <div style="font-size:12px !important;color:#94a3b8 !important;margin-bottom:8px !important;">Bookmark this for fast access without logging in</div>
+          <div style="display:flex !important;gap:8px !important;align-items:center !important;">
+            <input type="text" readonly id="fi-link" style="flex:1 !important;padding:8px 10px !important;border:1px solid #e2e8f0 !important;border-radius:6px !important;font-size:11px !important;color:#475569 !important;background:white !important;">
+            <button class="am-btn" onclick="fiCopyLink()" style="padding:8px 12px !important;font-size:12px !important;white-space:nowrap !important;">Copy</button>
+          </div>
+        </div>
       </div>
-      <div class="hm-card">
-        <h3>&#x1F4DE; Important Contacts</h3>
-        <p>Plumber, electrician, real estate agent, and other home contacts. Coming soon.</p>
-      </div>
+
     </div>
 
   </div><!-- /main -->
@@ -1190,6 +1253,7 @@
     if (mobileSelect) mobileSelect.value = name;
     if(name === 'aislemate') amGo('home');
     if(name === 'medical') medGo('home');
+    if(name === 'hometab') hmGo('home');
     if(name === 'habits') habRenderCustom();
     if(name === 'home') dashLoad();
   };
@@ -1220,6 +1284,124 @@
       container.innerHTML = html;
     }
 
+    // Personal To-Do summary
+    try {
+      var { data: todoTasks } = await sb.from('personal_todos').select('*').order('created_at', { ascending: true });
+      todoTasks = todoTasks || [];
+      var todoContainer = document.getElementById('dash-todo-summary');
+      var todoTotal = todoTasks.length;
+      var todoDone = todoTasks.filter(function(t){ return t.done; }).length;
+      var todoPending = todoTotal - todoDone;
+      if (!todoTotal) {
+        todoContainer.innerHTML = '<div style="text-align:center !important;padding:12px !important;color:#94a3b8 !important;font-size:13px !important;">No to-do items yet</div>';
+      } else {
+        var th = '<div style="font-size:12px !important;color:#64748b !important;margin-bottom:8px !important;">' + todoPending + ' pending, ' + todoDone + ' done</div>';
+        var todoPendingTasks = todoTasks.filter(function(t){ return !t.done; });
+        if (todoPendingTasks.length) {
+          todoPendingTasks.slice(0, 5).forEach(function(t) {
+            th += '<div style="display:flex !important;align-items:center !important;gap:8px !important;padding:6px 0 !important;">';
+            th += '<span style="color:#94a3b8 !important;font-size:12px !important;">&#x25CB;</span>';
+            th += '<span style="font-size:13px !important;">' + esc(t.task) + '</span>';
+            th += '</div>';
+          });
+          if (todoPendingTasks.length > 5) th += '<div style="font-size:12px !important;color:#94a3b8 !important;padding-top:4px !important;">+ ' + (todoPendingTasks.length - 5) + ' more</div>';
+        }
+        todoContainer.innerHTML = th;
+      }
+    } catch(e) {
+      document.getElementById('dash-todo-summary').innerHTML = '<div style="text-align:center !important;padding:12px !important;color:#94a3b8 !important;font-size:13px !important;">Could not load to-do items</div>';
+    }
+
+    // Fiona's List summary
+    try {
+      var { data: fiTasks } = await sb.from('fiona_tasks').select('*').order('created_at', { ascending: true });
+      fiTasks = fiTasks || [];
+      var fiContainer = document.getElementById('dash-fiona-summary');
+      var fiBadge = document.getElementById('hm-fiona-badge');
+      var total = fiTasks.length;
+      var done = fiTasks.filter(function(t){ return t.done; }).length;
+      var pending = total - done;
+      if (fiBadge) fiBadge.textContent = total + ' task' + (total !== 1 ? 's' : '');
+      if (!total) {
+        fiContainer.innerHTML = '<div style="text-align:center !important;padding:12px !important;color:#94a3b8 !important;font-size:13px !important;">No tasks for Fiona yet</div>';
+      } else {
+        var fh = '<div style="font-size:12px !important;color:#64748b !important;margin-bottom:8px !important;">' + pending + ' pending, ' + done + ' done</div>';
+        var pendingTasks = fiTasks.filter(function(t){ return !t.done; });
+        if (pendingTasks.length) {
+          pendingTasks.slice(0, 5).forEach(function(t) {
+            fh += '<div style="display:flex !important;align-items:center !important;gap:8px !important;padding:6px 0 !important;">';
+            fh += '<span style="color:#94a3b8 !important;font-size:12px !important;">&#x25CB;</span>';
+            fh += '<span style="font-size:13px !important;">' + esc(t.task) + '</span>';
+            fh += '</div>';
+          });
+          if (pendingTasks.length > 5) fh += '<div style="font-size:12px !important;color:#94a3b8 !important;padding-top:4px !important;">+ ' + (pendingTasks.length - 5) + ' more</div>';
+        }
+        fiContainer.innerHTML = fh;
+      }
+    } catch(e) {
+      document.getElementById('dash-fiona-summary').innerHTML = '<div style="text-align:center !important;padding:12px !important;color:#94a3b8 !important;font-size:13px !important;">Could not load tasks</div>';
+    }
+
+    // Medication today
+    try {
+      var today = new Date();
+      var todayStr = today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+      var { data: todayLogs } = await sb.from('habit_logs').select('*').eq('date', todayStr);
+      var { data: allMeds } = await sb.from('habit_meds').select('id, name, freq');
+      var medContainer = document.getElementById('dash-med-today');
+      var medMap = {};
+      (allMeds || []).forEach(function(m){ medMap[m.id] = m; });
+      var dailyMeds = (allMeds || []).filter(function(m){ return m.freq === 'daily'; });
+      var takenIds = {};
+      (todayLogs || []).forEach(function(l){ takenIds[l.med_id] = l; });
+
+      var mh = '';
+      // Build unified list: daily meds + as-needed doses
+      var allEntries = [];
+
+      // Daily meds
+      dailyMeds.forEach(function(m) {
+        var taken = !!takenIds[m.id];
+        var time = taken && takenIds[m.id].created_at ? new Date(takenIds[m.id].created_at).getTime() : null;
+        var timeStr = time ? new Date(time).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' }) : '';
+        allEntries.push({ name: m.name, taken: taken, time: time, timeStr: timeStr, icon: taken ? '&#x2705;' : '&#x2B1C;', dimmed: !taken });
+      });
+
+      // As-needed doses taken today
+      (todayLogs || []).forEach(function(l) {
+        var med = medMap[l.med_id];
+        if (med && med.freq === 'asneeded') {
+          var time = l.created_at ? new Date(l.created_at).getTime() : null;
+          var timeStr = time ? new Date(time).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' }) : '';
+          allEntries.push({ name: med.name, taken: true, time: time, timeStr: timeStr, icon: '&#x2705;', dimmed: false });
+        }
+      });
+
+      // Sort: taken first, then by time
+      allEntries.sort(function(a, b) {
+        if (a.taken && !b.taken) return -1;
+        if (!a.taken && b.taken) return 1;
+        if (a.time && b.time) return a.time - b.time;
+        if (a.time) return -1;
+        if (b.time) return 1;
+        return 0;
+      });
+
+      allEntries.forEach(function(e) {
+        mh += '<div style="display:flex !important;align-items:center !important;gap:8px !important;padding:5px 0 !important;">';
+        mh += '<span style="font-size:14px !important;">' + e.icon + '</span>';
+        mh += '<span style="font-size:13px !important;flex:1 !important;' + (e.dimmed ? 'color:#94a3b8 !important;' : '') + '">' + esc(e.name) + '</span>';
+        if (e.timeStr) mh += '<span style="font-size:11px !important;color:#94a3b8 !important;">' + esc(e.timeStr) + '</span>';
+        mh += '</div>';
+      });
+
+      if (!mh) {
+        mh = '<div style="text-align:center !important;padding:12px !important;color:#94a3b8 !important;font-size:13px !important;">No medications tracked yet</div>';
+      }
+      medContainer.innerHTML = mh;
+    } catch(e) {
+      document.getElementById('dash-med-today').innerHTML = '<div style="text-align:center !important;padding:12px !important;color:#94a3b8 !important;font-size:13px !important;">Could not load medications</div>';
+    }
 
   }
 
@@ -1233,7 +1415,7 @@
   var CAT_ORDER = ['Fruit & Veg','Meat','Dairy','Pantry','Frozen','Drinks','Household','Other'];
 
   window.amGo = function(sub){
-    document.querySelectorAll('#cathHub .am-subscreen').forEach(function(s){ s.classList.remove('active'); });
+    document.querySelectorAll('#ch-aislemate .am-subscreen').forEach(function(s){ s.classList.remove('active'); });
     document.getElementById('am-' + sub).classList.add('active');
     if (sub === 'family') amLoadFamily();
     if (sub === 'select') amLoadMaster();
@@ -2184,6 +2366,7 @@
     document.querySelectorAll('#ch-medical .am-subscreen').forEach(function(s){ s.classList.remove('active'); });
     document.getElementById('med-' + sub).classList.add('active');
     if (sub === 'tracking') { habRender(); habLoadHistory(); }
+    if (sub === 'medications') { loadMedicationPlan(); }
   };
 
   // ─── MEDICAL (from Supabase) ───
@@ -2240,32 +2423,65 @@
     loadMedicalSessions();
   };
 
-  (async function loadMedical(){
-    loadMedicalSessions();
+  var DAILY_MED_NAMES = ['Vyvanse', 'Valtrex', 'Levothyroxine', 'Xobet'];
+  var AS_NEEDED_NAMES = ['Nurofen', 'Panadol', 'Nexium'];
 
-    // Load medication plan
+  async function loadMedicationPlan() {
     var { data: meds } = await sb.from('medications').select('*');
     var medsBody = document.getElementById('med-meds-body');
     medsBody.innerHTML = '';
-    var dailyMeds = ['Vyvanse', 'Valtrex', 'Levothyroxine', 'Xobet'];
-    // Sort: daily first, then weekly
+    // Sort: daily first, then as-needed, then weekly
     var sortedMeds = (meds || []).slice().sort(function(a, b) {
-      var aDaily = dailyMeds.some(function(d) { return a.name.toLowerCase().indexOf(d.toLowerCase()) !== -1; });
-      var bDaily = dailyMeds.some(function(d) { return b.name.toLowerCase().indexOf(d.toLowerCase()) !== -1; });
-      if (aDaily && !bDaily) return -1;
-      if (!aDaily && bDaily) return 1;
-      return 0;
+      function rank(m) {
+        if (DAILY_MED_NAMES.some(function(d){ return m.name.toLowerCase().indexOf(d.toLowerCase()) !== -1; })) return 0;
+        if (AS_NEEDED_NAMES.some(function(d){ return m.name.toLowerCase().indexOf(d.toLowerCase()) !== -1; })) return 1;
+        return 2;
+      }
+      return rank(a) - rank(b);
     });
     sortedMeds.forEach(function(m) {
-      var isDaily = dailyMeds.some(function(d) { return m.name.toLowerCase().indexOf(d.toLowerCase()) !== -1; });
-      var freqBadge = isDaily
-        ? '<span style="font-size:10px !important;background:#dbeafe !important;color:#1d4ed8 !important;padding:2px 6px !important;border-radius:4px !important;font-weight:600 !important;">DAILY</span> '
-        : '<span style="font-size:10px !important;background:#fef3c7 !important;color:#92400e !important;padding:2px 6px !important;border-radius:4px !important;font-weight:600 !important;">WEEKLY</span> ';
+      var isDaily = DAILY_MED_NAMES.some(function(d){ return m.name.toLowerCase().indexOf(d.toLowerCase()) !== -1; });
+      var isAsNeeded = AS_NEEDED_NAMES.some(function(d){ return m.name.toLowerCase().indexOf(d.toLowerCase()) !== -1; }) || (m.schedule && m.schedule.toLowerCase().indexOf('as needed') !== -1);
+      var freqBadge;
+      if (isDaily) {
+        freqBadge = '<span style="font-size:10px !important;background:#dbeafe !important;color:#1d4ed8 !important;padding:2px 6px !important;border-radius:4px !important;font-weight:600 !important;">DAILY</span> ';
+      } else if (isAsNeeded) {
+        freqBadge = '<span style="font-size:10px !important;background:#f0fdf4 !important;color:#15803d !important;padding:2px 6px !important;border-radius:4px !important;font-weight:600 !important;">AS NEEDED</span> ';
+      } else {
+        freqBadge = '<span style="font-size:10px !important;background:#fef3c7 !important;color:#92400e !important;padding:2px 6px !important;border-radius:4px !important;font-weight:600 !important;">WEEKLY</span> ';
+      }
       var conditions = m.conditions ? esc(m.conditions) : '-';
-      medsBody.innerHTML += '<tr><td style="font-weight:600 !important;">' + freqBadge + esc(m.name) + '</td><td>' + esc(m.dose) + '</td><td>' + esc(m.schedule) + '</td><td>' + conditions + '</td><td class="meds-reason">' + esc(m.purpose) + '</td></tr>';
+      medsBody.innerHTML += '<tr><td style="font-weight:600 !important;">' + freqBadge + esc(m.name) + '</td><td>' + esc(m.dose || '-') + '</td><td>' + esc(m.schedule) + '</td><td>' + conditions + '</td><td class="meds-reason">' + esc(m.purpose || '-') + '</td><td><span onclick="medDeleteMedication(\''+m.id+'\')" style="cursor:pointer !important;color:#94a3b8 !important;font-size:14px !important;" title="Remove">&#x1F5D1;</span></td></tr>';
     });
-    // Store meds globally for habits to use
     window._cathMeds = meds || [];
+  }
+
+  window.medAddMedication = async function() {
+    var name = document.getElementById('med-add-name').value.trim();
+    var dose = document.getElementById('med-add-dose').value.trim();
+    var schedule = document.getElementById('med-add-schedule').value;
+    var purpose = document.getElementById('med-add-purpose').value.trim();
+    if (!name) { alert('Please enter a medication name.'); return; }
+    await sb.from('medications').insert({ name: name, dose: dose, schedule: schedule, purpose: purpose });
+    // Also add to tracking
+    var freq = schedule.toLowerCase().indexOf('daily') !== -1 ? 'daily' : (schedule.toLowerCase().indexOf('weekly') !== -1 ? 'weekly' : 'asneeded');
+    try { await sb.from('habit_meds').insert({ id: Date.now(), name: name, freq: freq }); } catch(e) {}
+    document.getElementById('med-add-name').value = '';
+    document.getElementById('med-add-dose').value = '';
+    document.getElementById('med-add-purpose').value = '';
+    document.getElementById('med-add-form').style.display = 'none';
+    loadMedicationPlan();
+  };
+
+  window.medDeleteMedication = async function(id) {
+    if (!confirm('Remove this medication from your plan?')) return;
+    await sb.from('medications').delete().eq('id', id);
+    loadMedicationPlan();
+  };
+
+  (async function loadMedical(){
+    loadMedicalSessions();
+    loadMedicationPlan();
   })();
 
   // ─── DOCUMENT FILE RENAMER ───
@@ -2436,7 +2652,7 @@
       var doneIds = (existing || []).map(function(l){ return l.med_id; });
       for (var i = 0; i < dailyMeds.length; i++) {
         if (doneIds.indexOf(dailyMeds[i].id) === -1) {
-          await sb.from('habit_logs').insert({ med_id: dailyMeds[i].id, date: yk });
+          await sb.from('habit_logs').insert({ med_id: dailyMeds[i].id, date: yk, created_at: new Date(yk + 'T08:00:00').toISOString() });
         }
       }
       document.getElementById('hab-missed-alert').style.display = 'none';
@@ -2524,7 +2740,7 @@
       var toInsert = meds.filter(function(m){ return doneIds.indexOf(m.id) === -1; });
       habUndoIds = [];
       for (var i = 0; i < toInsert.length; i++) {
-        await sb.from('habit_logs').insert({ med_id: toInsert[i].id, date: today });
+        await sb.from('habit_logs').insert({ med_id: toInsert[i].id, date: today, created_at: new Date().toISOString() });
         habUndoIds.push(toInsert[i].id);
       }
       habRender();
@@ -2552,23 +2768,6 @@
       habRender();
     };
 
-    // #6: Browser notification reminder instead of Apple Shortcuts
-    window.habRequestReminder = function() {
-      if (!('Notification' in window)) {
-        alert('Your browser does not support notifications.');
-        return;
-      }
-      Notification.requestPermission().then(function(perm) {
-        if (perm === 'granted') {
-          // Schedule a reminder check every morning at load
-          localStorage.setItem('cathHub_medReminder', 'true');
-          new Notification('Med Reminder Enabled', { body: 'You will get a reminder when you open Cath Hub and haven\'t taken your meds.', icon: '\uD83D\uDC8A' });
-        } else {
-          alert('Please allow notifications in your browser settings to receive reminders.');
-        }
-      });
-    };
-
     window.habDeleteMed = async function(id) {
       await sb.from('habit_meds').delete().eq('id', id);
       habRender();
@@ -2580,7 +2779,7 @@
       if (data && data.length) {
         await sb.from('habit_logs').delete().eq('med_id', id).eq('date', today);
       } else {
-        await sb.from('habit_logs').insert({ med_id: id, date: today });
+        await sb.from('habit_logs').insert({ med_id: id, date: today, created_at: new Date().toISOString() });
       }
       habRender();
     };
@@ -2590,7 +2789,7 @@
       if (data && data.length) {
         await sb.from('habit_logs').delete().eq('med_id', id).eq('date', dk);
       } else {
-        await sb.from('habit_logs').insert({ med_id: id, date: dk });
+        await sb.from('habit_logs').insert({ med_id: id, date: dk, created_at: new Date().toISOString() });
       }
       habRender();
     };
@@ -2606,7 +2805,7 @@
       'vyvanse': 'Morning',
       'valtrex': 'Morning',
       'levothyroxine': 'Morning',
-      'xobet': 'Evening (apply)'
+      'xobet cream': 'Evening (apply)'
     };
 
     async function habAutoPopulate() {
@@ -2617,7 +2816,11 @@
         var dailyMedNames = ['Vyvanse', 'Valtrex', 'Levothyroxine', 'Xobet'];
         for (var i = 0; i < (allMeds || []).length; i++) {
           var m = allMeds[i];
-          if (existingNames.indexOf(m.name.toLowerCase()) === -1) {
+          // Check if any existing entry partially matches this med name
+          var alreadyExists = existingNames.some(function(en) {
+            return m.name.toLowerCase().indexOf(en) !== -1 || en.indexOf(m.name.toLowerCase()) !== -1;
+          });
+          if (!alreadyExists) {
             var isDaily = dailyMedNames.some(function(d) { return m.name.toLowerCase().indexOf(d.toLowerCase()) !== -1; });
             var freq = isDaily ? 'daily' : 'weekly';
             await sb.from('habit_meds').insert({ id: Date.now() + i, name: m.name, freq: freq });
@@ -2631,24 +2834,43 @@
             await sb.from('habit_meds').insert({ id: Date.now() + 100 + j, name: AS_NEEDED_MEDS[j].name, freq: 'asneeded' });
           }
         }
-        // Fix frequencies
-        (existingHabs || []).forEach(function(h) {
-          var shouldBeDaily = dailyMedNames.some(function(d) { return h.name.toLowerCase().indexOf(d.toLowerCase()) !== -1; });
-          if (shouldBeDaily && h.freq !== 'daily') {
-            sb.from('habit_meds').update({ freq: 'daily' }).eq('id', h.id);
-          }
-          var shouldBeAsNeeded = AS_NEEDED_MEDS.some(function(a) { return h.name.toLowerCase() === a.name.toLowerCase(); });
-          if (shouldBeAsNeeded && h.freq !== 'asneeded') {
-            sb.from('habit_meds').update({ freq: 'asneeded' }).eq('id', h.id);
-          }
-        });
       } catch(e) {}
     }
 
     // Record an as-needed dose (always inserts — multiple doses per day allowed)
+    window.habDeleteDose = async function(logId) {
+      await sb.from('habit_logs').delete().eq('id', logId);
+      habRender();
+    };
+
     window.habRecordAsNeeded = async function(id) {
       var today = todayKey();
-      await sb.from('habit_logs').insert({ med_id: id, date: today });
+      await sb.from('habit_logs').insert({ med_id: id, date: today, created_at: new Date().toISOString() });
+      habRender();
+    };
+
+    window.habChangeTime = async function(logId) {
+      var timeStr = prompt('Enter time (e.g. 8:30am, 14:00, 2:15pm):');
+      if (!timeStr) return;
+      // Parse common time formats
+      timeStr = timeStr.trim().toLowerCase();
+      var hours, mins;
+      var match = timeStr.match(/^(\d{1,2}):(\d{2})\s*(am|pm)?$/);
+      if (match) {
+        hours = parseInt(match[1]);
+        mins = parseInt(match[2]);
+        if (match[3] === 'pm' && hours < 12) hours += 12;
+        if (match[3] === 'am' && hours === 12) hours = 0;
+      } else {
+        alert('Could not understand that time. Try format like 8:30am or 14:00');
+        return;
+      }
+      // Get the log entry to find its date
+      var { data: log } = await sb.from('habit_logs').select('date').eq('id', logId).single();
+      if (!log) return;
+      var dt = new Date(log.date + 'T00:00:00');
+      dt.setHours(hours, mins, 0, 0);
+      await sb.from('habit_logs').update({ created_at: dt.toISOString() }).eq('id', logId);
       habRender();
     };
 
@@ -2675,16 +2897,7 @@
         bannerEl.innerHTML = '';
       }
 
-      // #6: Browser notification if enabled and meds not taken
-      if (localStorage.getItem('cathHub_medReminder') === 'true' && !allMedsDone && dailyMeds.length > 0 && 'Notification' in window && Notification.permission === 'granted') {
-        var notifKey = 'cathHub_notifShown_' + today;
-        if (!localStorage.getItem(notifKey)) {
-          new Notification('Morning Meds Reminder', { body: 'You haven\'t taken your morning meds yet!', icon: '\uD83D\uDC8A' });
-          localStorage.setItem(notifKey, '1');
-        }
-      }
-
-      // #8: Missed yesterday indicator (dismissable per day)
+      // Missed yesterday indicator (dismissable per day)
       var missedAlert = document.getElementById('hab-missed-alert');
       var yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
       var yk = yesterday.getFullYear()+'-'+String(yesterday.getMonth()+1).padStart(2,'0')+'-'+String(yesterday.getDate()).padStart(2,'0');
@@ -2698,28 +2911,7 @@
         missedAlert.style.display = 'none';
       }
 
-      // Update dashboard medication summary
-      var dashTaken = document.getElementById('dash-hab-taken');
-      var dashStreak = document.getElementById('dash-hab-streak');
-      var dashStatus = document.getElementById('dash-hab-status');
-      var dashMissed = document.getElementById('dash-hab-missed');
-      if (dashTaken) {
-        var medDailyDone = dailyMeds.filter(function(m){ return logs[m.id]&&logs[m.id][today]; }).length;
-        dashTaken.textContent = medDailyDone + '/' + dailyMeds.length;
-        var bestStreak = 0;
-        for (var si = 0; si < dailyMeds.length; si++) {
-          var ss = await streakFor(dailyMeds[si].id, logs);
-          if (ss > bestStreak) bestStreak = ss;
-        }
-        dashStreak.textContent = bestStreak + 'd';
-        dashStatus.textContent = allMedsDone ? '\u2705' : (hour < 12 ? '\u23F3' : '\u26A0');
-        if (missedYesterday.length > 0 && dailyMeds.length > 0) {
-          dashMissed.style.display = 'block';
-          dashMissed.innerHTML = '&#x26A0;&#xFE0F; Missed yesterday: ' + esc(missedYesterday.map(function(m){ return m.name; }).join(', '));
-        } else {
-          dashMissed.style.display = 'none';
-        }
-      }
+
 
       // #3: Daily with AM/PM time labels
       var dl = document.getElementById('hab-daily-list');
@@ -2732,10 +2924,26 @@
           var done = !!(logs[med.id] && logs[med.id][today]);
           var s = await streakFor(med.id, logs);
           var timeLabel = MED_TIMES[med.name.toLowerCase()] || '';
+          // Get time taken today
+          var takenTime = '';
+          var takenLogId = '';
+          if (done) {
+            try {
+              var { data: tLog } = await sb.from('habit_logs').select('id, created_at').eq('med_id', med.id).eq('date', today).limit(1);
+              if (tLog && tLog[0] && tLog[0].created_at) {
+                takenTime = new Date(tLog[0].created_at).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' });
+                takenLogId = tLog[0].id;
+              }
+            } catch(e) {}
+          }
           h += '<div class="hab-med-row">';
           h += '<div class="hab-check'+(done?' done':'')+'" onclick="habToggleDaily('+med.id+')"></div>';
           h += '<div style="flex:1 !important;"><div class="hab-med-name" style="margin-bottom:0 !important;">'+esc(med.name)+'</div>';
-          if (timeLabel) h += '<div style="font-size:10px !important;color:#94a3b8 !important;">'+timeLabel+'</div>';
+          if (done && takenTime) {
+            h += '<div style="font-size:10px !important;color:#10b981 !important;cursor:pointer !important;" onclick="habChangeTime(\''+takenLogId+'\')" title="Tap to change time">Taken at '+esc(takenTime)+' &#x270F;</div>';
+          } else if (timeLabel) {
+            h += '<div style="font-size:10px !important;color:#94a3b8 !important;">'+timeLabel+'</div>';
+          }
           h += '</div>';
           if (s > 1) h += '<div class="hab-streak">&#x1F525; '+s+'d</div>';
           h += '<div class="hab-del" onclick="habDeleteMed('+med.id+')">&#x1F5D1;</div>';
@@ -2750,19 +2958,22 @@
         wl.innerHTML = '<div class="hab-empty">No weekly medications yet. Tap + Add to get started.</div>';
       } else {
         var h = '';
-        weekly.forEach(function(med) {
-          h += '<div class="hab-med-row">';
-          h += '<div class="hab-med-name">'+esc(med.name)+'</div>';
-          h += '<div class="hab-days">';
-          wk.forEach(function(dk, i) {
-            var done = !!(logs[med.id] && logs[med.id][dk]);
-            var cls = 'hab-day-btn'+(done?' done':'')+(i===tIdx&&!done?' today':i===tIdx&&done?' today':'');
-            h += '<div class="'+cls+'" onclick="habToggleWeekly('+med.id+',\''+dk+'\')">'+DAY_LABELS[i]+'</div>';
-          });
+        for (var wi = 0; wi < weekly.length; wi++) {
+          var med = weekly[wi];
+          var takenThisWeek = wk.some(function(dk){ return logs[med.id] && logs[med.id][dk]; });
+          var takenToday = !!(logs[med.id] && logs[med.id][today]);
+          h += '<div class="hab-med-row" style="flex-wrap:wrap !important;">';
+          h += '<div onclick="habToggleWeekly('+med.id+',\''+today+'\')" style="width:22px !important;height:22px !important;border-radius:6px !important;border:2px solid '+(takenToday?'#10b981':'#cbd5e1')+' !important;background:'+(takenToday?'#10b981':'transparent')+' !important;cursor:pointer !important;display:flex !important;align-items:center !important;justify-content:center !important;flex-shrink:0 !important;color:white !important;font-size:13px !important;">'+(takenToday?'&#x2713;':'')+'</div>';
+          h += '<div style="flex:1 !important;"><div class="hab-med-name" style="margin-bottom:0 !important;">'+esc(med.name)+'</div>';
+          if (takenThisWeek) {
+            h += '<div style="font-size:10px !important;color:#10b981 !important;">&#x2713; Taken this week</div>';
+          } else {
+            h += '<div style="font-size:10px !important;color:#f59e0b !important;">Not yet taken this week</div>';
+          }
           h += '</div>';
           h += '<div class="hab-del" onclick="habDeleteMed('+med.id+')">&#x1F5D1;</div>';
           h += '</div>';
-        });
+        }
         wl.innerHTML = h;
       }
 
@@ -2778,16 +2989,23 @@
             var asInfo = AS_NEEDED_MEDS.find(function(x){ return x.name.toLowerCase() === med.name.toLowerCase(); });
             var doseLabel = asInfo && asInfo.dose ? ' (' + asInfo.dose + ')' : '';
             // Count how many times taken today
-            var todayCount = 0;
+            var todayLogs = [];
             try {
-              var { data: todayLogs } = await sb.from('habit_logs').select('created_at').eq('med_id', med.id).eq('date', today);
-              todayCount = (todayLogs || []).length;
+              var { data: tl } = await sb.from('habit_logs').select('*').eq('med_id', med.id).eq('date', today);
+              todayLogs = tl || [];
             } catch(e) {}
-            h += '<div class="hab-med-row">';
+            h += '<div class="hab-med-row" style="flex-wrap:wrap !important;">';
             h += '<button class="am-btn" onclick="habRecordAsNeeded(' + med.id + ')" style="background:#3b82f6 !important;color:white !important;border-color:#3b82f6 !important;padding:6px 12px !important;font-size:12px !important;">Record dose</button>';
             h += '<div style="flex:1 !important;"><div class="hab-med-name" style="margin-bottom:0 !important;">' + esc(med.name) + esc(doseLabel) + '</div>';
-            if (todayCount > 0) {
-              h += '<div style="font-size:11px !important;color:#10b981 !important;">' + todayCount + ' dose' + (todayCount > 1 ? 's' : '') + ' today</div>';
+            if (todayLogs.length > 0) {
+              h += '<div style="font-size:11px !important;color:#10b981 !important;">' + todayLogs.length + ' dose' + (todayLogs.length > 1 ? 's' : '') + ' today</div>';
+              todayLogs.forEach(function(tl) {
+                var t = tl.created_at ? new Date(tl.created_at).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' }) : 'no time';
+                h += '<div style="display:flex !important;align-items:center !important;gap:6px !important;font-size:11px !important;color:#64748b !important;padding:2px 0 !important;">';
+                h += '<span onclick="habChangeTime(\'' + tl.id + '\')" style="cursor:pointer !important;color:#3b82f6 !important;">' + t + ' &#x270F;</span>';
+                h += '<span onclick="habDeleteDose(\'' + tl.id + '\')" style="cursor:pointer !important;color:#ef4444 !important;" title="Remove dose">&#x2715;</span>';
+                h += '</div>';
+              });
             }
             h += '</div>';
             h += '</div>';
@@ -2827,36 +3045,6 @@
         takeBtn.disabled = false;
       }
 
-      // #7: Render 14-day tally
-      try {
-        var tallyEl = document.getElementById('hab-tally');
-        var fourteenAgo = new Date(); fourteenAgo.setDate(fourteenAgo.getDate() - 13);
-        var fromD = fourteenAgo.getFullYear()+'-'+String(fourteenAgo.getMonth()+1).padStart(2,'0')+'-'+String(fourteenAgo.getDate()).padStart(2,'0');
-        var { data: tallyLogs } = await sb.from('habit_logs').select('date, med_id').gte('date', fromD);
-        var tallyMap = {};
-        (tallyLogs || []).forEach(function(l) {
-          if (!tallyMap[l.date]) tallyMap[l.date] = {};
-          tallyMap[l.date][l.med_id] = true;
-        });
-        // Total daily medications
-        var totalDailyAll = meds.filter(function(m){ return m.freq === 'daily'; }).length || 1;
-        var th = '';
-        var dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-        for (var d = 0; d < 14; d++) {
-          var dt = new Date(); dt.setDate(dt.getDate() - 13 + d);
-          var dk = dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');
-          var count = tallyMap[dk] ? Object.keys(tallyMap[dk]).length : 0;
-          var color = count === 0 ? '#334155' : count >= totalDailyAll ? '#10b981' : '#f59e0b';
-          var label = dayNames[dt.getDay()] + ' ' + dt.getDate();
-          var isToday = dk === today;
-          th += '<div style="display:flex !important;flex-direction:column !important;align-items:center !important;gap:2px !important;">';
-          th += '<div style="width:28px !important;height:28px !important;border-radius:6px !important;background:'+color+' !important;display:flex !important;align-items:center !important;justify-content:center !important;font-size:11px !important;color:white !important;font-weight:'+(isToday?'700':'400')+' !important;border:'+(isToday?'2px solid white':'none')+' !important;">'+count+'</div>';
-          th += '<div style="font-size:9px !important;color:#94a3b8 !important;">'+label+'</div>';
-          th += '</div>';
-        }
-        tallyEl.innerHTML = th;
-      } catch(e) {}
-
       // Load history
       habLoadHistory();
     }
@@ -2867,7 +3055,7 @@
         var thirtyAgo = new Date();
         thirtyAgo.setDate(thirtyAgo.getDate() - 30);
         var fromDate = thirtyAgo.getFullYear()+'-'+String(thirtyAgo.getMonth()+1).padStart(2,'0')+'-'+String(thirtyAgo.getDate()).padStart(2,'0');
-        var { data: logData } = await sb.from('habit_logs').select('date, med_id, created_at').gte('date', fromDate).order('date', { ascending: false });
+        var { data: logData } = await sb.from('habit_logs').select('*').gte('date', fromDate).order('date', { ascending: false });
         var { data: habMeds } = await sb.from('habit_meds').select('id, name');
         var medMap = {};
         (habMeds || []).forEach(function(m){ medMap[m.id] = m.name; });
@@ -2884,6 +3072,12 @@
         });
         var h = '';
         Object.keys(grouped).sort().reverse().forEach(function(date) {
+          // Sort entries by time within each day
+          grouped[date].sort(function(a, b) {
+            var ta = a.created_at ? new Date(a.created_at).getTime() : 0;
+            var tb = b.created_at ? new Date(b.created_at).getTime() : 0;
+            return ta - tb;
+          });
           var dateObj = new Date(date + 'T00:00:00');
           var dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
           var dateLabel = dayNames[dateObj.getDay()] + ' ' + dateObj.getDate() + '/' + (dateObj.getMonth()+1) + '/' + dateObj.getFullYear();
@@ -2895,7 +3089,11 @@
             h += '<div style="display:flex !important;align-items:center !important;gap:8px !important;padding:4px 0 !important;">';
             h += '<span style="color:#10b981 !important;font-size:14px !important;">&#x2713;</span>';
             h += '<span style="font-size:13px !important;flex:1 !important;">' + esc(medName) + '</span>';
-            if (time) h += '<span style="font-size:11px !important;color:#94a3b8 !important;">' + esc(time) + '</span>';
+            if (time) {
+              h += '<span style="font-size:11px !important;color:#3b82f6 !important;cursor:pointer !important;" onclick="habChangeTime(\'' + l.id + '\')" title="Tap to change time">' + esc(time) + ' &#x270F;</span>';
+            } else {
+              h += '<span style="font-size:11px !important;color:#94a3b8 !important;cursor:pointer !important;" onclick="habChangeTime(\'' + l.id + '\')" title="Tap to set time">set time &#x270F;</span>';
+            }
             h += '</div>';
           });
           h += '</div>';
@@ -2908,6 +3106,90 @@
 
     // Auto-populate then render
     habAutoPopulate().then(function(){ habRender(); });
+  })();
+
+  // ─── HOME TAB ───
+  window.hmGo = function(sub) {
+    document.querySelectorAll('#ch-hometab .am-subscreen').forEach(function(s){ s.classList.remove('active'); });
+    document.getElementById('hm-' + sub).classList.add('active');
+    if (sub === 'fiona') fiLoad();
+  };
+
+  // ─── FIONA'S LIST ───
+  (function(){
+    window.fiLoad = async function() {
+      try {
+        var { data, error } = await sb.from('fiona_tasks').select('*').order('created_at', { ascending: true });
+        if (error) throw error;
+        var tasks = data || [];
+        var list = document.getElementById('fi-task-list');
+        var countEl = document.getElementById('fi-task-count');
+        var clearBtn = document.getElementById('fi-clear-btn');
+        var badge = document.getElementById('hm-fiona-badge');
+        var total = tasks.length;
+        var done = tasks.filter(function(t){ return t.done; }).length;
+
+        countEl.textContent = total + ' task' + (total !== 1 ? 's' : '') + (done > 0 ? ' (' + done + ' done)' : '');
+        clearBtn.style.display = total > 0 ? 'inline-flex' : 'none';
+        if (badge) badge.textContent = total + ' task' + (total !== 1 ? 's' : '');
+
+        if (!total) {
+          list.innerHTML = '<div style="padding:20px !important;text-align:center !important;color:#94a3b8 !important;font-size:13px !important;">No tasks yet. Add something for Fiona!</div>';
+          return;
+        }
+
+        var h = '';
+        tasks.forEach(function(t) {
+          h += '<div style="display:flex !important;align-items:center !important;gap:10px !important;padding:12px 14px !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;'+(t.done?'opacity:0.6 !important;':'') +'">';
+          h += '<div onclick="fiToggle('+t.id+')" style="width:22px !important;height:22px !important;border-radius:6px !important;border:2px solid '+(t.done?'#10b981':'#cbd5e1')+' !important;background:'+(t.done?'#10b981':'transparent')+' !important;cursor:pointer !important;display:flex !important;align-items:center !important;justify-content:center !important;flex-shrink:0 !important;color:white !important;font-size:13px !important;">'+(t.done?'&#x2713;':'')+'</div>';
+          h += '<div style="flex:1 !important;font-size:14px !important;'+(t.done?'text-decoration:line-through !important;color:#94a3b8 !important;':'color:#1e293b !important;')+'">'+fiEsc(t.task)+'</div>';
+          h += '<div onclick="fiDelete('+t.id+')" style="color:#94a3b8 !important;cursor:pointer !important;font-size:16px !important;padding:0 4px !important;" title="Remove">&#x1F5D1;</div>';
+          h += '</div>';
+        });
+        list.innerHTML = h;
+      } catch(e) {
+        document.getElementById('fi-task-list').innerHTML = '<div style="padding:20px !important;text-align:center !important;color:#ef4444 !important;font-size:13px !important;">Could not load tasks. The table may not be set up yet.</div>';
+      }
+
+      // Set standalone link
+      var linkEl = document.getElementById('fi-link');
+      if (linkEl) linkEl.value = window.location.origin + '/cath-hub/fiona.html';
+    };
+
+    function fiEsc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+    window.fiAddTask = async function() {
+      var inp = document.getElementById('fi-task-input');
+      var task = inp.value.trim();
+      if (!task) return;
+      await sb.from('fiona_tasks').insert({ id: Date.now(), task: task, done: false });
+      inp.value = '';
+      fiLoad();
+    };
+
+    window.fiToggle = async function(id) {
+      var { data } = await sb.from('fiona_tasks').select('done').eq('id', id).single();
+      await sb.from('fiona_tasks').update({ done: !data.done }).eq('id', id);
+      fiLoad();
+    };
+
+    window.fiDelete = async function(id) {
+      await sb.from('fiona_tasks').delete().eq('id', id);
+      fiLoad();
+    };
+
+    window.fiClearAll = async function() {
+      if (!confirm('Clear all tasks and start fresh for next visit?')) return;
+      await sb.from('fiona_tasks').delete().neq('id', 0);
+      fiLoad();
+    };
+
+    window.fiCopyLink = function() {
+      var inp = document.getElementById('fi-link');
+      inp.select();
+      document.execCommand('copy');
+      alert('Link copied!');
+    };
   })();
 
   // ─── FLOATING AI (with database tools) ───

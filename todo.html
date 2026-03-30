@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My To-Do - Cath Hub</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #f0f4f8; color: #1e293b; min-height: 100vh; }
+
+  .header { background: #1e293b; color: white; padding: 16px 20px; display: flex; align-items: center; gap: 10px; }
+  .header h1 { font-size: 18px; font-weight: 700; }
+  .header-count { margin-left: auto; font-size: 13px; color: #94a3b8; }
+
+  .container { max-width: 500px; margin: 0 auto; padding: 16px; }
+
+  .add-bar { display: flex; gap: 8px; margin-bottom: 16px; position: sticky; top: 0; z-index: 10; background: #f0f4f8; padding: 4px 0 12px; }
+  .add-input { flex: 1; padding: 14px 16px; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 16px; outline: none; font-family: inherit; background: white; }
+  .add-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+  .add-btn { padding: 14px 20px; background: #3b82f6; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; font-family: inherit; white-space: nowrap; }
+
+  .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: #64748b; padding: 8px 0 6px; letter-spacing: 0.5px; }
+
+  .task-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: white; border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 8px; transition: opacity 0.2s; }
+  .task-item.done { opacity: 0.5; }
+
+  .task-check { width: 26px; height: 26px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; -webkit-tap-highlight-color: transparent; }
+  .task-check.pending { border: 2px solid #cbd5e1; background: white; }
+  .task-check.checked { border: 2px solid #10b981; background: #10b981; }
+  .task-check.checked::after { content: '\2713'; color: white; font-size: 14px; font-weight: 700; }
+
+  .task-text { flex: 1; font-size: 15px; font-weight: 500; }
+  .task-text.checked { text-decoration: line-through; color: #94a3b8; }
+
+  .task-del { color: #cbd5e1; cursor: pointer; font-size: 18px; padding: 0 4px; -webkit-tap-highlight-color: transparent; }
+  .task-del:hover { color: #ef4444; }
+
+  .clear-done { display: none; margin: 16px 0; padding: 10px 16px; background: white; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 13px; color: #64748b; cursor: pointer; font-family: inherit; width: 100%; text-align: center; }
+  .clear-done:hover { background: #f8fafc; }
+
+  .empty { padding: 40px 20px; text-align: center; color: #94a3b8; font-size: 14px; }
+
+  /* Auto-add from URL param */
+  .auto-add-banner { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; text-align: center; font-size: 14px; color: #16a34a; font-weight: 600; display: none; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span style="font-size: 22px;">&#x2705;</span>
+  <h1>My To-Do</h1>
+  <span class="header-count" id="header-count"></span>
+</div>
+
+<div class="container">
+  <div class="auto-add-banner" id="auto-banner"></div>
+
+  <div class="add-bar">
+    <input class="add-input" id="task-input" type="text" placeholder="What needs doing?" autofocus>
+    <button class="add-btn" onclick="addTask()">Add</button>
+  </div>
+
+  <div class="section-label" id="pending-label">TO DO</div>
+  <div id="pending-list"></div>
+
+  <div class="section-label" id="done-label" style="display:none;">DONE</div>
+  <div id="done-list"></div>
+
+  <button class="clear-done" id="clear-done-btn" onclick="clearDone()">Clear completed items</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+(async function(){
+  var SB_URL = 'https://ziwycymhaqghdiznyhhw.supabase.co';
+  var SB_KEY = 'sb_publishable_n-xBxzqdGySGh-JWHuI40g_Hb5Qf8mg';
+  var sb = window.supabase.createClient(SB_URL, SB_KEY);
+
+  var input = document.getElementById('task-input');
+  input.addEventListener('keydown', function(e) { if (e.key === 'Enter') addTask(); });
+
+  function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+  // Auto-add from URL param: todo.html?add=Buy+milk
+  var params = new URLSearchParams(window.location.search);
+  var autoAdd = params.get('add');
+  if (autoAdd) {
+    autoAdd = autoAdd.trim();
+    if (autoAdd) {
+      await sb.from('personal_todos').insert({ id: Date.now(), task: autoAdd, done: false });
+      var banner = document.getElementById('auto-banner');
+      banner.textContent = '\u2705 Added: ' + autoAdd;
+      banner.style.display = 'block';
+      // Clean URL
+      window.history.replaceState({}, '', window.location.pathname);
+      setTimeout(function() { banner.style.display = 'none'; }, 3000);
+    }
+  }
+
+  async function loadTasks() {
+    try {
+      var { data, error } = await sb.from('personal_todos').select('*').order('created_at', { ascending: true });
+      if (error) throw error;
+      var tasks = data || [];
+      var pending = tasks.filter(function(t) { return !t.done; });
+      var done = tasks.filter(function(t) { return t.done; });
+
+      var headerCount = document.getElementById('header-count');
+      headerCount.textContent = pending.length + ' pending';
+
+      var pendingList = document.getElementById('pending-list');
+      var doneList = document.getElementById('done-list');
+      var doneLabel = document.getElementById('done-label');
+      var clearBtn = document.getElementById('clear-done-btn');
+      var pendingLabel = document.getElementById('pending-label');
+
+      if (!pending.length && !done.length) {
+        pendingLabel.style.display = 'none';
+        pendingList.innerHTML = '<div class="empty">Nothing on your list. Add something!</div>';
+        doneLabel.style.display = 'none';
+        doneList.innerHTML = '';
+        clearBtn.style.display = 'none';
+        return;
+      }
+
+      pendingLabel.style.display = pending.length ? 'block' : 'none';
+      var ph = '';
+      pending.forEach(function(t) {
+        ph += '<div class="task-item">';
+        ph += '<div class="task-check pending" onclick="toggleTask(' + t.id + ')"></div>';
+        ph += '<div class="task-text">' + esc(t.task) + '</div>';
+        ph += '<div class="task-del" onclick="deleteTask(' + t.id + ')" title="Delete">&#x2715;</div>';
+        ph += '</div>';
+      });
+      pendingList.innerHTML = ph;
+
+      doneLabel.style.display = done.length ? 'block' : 'none';
+      clearBtn.style.display = done.length ? 'block' : 'none';
+      var dh = '';
+      done.forEach(function(t) {
+        dh += '<div class="task-item done">';
+        dh += '<div class="task-check checked" onclick="toggleTask(' + t.id + ')"></div>';
+        dh += '<div class="task-text checked">' + esc(t.task) + '</div>';
+        dh += '<div class="task-del" onclick="deleteTask(' + t.id + ')" title="Delete">&#x2715;</div>';
+        dh += '</div>';
+      });
+      doneList.innerHTML = dh;
+    } catch(e) {
+      document.getElementById('pending-list').innerHTML = '<div class="empty" style="color:#ef4444;">Could not load tasks. Table may not be set up yet.</div>';
+    }
+  }
+
+  window.addTask = async function() {
+    var task = input.value.trim();
+    if (!task) return;
+    await sb.from('personal_todos').insert({ id: Date.now(), task: task, done: false });
+    input.value = '';
+    loadTasks();
+  };
+
+  window.toggleTask = async function(id) {
+    var { data } = await sb.from('personal_todos').select('done').eq('id', id).single();
+    await sb.from('personal_todos').update({ done: !data.done }).eq('id', id);
+    loadTasks();
+  };
+
+  window.deleteTask = async function(id) {
+    await sb.from('personal_todos').delete().eq('id', id);
+    loadTasks();
+  };
+
+  window.clearDone = async function() {
+    if (!confirm('Remove all completed items?')) return;
+    await sb.from('personal_todos').delete().eq('done', true);
+    loadTasks();
+  };
+
+  loadTasks();
+  setInterval(loadTasks, 30000);
+})();
+</script>
+</body>
+</html>
