@@ -1040,18 +1040,51 @@
     <!-- ═══ HOME ═══ -->
     <div class="screen" id="ch-hometab">
       <h2>&#x1F3E0; Home</h2>
-      <div class="hm-card">
-        <h3>&#x1F527; Maintenance Tasks</h3>
-        <p>Track home maintenance tasks and schedules. Coming soon.</p>
+
+      <!-- HOME: Navigation -->
+      <div class="am-subscreen active" id="hm-home">
+        <div style="display:flex !important;flex-direction:column !important;gap:10px !important;">
+          <button class="am-btn" onclick="hmGo('fiona')" style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F9F9; Fiona's List <span style="margin-left:auto !important;color:#94a3b8 !important;font-size:12px !important;" id="hm-fiona-badge">0 tasks</span></button>
+          <button class="am-btn" disabled style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#94a3b8 !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F527; Maintenance Tasks <span style="margin-left:auto !important;font-size:12px !important;">Coming soon</span></button>
+          <button class="am-btn" disabled style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#94a3b8 !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F4E6; Home Inventory <span style="margin-left:auto !important;font-size:12px !important;">Coming soon</span></button>
+          <button class="am-btn" disabled style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#94a3b8 !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F4DE; Important Contacts <span style="margin-left:auto !important;font-size:12px !important;">Coming soon</span></button>
+        </div>
       </div>
-      <div class="hm-card">
-        <h3>&#x1F4E6; Home Inventory</h3>
-        <p>Keep an inventory of appliances, warranties, and important items. Coming soon.</p>
+
+      <!-- SUB: Fiona's List -->
+      <div class="am-subscreen" id="hm-fiona">
+        <button class="am-back" onclick="hmGo('home')">&#x2190; Back</button>
+        <h3 style="font-size:18px !important;font-weight:700 !important;margin-bottom:4px !important;">&#x1F9F9; Fiona's List</h3>
+        <p style="font-size:12px !important;color:#94a3b8 !important;margin-bottom:16px !important;">Sorting &amp; cleaning tasks for Fiona's next visit. Add tasks as you think of them.</p>
+
+        <!-- Add task -->
+        <div style="display:flex !important;gap:8px !important;margin-bottom:16px !important;">
+          <input type="text" id="fi-task-input" placeholder="Add a task..." style="flex:1 !important;padding:12px 14px !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;font-size:14px !important;box-sizing:border-box !important;" onkeydown="if(event.key==='Enter')fiAddTask()">
+          <button class="am-btn" onclick="fiAddTask()" style="background:#7c3aed !important;color:white !important;border-color:#7c3aed !important;padding:12px 16px !important;font-size:14px !important;white-space:nowrap !important;">+ Add</button>
+        </div>
+
+        <!-- Task count -->
+        <div style="display:flex !important;align-items:center !important;justify-content:space-between !important;margin-bottom:12px !important;">
+          <div style="font-size:13px !important;color:#64748b !important;" id="fi-task-count">0 tasks</div>
+          <button class="am-btn" onclick="fiClearAll()" id="fi-clear-btn" style="background:#ef4444 !important;color:white !important;border-color:#ef4444 !important;padding:8px 14px !important;font-size:12px !important;display:none !important;">&#x1F504; Clear All &amp; Refresh</button>
+        </div>
+
+        <!-- Task list -->
+        <div id="fi-task-list" style="display:flex !important;flex-direction:column !important;gap:6px !important;">
+          <div style="padding:20px !important;text-align:center !important;color:#94a3b8 !important;font-size:13px !important;">Loading...</div>
+        </div>
+
+        <!-- Standalone link -->
+        <div style="margin-top:20px !important;padding:14px 16px !important;background:#f8fafc !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;">
+          <div style="font-size:12px !important;font-weight:600 !important;color:#64748b !important;margin-bottom:6px !important;">&#x1F517; Quick Access Link</div>
+          <div style="font-size:12px !important;color:#94a3b8 !important;margin-bottom:8px !important;">Bookmark this for fast access without logging in</div>
+          <div style="display:flex !important;gap:8px !important;align-items:center !important;">
+            <input type="text" readonly id="fi-link" style="flex:1 !important;padding:8px 10px !important;border:1px solid #e2e8f0 !important;border-radius:6px !important;font-size:11px !important;color:#475569 !important;background:white !important;">
+            <button class="am-btn" onclick="fiCopyLink()" style="padding:8px 12px !important;font-size:12px !important;white-space:nowrap !important;">Copy</button>
+          </div>
+        </div>
       </div>
-      <div class="hm-card">
-        <h3>&#x1F4DE; Important Contacts</h3>
-        <p>Plumber, electrician, real estate agent, and other home contacts. Coming soon.</p>
-      </div>
+
     </div>
 
   </div><!-- /main -->
@@ -1190,6 +1223,7 @@
     if (mobileSelect) mobileSelect.value = name;
     if(name === 'aislemate') amGo('home');
     if(name === 'medical') medGo('home');
+    if(name === 'hometab') hmGo('home');
     if(name === 'habits') habRenderCustom();
     if(name === 'home') dashLoad();
   };
@@ -2908,6 +2942,90 @@
 
     // Auto-populate then render
     habAutoPopulate().then(function(){ habRender(); });
+  })();
+
+  // ─── HOME TAB ───
+  window.hmGo = function(sub) {
+    document.querySelectorAll('#ch-hometab .am-subscreen').forEach(function(s){ s.classList.remove('active'); });
+    document.getElementById('hm-' + sub).classList.add('active');
+    if (sub === 'fiona') fiLoad();
+  };
+
+  // ─── FIONA'S LIST ───
+  (function(){
+    window.fiLoad = async function() {
+      try {
+        var { data, error } = await sb.from('fiona_tasks').select('*').order('created_at', { ascending: true });
+        if (error) throw error;
+        var tasks = data || [];
+        var list = document.getElementById('fi-task-list');
+        var countEl = document.getElementById('fi-task-count');
+        var clearBtn = document.getElementById('fi-clear-btn');
+        var badge = document.getElementById('hm-fiona-badge');
+        var total = tasks.length;
+        var done = tasks.filter(function(t){ return t.done; }).length;
+
+        countEl.textContent = total + ' task' + (total !== 1 ? 's' : '') + (done > 0 ? ' (' + done + ' done)' : '');
+        clearBtn.style.display = total > 0 ? 'inline-flex' : 'none';
+        if (badge) badge.textContent = total + ' task' + (total !== 1 ? 's' : '');
+
+        if (!total) {
+          list.innerHTML = '<div style="padding:20px !important;text-align:center !important;color:#94a3b8 !important;font-size:13px !important;">No tasks yet. Add something for Fiona!</div>';
+          return;
+        }
+
+        var h = '';
+        tasks.forEach(function(t) {
+          h += '<div style="display:flex !important;align-items:center !important;gap:10px !important;padding:12px 14px !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;'+(t.done?'opacity:0.6 !important;':'') +'">';
+          h += '<div onclick="fiToggle('+t.id+')" style="width:22px !important;height:22px !important;border-radius:6px !important;border:2px solid '+(t.done?'#10b981':'#cbd5e1')+' !important;background:'+(t.done?'#10b981':'transparent')+' !important;cursor:pointer !important;display:flex !important;align-items:center !important;justify-content:center !important;flex-shrink:0 !important;color:white !important;font-size:13px !important;">'+(t.done?'&#x2713;':'')+'</div>';
+          h += '<div style="flex:1 !important;font-size:14px !important;'+(t.done?'text-decoration:line-through !important;color:#94a3b8 !important;':'color:#1e293b !important;')+'">'+fiEsc(t.task)+'</div>';
+          h += '<div onclick="fiDelete('+t.id+')" style="color:#94a3b8 !important;cursor:pointer !important;font-size:16px !important;padding:0 4px !important;" title="Remove">&#x1F5D1;</div>';
+          h += '</div>';
+        });
+        list.innerHTML = h;
+      } catch(e) {
+        document.getElementById('fi-task-list').innerHTML = '<div style="padding:20px !important;text-align:center !important;color:#ef4444 !important;font-size:13px !important;">Could not load tasks. The table may not be set up yet.</div>';
+      }
+
+      // Set standalone link
+      var linkEl = document.getElementById('fi-link');
+      if (linkEl) linkEl.value = window.location.origin + '/cath-hub/fiona.html';
+    };
+
+    function fiEsc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+    window.fiAddTask = async function() {
+      var inp = document.getElementById('fi-task-input');
+      var task = inp.value.trim();
+      if (!task) return;
+      await sb.from('fiona_tasks').insert({ id: Date.now(), task: task, done: false });
+      inp.value = '';
+      fiLoad();
+    };
+
+    window.fiToggle = async function(id) {
+      var { data } = await sb.from('fiona_tasks').select('done').eq('id', id).single();
+      await sb.from('fiona_tasks').update({ done: !data.done }).eq('id', id);
+      fiLoad();
+    };
+
+    window.fiDelete = async function(id) {
+      await sb.from('fiona_tasks').delete().eq('id', id);
+      fiLoad();
+    };
+
+    window.fiClearAll = async function() {
+      if (!confirm('Clear all tasks and start fresh for next visit?')) return;
+      await sb.from('fiona_tasks').delete().neq('id', 0);
+      fiLoad();
+    };
+
+    window.fiCopyLink = function() {
+      var inp = document.getElementById('fi-link');
+      inp.select();
+      document.execCommand('copy');
+      alert('Link copied!');
+    };
   })();
 
   // ─── FLOATING AI (with database tools) ───

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fiona's List - Cath Hub</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #f0f4f8; color: #1e293b; min-height: 100vh; }
+
+  .header { background: #1e293b; color: white; padding: 16px 20px; display: flex; align-items: center; gap: 10px; }
+  .header h1 { font-size: 18px; font-weight: 700; }
+  .header-sub { font-size: 12px; color: #94a3b8; margin-left: auto; }
+
+  .container { max-width: 500px; margin: 0 auto; padding: 16px; }
+
+  .add-bar { display: flex; gap: 8px; margin-bottom: 16px; }
+  .add-input { flex: 1; padding: 12px 14px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 15px; outline: none; font-family: inherit; background: white; }
+  .add-input:focus { border-color: #7c3aed; }
+  .add-btn { padding: 12px 20px; background: #7c3aed; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; white-space: nowrap; }
+  .add-btn:hover { background: #6d28d9; }
+
+  .info-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .task-count { font-size: 13px; font-weight: 600; color: #64748b; }
+  .clear-btn { padding: 8px 14px; background: #ef4444; color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; display: none; }
+  .clear-btn:hover { background: #dc2626; }
+
+  .task-item { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: white; border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 6px; }
+  .task-item.done { opacity: 0.6; }
+
+  .task-check { width: 24px; height: 24px; border: 2px solid #cbd5e1; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; background: white; -webkit-tap-highlight-color: transparent; }
+  .task-check:hover { border-color: #10b981; }
+  .task-check.checked { background: #10b981; border-color: #10b981; }
+  .task-check.checked::after { content: '\2713'; color: white; font-size: 13px; font-weight: 700; }
+
+  .task-text { flex: 1; font-size: 14px; font-weight: 500; }
+  .task-text.checked { text-decoration: line-through; color: #94a3b8; }
+
+  .task-del { color: #94a3b8; cursor: pointer; font-size: 16px; padding: 0 4px; -webkit-tap-highlight-color: transparent; }
+  .task-del:hover { color: #ef4444; }
+
+  .empty { padding: 40px 20px; text-align: center; color: #94a3b8; font-size: 14px; }
+  .error { padding: 20px; text-align: center; color: #ef4444; font-size: 13px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span style="font-size: 22px;">&#x1F9F9;</span>
+  <h1>Fiona's List</h1>
+  <span class="header-sub">Sorting &amp; Cleaning</span>
+</div>
+
+<div class="container">
+  <div class="add-bar">
+    <input class="add-input" id="task-input" type="text" placeholder="Add a task..." autofocus>
+    <button class="add-btn" onclick="addTask()">+ Add</button>
+  </div>
+
+  <div class="info-bar">
+    <div class="task-count" id="task-count">Loading...</div>
+    <button class="clear-btn" id="clear-btn" onclick="clearAll()">&#x1F504; Clear All &amp; Refresh</button>
+  </div>
+
+  <div id="task-list"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+(function(){
+  var SB_URL = 'https://ziwycymhaqghdiznyhhw.supabase.co';
+  var SB_KEY = 'sb_publishable_n-xBxzqdGySGh-JWHuI40g_Hb5Qf8mg';
+  var sb = window.supabase.createClient(SB_URL, SB_KEY);
+
+  var input = document.getElementById('task-input');
+  input.addEventListener('keydown', function(e) { if (e.key === 'Enter') addTask(); });
+
+  function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+  async function loadTasks() {
+    try {
+      var { data, error } = await sb.from('fiona_tasks').select('*').order('created_at', { ascending: true });
+      if (error) throw error;
+      var tasks = data || [];
+      var list = document.getElementById('task-list');
+      var countEl = document.getElementById('task-count');
+      var clearBtn = document.getElementById('clear-btn');
+      var total = tasks.length;
+      var done = tasks.filter(function(t){ return t.done; }).length;
+
+      countEl.textContent = total + ' task' + (total !== 1 ? 's' : '') + (done > 0 ? ' (' + done + ' done)' : '');
+      clearBtn.style.display = total > 0 ? 'inline-block' : 'none';
+
+      if (!total) {
+        list.innerHTML = '<div class="empty">No tasks yet. Add something for Fiona!</div>';
+        return;
+      }
+
+      var h = '';
+      tasks.forEach(function(t) {
+        h += '<div class="task-item' + (t.done ? ' done' : '') + '">';
+        h += '<div class="task-check' + (t.done ? ' checked' : '') + '" onclick="toggleTask(' + t.id + ')"></div>';
+        h += '<div class="task-text' + (t.done ? ' checked' : '') + '">' + esc(t.task) + '</div>';
+        h += '<div class="task-del" onclick="deleteTask(' + t.id + ')" title="Remove">&#x1F5D1;</div>';
+        h += '</div>';
+      });
+      list.innerHTML = h;
+    } catch(e) {
+      document.getElementById('task-list').innerHTML = '<div class="error">Could not load tasks. The table may not be set up yet.</div>';
+      document.getElementById('task-count').textContent = '';
+    }
+  }
+
+  window.addTask = async function() {
+    var task = input.value.trim();
+    if (!task) return;
+    await sb.from('fiona_tasks').insert({ id: Date.now(), task: task, done: false });
+    input.value = '';
+    loadTasks();
+  };
+
+  window.toggleTask = async function(id) {
+    var { data } = await sb.from('fiona_tasks').select('done').eq('id', id).single();
+    await sb.from('fiona_tasks').update({ done: !data.done }).eq('id', id);
+    loadTasks();
+  };
+
+  window.deleteTask = async function(id) {
+    await sb.from('fiona_tasks').delete().eq('id', id);
+    loadTasks();
+  };
+
+  window.clearAll = async function() {
+    if (!confirm('Clear all tasks and start fresh for next visit?')) return;
+    await sb.from('fiona_tasks').delete().neq('id', 0);
+    loadTasks();
+  };
+
+  loadTasks();
+  setInterval(loadTasks, 30000);
+})();
+</script>
+</body>
+</html>
