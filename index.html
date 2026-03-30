@@ -1267,7 +1267,7 @@
   var CAT_ORDER = ['Fruit & Veg','Meat','Dairy','Pantry','Frozen','Drinks','Household','Other'];
 
   window.amGo = function(sub){
-    document.querySelectorAll('#cathHub .am-subscreen').forEach(function(s){ s.classList.remove('active'); });
+    document.querySelectorAll('#ch-aislemate .am-subscreen').forEach(function(s){ s.classList.remove('active'); });
     document.getElementById('am-' + sub).classList.add('active');
     if (sub === 'family') amLoadFamily();
     if (sub === 'select') amLoadMaster();
