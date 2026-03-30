@@ -2666,16 +2666,17 @@
           }
         }
         // Fix frequencies
-        (existingHabs || []).forEach(function(h) {
+        for (var fi = 0; fi < (existingHabs || []).length; fi++) {
+          var h = existingHabs[fi];
           var shouldBeDaily = dailyMedNames.some(function(d) { return h.name.toLowerCase().indexOf(d.toLowerCase()) !== -1; });
           if (shouldBeDaily && h.freq !== 'daily') {
-            sb.from('habit_meds').update({ freq: 'daily' }).eq('id', h.id);
+            await sb.from('habit_meds').update({ freq: 'daily' }).eq('id', h.id);
           }
           var shouldBeAsNeeded = AS_NEEDED_MEDS.some(function(a) { return h.name.toLowerCase() === a.name.toLowerCase(); });
           if (shouldBeAsNeeded && h.freq !== 'asneeded') {
-            sb.from('habit_meds').update({ freq: 'asneeded' }).eq('id', h.id);
+            await sb.from('habit_meds').update({ freq: 'asneeded' }).eq('id', h.id);
           }
-        });
+        }
       } catch(e) {}
     }
 
