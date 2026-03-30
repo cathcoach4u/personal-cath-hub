@@ -67,7 +67,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-(function(){
+(async function(){
   var SB_URL = 'https://ziwycymhaqghdiznyhhw.supabase.co';
   var SB_KEY = 'sb_publishable_n-xBxzqdGySGh-JWHuI40g_Hb5Qf8mg';
   var sb = window.supabase.createClient(SB_URL, SB_KEY);
@@ -76,6 +76,21 @@
   input.addEventListener('keydown', function(e) { if (e.key === 'Enter') addTask(); });
 
   function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+  // Auto-add from URL param: fiona.html?add=Clean+oven
+  var params = new URLSearchParams(window.location.search);
+  var autoAdd = params.get('add');
+  if (autoAdd) {
+    autoAdd = autoAdd.trim();
+    if (autoAdd) {
+      await sb.from('fiona_tasks').insert({ id: Date.now(), task: autoAdd, done: false });
+      window.history.replaceState({}, '', window.location.pathname);
+      var countEl = document.getElementById('task-count');
+      countEl.textContent = '\u2705 Added: ' + autoAdd;
+      countEl.style.color = '#16a34a';
+      setTimeout(function() { countEl.style.color = ''; loadTasks(); }, 2000);
+    }
+  }
 
   async function loadTasks() {
     try {

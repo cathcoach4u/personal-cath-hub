@@ -81,7 +81,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-(function(){
+(async function(){
   var SB_URL = 'https://ziwycymhaqghdiznyhhw.supabase.co';
   var SB_KEY = 'sb_publishable_n-xBxzqdGySGh-JWHuI40g_Hb5Qf8mg';
   var sb = window.supabase.createClient(SB_URL, SB_KEY);
@@ -90,6 +90,25 @@
   var CAT_ORDER = ['Fruit & Veg','Meat','Dairy','Pantry','Frozen','Drinks','Household','Other'];
 
   function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+  // Auto-add from URL param: shopping.html?add=Milk
+  var params = new URLSearchParams(window.location.search);
+  var autoAdd = params.get('add');
+  if (autoAdd) {
+    autoAdd = autoAdd.trim();
+    if (autoAdd) {
+      // Check master list for category/store
+      var { data: match } = await sb.from('master_items').select('*').ilike('name', autoAdd).limit(1);
+      var row = { name: autoAdd, category: 'Other', store: 'Other' };
+      if (match && match.length) {
+        row.name = match[0].name;
+        row.category = match[0].category || 'Other';
+        row.store = match[0].store || 'Other';
+      }
+      await sb.from('shopping_items').insert(row);
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }
 
   // ─── LOAD ITEMS ───
   async function loadItems() {
