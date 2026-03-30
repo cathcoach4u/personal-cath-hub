@@ -60,6 +60,19 @@
     <input class="add-input" id="task-input" type="text" placeholder="What needs doing?" autofocus>
     <button class="add-btn" onclick="addTask()">Add</button>
   </div>
+  <div style="margin-bottom:16px;">
+    <select id="cat-select" style="width:100%;padding:12px 14px;border:1px solid #e2e8f0;border-radius:12px;font-size:15px;color:#1e293b;background:white;appearance:auto;-webkit-appearance:listbox;">
+      <option value="General">&#x1F4CB; General</option>
+      <option value="Health">&#x1FA7A; Health</option>
+      <option value="Home">&#x1F3E0; Home</option>
+      <option value="Work">&#x1F4BC; Work</option>
+      <option value="Shopping">&#x1F6D2; Shopping</option>
+      <option value="Finance">&#x1F4B0; Finance</option>
+      <option value="Family">&#x1F46A; Family</option>
+      <option value="Admin">&#x1F4DD; Admin</option>
+      <option value="Personal">&#x1F64B; Personal</option>
+    </select>
+  </div>
 
   <div class="section-label" id="pending-label">TO DO</div>
   <div id="pending-list"></div>
@@ -82,33 +95,15 @@
 
   function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
-  var TD_CATEGORIES = {
-    'Health': ['doctor','dentist','physio','appointment','medication','pharmacy','prescription','medical','gp','specialist','blood test','xray','scan','therapy','psychologist','chiropractor','optometrist'],
-    'Shopping': ['buy','pick up','order','return item','exchange','shop','woolworths','coles','aldi','kmart','bunnings','target','chemist','officeworks'],
-    'Home': ['clean','fix','repair','organise','sort','tidy','laundry','dishes','vacuum','mop','garden','mow','bin','rubbish','declutter','paint','plumber','electrician'],
-    'Work': ['email','call','meeting','invoice','client','coaching','session','prepare','send','follow up','presentation','deadline','submit','report'],
-    'Finance': ['pay','bill','transfer','bank','tax','accountant','insurance','superannuation','budget','refund','claim'],
-    'Family': ['andrew','sarah','russell','school','lunch','dinner','cook','pick up kids','birthday','present','gift']
-  };
-  var TD_CAT_ICONS = { 'Health': '\uD83E\uDE7A', 'Shopping': '\uD83D\uDED2', 'Home': '\uD83C\uDFE0', 'Work': '\uD83D\uDCBC', 'Finance': '\uD83D\uDCB0', 'Family': '\uD83D\uDC6A', 'General': '\uD83D\uDCCB' };
+  var TD_CAT_ICONS = { 'Health': '\uD83E\uDE7A', 'Shopping': '\uD83D\uDED2', 'Home': '\uD83C\uDFE0', 'Work': '\uD83D\uDCBC', 'Finance': '\uD83D\uDCB0', 'Family': '\uD83D\uDC6A', 'Admin': '\uD83D\uDCDD', 'Personal': '\uD83D\uDE4B', 'General': '\uD83D\uDCCB' };
 
-  function autoCategory(task) {
-    var lower = task.toLowerCase();
-    for (var cat in TD_CATEGORIES) {
-      for (var i = 0; i < TD_CATEGORIES[cat].length; i++) {
-        if (lower.indexOf(TD_CATEGORIES[cat][i]) !== -1) return cat;
-      }
-    }
-    return 'General';
-  }
-
-  // Auto-add from URL param: todo.html?add=Buy+milk
+  // Auto-add from URL param: todo.html?add=Buy+milk or todo.html?add=Buy+milk&cat=Shopping
   var params = new URLSearchParams(window.location.search);
   var autoAdd = params.get('add');
   if (autoAdd) {
     autoAdd = autoAdd.trim();
     if (autoAdd) {
-      var autoCat = autoCategory(autoAdd);
+      var autoCat = params.get('cat') || 'General';
       await sb.from('personal_todos').insert({ id: Date.now(), task: autoAdd, done: false, category: autoCat, created_at: new Date().toISOString() });
       var banner = document.getElementById('auto-banner');
       banner.textContent = '\u2705 Added: ' + autoAdd;
@@ -177,9 +172,11 @@
   window.addTask = async function() {
     var task = input.value.trim();
     if (!task) return;
-    var category = autoCategory(task);
+    var catSelect = document.getElementById('cat-select');
+    var category = catSelect.value;
     await sb.from('personal_todos').insert({ id: Date.now(), task: task, done: false, category: category, created_at: new Date().toISOString() });
     input.value = '';
+    catSelect.value = 'General';
     loadTasks();
   };
 

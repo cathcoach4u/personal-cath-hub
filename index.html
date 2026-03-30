@@ -1073,12 +1073,23 @@
     <!-- ═══ TO-DO ═══ -->
     <div class="screen" id="ch-todo">
       <h2>&#x2705; My To-Do</h2>
-      <p style="font-size:12px !important;color:#94a3b8 !important;margin-bottom:16px !important;">Personal tasks. Items auto-categorise as you add them.</p>
-
       <!-- Add task -->
-      <div style="display:flex !important;gap:8px !important;margin-bottom:12px !important;">
+      <div style="display:flex !important;gap:8px !important;margin-bottom:8px !important;">
         <input type="text" id="td-task-input" placeholder="Add a task..." style="flex:1 !important;padding:12px 14px !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;font-size:14px !important;box-sizing:border-box !important;" onkeydown="if(event.key==='Enter')tdAddTask()">
         <button class="am-btn" onclick="tdAddTask()" style="background:#3b82f6 !important;color:white !important;border-color:#3b82f6 !important;padding:12px 16px !important;font-size:14px !important;white-space:nowrap !important;">+ Add</button>
+      </div>
+      <div style="margin-bottom:12px !important;">
+        <select id="td-cat-select" style="width:100% !important;padding:10px 14px !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;font-size:14px !important;color:#1e293b !important;background:white !important;appearance:auto !important;-webkit-appearance:listbox !important;">
+          <option value="General">&#x1F4CB; General</option>
+          <option value="Health">&#x1FA7A; Health</option>
+          <option value="Home">&#x1F3E0; Home</option>
+          <option value="Work">&#x1F4BC; Work</option>
+          <option value="Shopping">&#x1F6D2; Shopping</option>
+          <option value="Finance">&#x1F4B0; Finance</option>
+          <option value="Family">&#x1F46A; Family</option>
+          <option value="Admin">&#x1F4DD; Admin</option>
+          <option value="Personal">&#x1F64B; Personal</option>
+        </select>
       </div>
 
       <!-- Category filter -->
@@ -3239,26 +3250,8 @@
 
   // ─── PERSONAL TO-DO ───
   (function(){
-    var TD_CATEGORIES = {
-      'Health': ['doctor','dentist','physio','appointment','medication','pharmacy','prescription','medical','gp','specialist','blood test','xray','scan','therapy','psychologist','chiropractor','optometrist'],
-      'Shopping': ['buy','pick up','order','return item','exchange','shop','woolworths','coles','aldi','kmart','bunnings','target','chemist','officeworks'],
-      'Home': ['clean','fix','repair','organise','sort','tidy','laundry','dishes','vacuum','mop','garden','mow','bin','rubbish','declutter','paint','plumber','electrician'],
-      'Work': ['email','call','meeting','invoice','client','coaching','session','prepare','send','follow up','presentation','deadline','submit','report'],
-      'Finance': ['pay','bill','transfer','bank','tax','accountant','insurance','superannuation','budget','refund','claim'],
-      'Family': ['andrew','sarah','russell','school','lunch','dinner','cook','pick up kids','birthday','present','gift']
-    };
-    var TD_CAT_ICONS = { 'Health': '&#x1FA7A;', 'Shopping': '&#x1F6D2;', 'Home': '&#x1F3E0;', 'Work': '&#x1F4BC;', 'Finance': '&#x1F4B0;', 'Family': '&#x1F46A;', 'General': '&#x1F4CB;' };
+    var TD_CAT_ICONS = { 'Health': '&#x1FA7A;', 'Shopping': '&#x1F6D2;', 'Home': '&#x1F3E0;', 'Work': '&#x1F4BC;', 'Finance': '&#x1F4B0;', 'Family': '&#x1F46A;', 'Admin': '&#x1F4DD;', 'Personal': '&#x1F64B;', 'General': '&#x1F4CB;' };
     var tdFilterCat = 'All';
-
-    function tdAutoCategory(task) {
-      var lower = task.toLowerCase();
-      for (var cat in TD_CATEGORIES) {
-        for (var i = 0; i < TD_CATEGORIES[cat].length; i++) {
-          if (lower.indexOf(TD_CATEGORIES[cat][i]) !== -1) return cat;
-        }
-      }
-      return 'General';
-    }
 
     function tdEsc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
@@ -3345,9 +3338,11 @@
       var inp = document.getElementById('td-task-input');
       var task = inp.value.trim();
       if (!task) return;
-      var category = tdAutoCategory(task);
+      var catSelect = document.getElementById('td-cat-select');
+      var category = catSelect.value;
       await sb.from('personal_todos').insert({ id: Date.now(), task: task, done: false, category: category, created_at: new Date().toISOString() });
       inp.value = '';
+      catSelect.value = 'General';
       tdLoad();
     };
 
