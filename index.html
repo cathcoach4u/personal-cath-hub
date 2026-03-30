@@ -533,6 +533,16 @@
         <div id="dash-hab-missed" style="display:none !important;margin-top:8px !important;background:#fef2f2 !important;border:1px solid #fecaca !important;border-radius:8px !important;padding:8px 12px !important;font-size:12px !important;color:#991b1b !important;"></div>
       </div>
 
+      <div class="dash-section">
+        <div style="display:flex !important;justify-content:space-between !important;align-items:center !important;margin-bottom:12px !important;">
+          <h3 style="margin-bottom:0 !important;">&#x1F9F9; Fiona's List</h3>
+          <span style="font-size:12px !important;color:#3b82f6 !important;cursor:pointer !important;" onclick="chNav('hometab',document.querySelectorAll('#cathHub .nav-item')[6]);setTimeout(function(){hmGo('fiona')},100)">View all &rarr;</span>
+        </div>
+        <div id="dash-fiona-summary">
+          <div style="font-size:13px !important;color:#94a3b8 !important;">Loading...</div>
+        </div>
+      </div>
+
     </div>
 
     <!-- ═══ AISLEMATE ═══ -->
@@ -1254,6 +1264,39 @@
       container.innerHTML = html;
     }
 
+    // Fiona's List summary
+    try {
+      var { data: fiTasks } = await sb.from('fiona_tasks').select('*').order('created_at', { ascending: true });
+      fiTasks = fiTasks || [];
+      var fiContainer = document.getElementById('dash-fiona-summary');
+      var fiBadge = document.getElementById('hm-fiona-badge');
+      var total = fiTasks.length;
+      var done = fiTasks.filter(function(t){ return t.done; }).length;
+      var pending = total - done;
+      if (fiBadge) fiBadge.textContent = total + ' task' + (total !== 1 ? 's' : '');
+      if (!total) {
+        fiContainer.innerHTML = '<div style="text-align:center !important;padding:12px !important;color:#94a3b8 !important;font-size:13px !important;">No tasks for Fiona yet</div>';
+      } else {
+        var fh = '<div style="display:flex !important;gap:10px !important;margin-bottom:10px !important;">';
+        fh += '<div style="flex:1 !important;text-align:center !important;background:#f5f3ff !important;border:1px solid #ddd6fe !important;border-radius:10px !important;padding:10px 8px !important;"><div style="font-size:18px !important;font-weight:700 !important;color:#7c3aed !important;">' + pending + '</div><div style="font-size:10px !important;color:#64748b !important;">Pending</div></div>';
+        fh += '<div style="flex:1 !important;text-align:center !important;background:#f0fdf4 !important;border:1px solid #bbf7d0 !important;border-radius:10px !important;padding:10px 8px !important;"><div style="font-size:18px !important;font-weight:700 !important;color:#16a34a !important;">' + done + '</div><div style="font-size:10px !important;color:#64748b !important;">Done</div></div>';
+        fh += '<div style="flex:1 !important;text-align:center !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:10px 8px !important;"><div style="font-size:18px !important;font-weight:700 !important;color:#1e293b !important;">' + total + '</div><div style="font-size:10px !important;color:#64748b !important;">Total</div></div>';
+        fh += '</div>';
+        var pendingTasks = fiTasks.filter(function(t){ return !t.done; });
+        if (pendingTasks.length) {
+          pendingTasks.slice(0, 5).forEach(function(t) {
+            fh += '<div style="display:flex !important;align-items:center !important;gap:8px !important;padding:6px 0 !important;">';
+            fh += '<span style="color:#94a3b8 !important;font-size:12px !important;">&#x25CB;</span>';
+            fh += '<span style="font-size:13px !important;">' + esc(t.task) + '</span>';
+            fh += '</div>';
+          });
+          if (pendingTasks.length > 5) fh += '<div style="font-size:12px !important;color:#94a3b8 !important;padding-top:4px !important;">+ ' + (pendingTasks.length - 5) + ' more</div>';
+        }
+        fiContainer.innerHTML = fh;
+      }
+    } catch(e) {
+      document.getElementById('dash-fiona-summary').innerHTML = '<div style="text-align:center !important;padding:12px !important;color:#94a3b8 !important;font-size:13px !important;">Could not load tasks</div>';
+    }
 
   }
 
