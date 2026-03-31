@@ -2947,8 +2947,20 @@
     var AS_NEEDED_MEDS = [
       { name: 'Nurofen', dose: '2 tablets' },
       { name: 'Panadol', dose: '2 tablets' },
-      { name: 'Nexium Antacid', dose: '', brands: ['Nexium'] }
+      { name: 'Nexium Antacid', dose: '', hasBrands: true }
     ];
+
+    // Load antacid brands from localStorage (user can add more via UI)
+    function getAntacidBrands() {
+      try {
+        var stored = localStorage.getItem('cathhub_antacid_brands');
+        if (stored) return JSON.parse(stored);
+      } catch(e) {}
+      return ['Nexium'];
+    }
+    function saveAntacidBrands(brands) {
+      localStorage.setItem('cathhub_antacid_brands', JSON.stringify(brands));
+    }
 
     var MED_TIMES = {
       'vyvanse': 'Morning',
@@ -2992,14 +3004,123 @@
       habRender();
     };
 
-    window.habRecordAsNeeded = async function(id, brand) {
-      var today = todayKey();
-      var logData = { med_id: id, date: today, created_at: new Date().toISOString() };
+    // Show the recording options panel for an as-needed med
+    window.habShowRecordOptions = function(medId, hasBrands) {
+      var panel = document.getElementById('record-panel-' + medId);
+      if (!panel) return;
+      var visible = panel.style.display !== 'none';
+      // Hide all other panels first
+      document.querySelectorAll('[id^="record-panel-"]').forEach(function(p) { p.style.display = 'none'; });
+      if (visible) return;
+      // Build panel content
+      var h = '<div style="font-size:12px !important;font-weight:600 !important;color:#475569 !important;margin-bottom:8px !important;">When did you take it?</div>';
+      h += '<div style="display:flex !important;gap:6px !important;flex-wrap:wrap !important;margin-bottom:8px !important;">';
+      h += '<button class="am-btn" onclick="habRecordAsNeededWithTime(' + medId + ',\'now\',' + hasBrands + ')" style="background:#10b981 !important;color:white !important;border-color:#10b981 !important;padding:6px 12px !important;font-size:12px !important;">Just now</button>';
+      h += '<button class="am-btn" onclick="habRecordAsNeededWithTime(' + medId + ',\'lastnight\',' + hasBrands + ')" style="background:#6366f1 !important;color:white !important;border-color:#6366f1 !important;padding:6px 12px !important;font-size:12px !important;">Last night</button>';
+      h += '<button class="am-btn" onclick="habRecordAsNeededWithTime(' + medId + ',\'custom\',' + hasBrands + ')" style="background:#f59e0b !important;color:white !important;border-color:#f59e0b !important;padding:6px 12px !important;font-size:12px !important;">Other time</button>';
+      h += '</div>';
+      panel.innerHTML = h;
+      panel.style.display = 'block';
+    };
+
+    // Handle time selection then optionally show brand picker
+    window.habRecordAsNeededWithTime = function(medId, when, hasBrands) {
+      var now = new Date();
+      var logDate, logCreatedAt;
+      if (when === 'now') {
+        logDate = todayKey();
+        logCreatedAt = now.toISOString();
+      } else if (when === 'lastnight') {
+        // If it's before 4am, "last night" = yesterday evening 9pm; otherwise today-1 at 9pm
+        var lastNight = new Date(now);
+        if (now.getHours() < 4) {
+          lastNight.setDate(lastNight.getDate() - 1);
+        } else {
+          lastNight.setDate(lastNight.getDate() - 1);
+        }
+        lastNight.setHours(21, 0, 0, 0);
+        logDate = lastNight.getFullYear() + '-' + String(lastNight.getMonth()+1).padStart(2,'0') + '-' + String(lastNight.getDate()).padStart(2,'0');
+        logCreatedAt = lastNight.toISOString();
+      } else {
+        var timeStr = prompt('Enter date & time (e.g. 8:30pm, yesterday 2pm, 29/3 9pm):');
+        if (!timeStr) return;
+        var parsed = parseFlexibleDateTime(timeStr);
+        if (!parsed) { alert('Could not understand that. Try: 8:30pm, yesterday 2pm, or 29/3 9pm'); return; }
+        logDate = parsed.date;
+        logCreatedAt = parsed.iso;
+      }
+      if (hasBrands) {
+        habShowBrandButtons(medId, logDate, logCreatedAt);
+      } else {
+        habInsertDose(medId, logDate, logCreatedAt);
+      }
+    };
+
+    function parseFlexibleDateTime(str) {
+      str = str.trim().toLowerCase();
+      var now = new Date();
+      var targetDate = new Date(now);
+      var hours = null, mins = 0;
+
+      // Check for "yesterday"
+      if (str.indexOf('yesterday') !== -1) {
+        targetDate.setDate(targetDate.getDate() - 1);
+        str = str.replace('yesterday', '').trim();
+      }
+      // Check for date like 29/3 or 29/03
+      var dateMatch = str.match(/(\d{1,2})\/(\d{1,2})/);
+      if (dateMatch) {
+        targetDate.setDate(parseInt(dateMatch[1]));
+        targetDate.setMonth(parseInt(dateMatch[2]) - 1);
+        str = str.replace(dateMatch[0], '').trim();
+      }
+      // Parse time
+      var timeMatch = str.match(/(\d{1,2}):?(\d{2})?\s*(am|pm)?/);
+      if (timeMatch) {
+        hours = parseInt(timeMatch[1]);
+        mins = timeMatch[2] ? parseInt(timeMatch[2]) : 0;
+        if (timeMatch[3] === 'pm' && hours < 12) hours += 12;
+        if (timeMatch[3] === 'am' && hours === 12) hours = 0;
+      }
+      if (hours === null) return null;
+      targetDate.setHours(hours, mins, 0, 0);
+      var d = targetDate.getFullYear() + '-' + String(targetDate.getMonth()+1).padStart(2,'0') + '-' + String(targetDate.getDate()).padStart(2,'0');
+      return { date: d, iso: targetDate.toISOString() };
+    }
+
+    // Show brand buttons after time is selected
+    window.habShowBrandButtons = function(medId, logDate, logCreatedAt) {
+      var brands = getAntacidBrands();
+      var panel = document.getElementById('record-panel-' + medId);
+      if (!panel) return;
+      var h = '<div style="font-size:12px !important;font-weight:600 !important;color:#475569 !important;margin-bottom:8px !important;">Which brand?</div>';
+      h += '<div style="display:flex !important;gap:6px !important;flex-wrap:wrap !important;">';
+      for (var i = 0; i < brands.length; i++) {
+        h += '<button class="am-btn" onclick="habInsertDose(' + medId + ',\'' + logDate + '\',\'' + logCreatedAt + '\',\'' + esc(brands[i]) + '\')" style="background:#eff6ff !important;color:#2563eb !important;border-color:#bfdbfe !important;padding:6px 12px !important;font-size:12px !important;">' + esc(brands[i]) + '</button>';
+      }
+      h += '<button class="am-btn" onclick="habAddBrand(' + medId + ',\'' + logDate + '\',\'' + logCreatedAt + '\')" style="background:#f8fafc !important;color:#64748b !important;border-color:#e2e8f0 !important;padding:6px 12px !important;font-size:12px !important;">+ Add brand</button>';
+      h += '</div>';
+      panel.innerHTML = h;
+    };
+
+    window.habAddBrand = function(medId, logDate, logCreatedAt) {
+      var name = prompt('Enter brand name:');
+      if (!name || !name.trim()) return;
+      name = name.trim();
+      var brands = getAntacidBrands();
+      if (brands.indexOf(name) === -1) {
+        brands.push(name);
+        saveAntacidBrands(brands);
+      }
+      habInsertDose(medId, logDate, logCreatedAt, name);
+    };
+
+    window.habInsertDose = async function(medId, logDate, logCreatedAt, brand) {
+      var logData = { med_id: medId, date: logDate, created_at: logCreatedAt };
       if (brand) {
         logData.note = brand;
         var { error } = await sb.from('habit_logs').insert(logData);
         if (error && error.message && error.message.indexOf('note') !== -1) {
-          // note column doesn't exist yet, insert without it
           delete logData.note;
           await sb.from('habit_logs').insert(logData);
         }
@@ -3007,15 +3128,6 @@
         await sb.from('habit_logs').insert(logData);
       }
       habRender();
-    };
-
-    window.habShowBrandPicker = function(medId, brands) {
-      if (brands.length === 1) {
-        habRecordAsNeeded(medId, brands[0]);
-        return;
-      }
-      var picker = document.getElementById('brand-picker-' + medId);
-      if (picker) picker.style.display = picker.style.display === 'none' ? 'flex' : 'none';
     };
 
     window.habChangeTime = async function(logId) {
@@ -3157,7 +3269,7 @@
             var med = asneeded[a];
             var asInfo = AS_NEEDED_MEDS.find(function(x){ return x.name.toLowerCase() === med.name.toLowerCase(); });
             var doseLabel = asInfo && asInfo.dose ? ' (' + asInfo.dose + ')' : '';
-            var hasBrands = asInfo && asInfo.brands && asInfo.brands.length > 0;
+            var hasBrands = !!(asInfo && asInfo.hasBrands);
             // Count how many times taken today
             var todayLogs = [];
             try {
@@ -3165,19 +3277,8 @@
               todayLogs = tl || [];
             } catch(e) {}
             h += '<div class="hab-med-row" style="flex-wrap:wrap !important;">';
-            if (hasBrands) {
-              h += '<button class="am-btn" onclick="habShowBrandPicker(' + med.id + ',' + JSON.stringify(asInfo.brands).replace(/"/g, '&quot;') + ')" style="background:#3b82f6 !important;color:white !important;border-color:#3b82f6 !important;padding:6px 12px !important;font-size:12px !important;">Record dose</button>';
-            } else {
-              h += '<button class="am-btn" onclick="habRecordAsNeeded(' + med.id + ')" style="background:#3b82f6 !important;color:white !important;border-color:#3b82f6 !important;padding:6px 12px !important;font-size:12px !important;">Record dose</button>';
-            }
+            h += '<button class="am-btn" onclick="habShowRecordOptions(' + med.id + ',' + hasBrands + ')" style="background:#3b82f6 !important;color:white !important;border-color:#3b82f6 !important;padding:6px 12px !important;font-size:12px !important;">Record dose</button>';
             h += '<div style="flex:1 !important;"><div class="hab-med-name" style="margin-bottom:0 !important;">' + esc(med.name) + esc(doseLabel) + '</div>';
-            if (hasBrands && asInfo.brands.length > 1) {
-              h += '<div id="brand-picker-' + med.id + '" style="display:none !important;gap:6px !important;flex-wrap:wrap !important;padding:6px 0 !important;">';
-              for (var b = 0; b < asInfo.brands.length; b++) {
-                h += '<button class="am-btn" onclick="habRecordAsNeeded(' + med.id + ',\'' + esc(asInfo.brands[b]) + '\')" style="background:#eff6ff !important;color:#2563eb !important;border-color:#bfdbfe !important;padding:4px 10px !important;font-size:11px !important;">' + esc(asInfo.brands[b]) + '</button>';
-              }
-              h += '</div>';
-            }
             if (todayLogs.length > 0) {
               h += '<div style="font-size:11px !important;color:#10b981 !important;">' + todayLogs.length + ' dose' + (todayLogs.length > 1 ? 's' : '') + ' today</div>';
               todayLogs.forEach(function(tl) {
@@ -3189,6 +3290,7 @@
                 h += '</div>';
               });
             }
+            h += '<div id="record-panel-' + med.id + '" style="display:none !important;padding:8px 0 !important;"></div>';
             h += '</div>';
             h += '</div>';
           }
