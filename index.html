@@ -3162,27 +3162,14 @@
     };
 
     window.habChangeTime = async function(logId) {
-      var timeStr = prompt('Enter time (e.g. 8:30am, 14:00, 2:15pm):');
-      if (!timeStr) return;
-      // Parse common time formats
-      timeStr = timeStr.trim().toLowerCase();
-      var hours, mins;
-      var match = timeStr.match(/^(\d{1,2}):(\d{2})\s*(am|pm)?$/);
-      if (match) {
-        hours = parseInt(match[1]);
-        mins = parseInt(match[2]);
-        if (match[3] === 'pm' && hours < 12) hours += 12;
-        if (match[3] === 'am' && hours === 12) hours = 0;
-      } else {
-        alert('Could not understand that time. Try format like 8:30am or 14:00');
+      var input = prompt('Enter time or date & time:\ne.g. 8:30pm, yesterday 9pm, 29/3 8pm');
+      if (!input) return;
+      var parsed = parseFlexibleDateTime(input);
+      if (!parsed) {
+        alert('Could not understand that. Try: 8:30pm, yesterday 9pm, or 29/3 8pm');
         return;
       }
-      // Get the log entry to find its date
-      var { data: log } = await sb.from('habit_logs').select('date').eq('id', logId).single();
-      if (!log) return;
-      var dt = new Date(log.date + 'T00:00:00');
-      dt.setHours(hours, mins, 0, 0);
-      await sb.from('habit_logs').update({ created_at: dt.toISOString() }).eq('id', logId);
+      await sb.from('habit_logs').update({ date: parsed.date, created_at: parsed.iso }).eq('id', logId);
       habRender();
     };
 
