@@ -2975,24 +2975,55 @@
         var { data: existingHabs } = await sb.from('habit_meds').select('id, name, freq');
         var existingNames = (existingHabs || []).map(function(m){ return m.name.toLowerCase(); });
         var dailyMedNames = ['Vyvanse', 'Valtrex', 'Levothyroxine', 'Xobet'];
+        var asNeededNames = AS_NEEDED_MEDS.map(function(m){ return m.name.toLowerCase(); });
         for (var i = 0; i < (allMeds || []).length; i++) {
           var m = allMeds[i];
           // Check if any existing entry partially matches this med name
           var alreadyExists = existingNames.some(function(en) {
             return m.name.toLowerCase().indexOf(en) !== -1 || en.indexOf(m.name.toLowerCase()) !== -1;
           });
-          if (!alreadyExists) {
+          // Also skip if this med matches an as-needed med (handled below)
+          var isAsNeededMed = asNeededNames.some(function(an) {
+            return m.name.toLowerCase().indexOf(an) !== -1 || an.indexOf(m.name.toLowerCase()) !== -1;
+          }) || (m.schedule && m.schedule.toLowerCase().indexOf('as needed') !== -1);
+          if (!alreadyExists && !isAsNeededMed) {
             var isDaily = dailyMedNames.some(function(d) { return m.name.toLowerCase().indexOf(d.toLowerCase()) !== -1; });
             var freq = isDaily ? 'daily' : 'weekly';
             await sb.from('habit_meds').insert({ id: Date.now() + i, name: m.name, freq: freq });
           }
         }
-        // Ensure as-needed meds exist
-        var { data: refreshed } = await sb.from('habit_meds').select('name');
-        var refreshedNames = (refreshed || []).map(function(m){ return m.name.toLowerCase(); });
+        // Ensure as-needed meds exist (use partial matching to avoid duplicates)
+        var { data: refreshed } = await sb.from('habit_meds').select('id, name, freq');
+        var refreshedList = (refreshed || []);
         for (var j = 0; j < AS_NEEDED_MEDS.length; j++) {
-          if (refreshedNames.indexOf(AS_NEEDED_MEDS[j].name.toLowerCase()) === -1) {
+          var asName = AS_NEEDED_MEDS[j].name.toLowerCase();
+          var existingEntry = refreshedList.find(function(r) {
+            return r.name.toLowerCase().indexOf(asName) !== -1 || asName.indexOf(r.name.toLowerCase()) !== -1;
+          });
+          if (existingEntry) {
+            // If it exists but with wrong freq, fix it
+            if (existingEntry.freq !== 'asneeded') {
+              await sb.from('habit_meds').update({ freq: 'asneeded', name: AS_NEEDED_MEDS[j].name }).eq('id', existingEntry.id);
+            }
+          } else {
             await sb.from('habit_meds').insert({ id: Date.now() + 100 + j, name: AS_NEEDED_MEDS[j].name, freq: 'asneeded' });
+          }
+        }
+        // Clean up duplicates: if multiple habit_meds match the same as-needed med, keep only one
+        var { data: allHabs } = await sb.from('habit_meds').select('id, name, freq');
+        for (var k = 0; k < AS_NEEDED_MEDS.length; k++) {
+          var target = AS_NEEDED_MEDS[k].name.toLowerCase();
+          var matches = (allHabs || []).filter(function(h) {
+            return h.name.toLowerCase().indexOf(target) !== -1 || target.indexOf(h.name.toLowerCase()) !== -1;
+          });
+          if (matches.length > 1) {
+            // Keep the one with freq=asneeded or the first one, delete the rest
+            var keep = matches.find(function(m){ return m.freq === 'asneeded'; }) || matches[0];
+            for (var d = 0; d < matches.length; d++) {
+              if (matches[d].id !== keep.id) {
+                await sb.from('habit_meds').delete().eq('id', matches[d].id);
+              }
+            }
           }
         }
       } catch(e) {}
