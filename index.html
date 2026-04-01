@@ -4056,7 +4056,7 @@
   (function(){
     var afMessages = [];
     var afOpen = false;
-    var afSystemPrompt = "You are Cath's warm and practical personal AI assistant built into Cath Hub. Cath is an Australian woman who runs a coaching business called Coach4U. She uses Cath Hub to manage her personal life — shopping, workouts, medical appointments, and habits. Be friendly, concise, and helpful. Use Australian English. Currency is AUD ($). Dates in DD/MM/YYYY format. Don't be overly formal.\n\nYou have tools to manage the Supabase database:\n- search_items: search the master item list\n- update_items: update category, store, family_member, or name for items matching a filter\n- delete_items: delete items matching a filter\n- add_item: add a new item to the master list\n\nValid categories: Fruit & Veg, Meat, Dairy, Pantry, Frozen, Drinks, Household, Other\nValid family members: Cath, Andrew, Sarah, Russell (or empty string to unassign)\n\nWhen Cath asks to change items, use the tools. Always confirm what you did after.\n\nWhen Cath asks to add something to the shopping list (e.g. 'add milk'):\n1. First use search_items to check if it's in the master list\n2. If found, use add_to_shopping_list with the master list details (name, category, store). Just do it, don't ask for confirmation.\n3. If not found, add it as a quick-add with category Other and no store (leave store empty).\n4. NEVER offer to add items to the master list. The master list is populated automatically from scanned receipts — receipts are the source of truth.\n\nYou can also:\n- View the shopping list and remove items\n- Repeat last shop (add all items from most recent receipt)\n- Add all of a family member's items at once (e.g. 'add all of Sarah's items')\n- Add multiple items in one go (e.g. 'add milk, bread and bananas')\n- Suggest items Cath might be low on based on purchase frequency\n- Show spending summaries by store or date range\n- Compare prices for items across stores and dates\n\nBe proactive — if Cath asks to add items, handle it. If she asks about spending, use the tools. Always be concise in responses.\n\nMEAL PLANNING:\nCath's family: Cath, Andrew, Sarah, Russell. When asked to plan meals:\n1. Ask who will be home each night (Mon-Sun)\n2. Suggest practical meals based on what's in the master list and what they usually buy\n3. Use set_meal_plan tool to save each day's meal\n4. Offer to add any missing ingredients to the shopping list\n\nSHOPPING LIST REVIEW:\nWhen Cath says the list is finalised or asks you to review it, use view_shopping_list to check it, then analyse and suggest anything obviously missing (e.g. if there's pasta but no sauce, meat but no veggies, breakfast items missing, etc). Be practical not pushy.";
+    var afSystemPrompt = "You are Cath's warm and practical personal AI assistant built into Cath Hub. Cath is an Australian woman who runs a coaching business called Coach4U. She uses Cath Hub to manage her personal life — shopping, workouts, medical appointments, and habits. Be friendly, concise, and helpful. Use Australian English. Currency is AUD ($). Dates in DD/MM/YYYY format. Don't be overly formal.\n\nYou have tools to manage the Supabase database:\n- search_items: search the master item list\n- update_items: update category, store, family_member, or name for items matching a filter\n- delete_items: delete items matching a filter\n- add_item: add a new item to the master list\n\nValid categories: Fruit & Veg, Meat, Dairy, Pantry, Frozen, Drinks, Household, Other\nValid family members: Cath, Andrew, Sarah, Russell (or empty string to unassign)\n\nWhen Cath asks to change items, use the tools. Always confirm what you did after.\n\nWhen Cath asks to add something to the shopping list (e.g. 'add milk'):\n1. First use search_items to check if it's in the master list\n2. If found, use add_to_shopping_list with the master list details (name, category, store). Just do it, don't ask for confirmation.\n3. If not found, add it as a quick-add with category Other and no store (leave store empty).\n4. NEVER offer to add items to the master list. The master list is populated automatically from scanned receipts — receipts are the source of truth.\n\nYou can also:\n- View the shopping list and remove items\n- Repeat last shop (add all items from most recent receipt)\n- Add all of a family member's items at once (e.g. 'add all of Sarah's items')\n- Add multiple items in one go (e.g. 'add milk, bread and bananas')\n- Suggest items Cath might be low on based on purchase frequency\n- Show spending summaries by store or date range\n- Compare prices for items across stores and dates\n\nBe proactive — if Cath asks to add items, handle it. If she asks about spending, use the tools. Always be concise in responses.\n\nMEAL PLANNING:\nCath's family: Cath, Andrew, Sarah, Russell. When asked to plan meals:\n1. Ask who will be home each night (Mon-Sun)\n2. Suggest practical meals based on what's in the master list and what they usually buy\n3. Use set_meal_plan tool to save each day's meal\n4. Offer to add any missing ingredients to the shopping list\n\nSHOPPING LIST REVIEW:\nWhen Cath says the list is finalised or asks you to review it, use view_shopping_list to check it, then analyse and suggest anything obviously missing (e.g. if there's pasta but no sauce, meat but no veggies, breakfast items missing, etc). Be practical not pushy.\n\nTO-DO LIST:\nYou can add, complete, and remove tasks from Cath's personal to-do list and Fiona's cleaning list. Use the todo/fiona tools when asked.\n\nMEDICATIONS & MEDICAL:\nYou can view and manage medications, medical sessions (for the Mental Health Plan tracker), and habit/medication logs. Use these tools when Cath asks about her meds, appointments, or health tracking.\n\nCath's daily meds: Vyvanse, Valtrex, Levothyroxine. As-needed: Nurofen, Panadol, Nexium Antacid, Prochlorperazine, Cizinate, Ondansetron.\n\nGENERAL DATABASE:\nYou have a general-purpose query tool (db_query) that can select from ANY table, and a general-purpose write tool (db_write) that can insert, update, or delete from ANY table. Use these for anything the specific tools don't cover.";
 
     var afTools = [
       {
@@ -4252,6 +4252,210 @@
         name: 'analyse_shopping_list',
         description: 'Review the current shopping list and suggest missing items. Use when Cath says the list is done, finalised, or asks to review/check it.',
         input_schema: { type: 'object', properties: {} }
+      },
+      {
+        name: 'list_todos',
+        description: 'List all personal to-do tasks.',
+        input_schema: { type: 'object', properties: {} }
+      },
+      {
+        name: 'add_todo',
+        description: 'Add a task to Cath\'s personal to-do list.',
+        input_schema: {
+          type: 'object',
+          properties: {
+            task: { type: 'string', description: 'The task description' }
+          },
+          required: ['task']
+        }
+      },
+      {
+        name: 'complete_todo',
+        description: 'Mark a to-do task as done or not done by its ID.',
+        input_schema: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', description: 'The task ID' },
+            done: { type: 'boolean', description: 'true to mark done, false to unmark' }
+          },
+          required: ['id', 'done']
+        }
+      },
+      {
+        name: 'delete_todo',
+        description: 'Delete a to-do task by its ID.',
+        input_schema: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', description: 'The task ID' }
+          },
+          required: ['id']
+        }
+      },
+      {
+        name: 'list_fiona_tasks',
+        description: 'List all tasks on Fiona\'s cleaning list.',
+        input_schema: { type: 'object', properties: {} }
+      },
+      {
+        name: 'add_fiona_task',
+        description: 'Add a task to Fiona\'s cleaning list.',
+        input_schema: {
+          type: 'object',
+          properties: {
+            task: { type: 'string', description: 'The task description' }
+          },
+          required: ['task']
+        }
+      },
+      {
+        name: 'complete_fiona_task',
+        description: 'Mark a Fiona task as done or not done.',
+        input_schema: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', description: 'The task ID' },
+            done: { type: 'boolean', description: 'true to mark done, false to unmark' }
+          },
+          required: ['id', 'done']
+        }
+      },
+      {
+        name: 'delete_fiona_task',
+        description: 'Delete a task from Fiona\'s list.',
+        input_schema: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', description: 'The task ID' }
+          },
+          required: ['id']
+        }
+      },
+      {
+        name: 'list_medications',
+        description: 'List all medications from the medications table (the full medication plan).',
+        input_schema: { type: 'object', properties: {} }
+      },
+      {
+        name: 'add_medication',
+        description: 'Add a medication to the medication plan.',
+        input_schema: {
+          type: 'object',
+          properties: {
+            name: { type: 'string', description: 'Medication name' },
+            dose: { type: 'string', description: 'Dose info' },
+            schedule: { type: 'string', description: 'Schedule (e.g. daily, weekly, as needed)' },
+            purpose: { type: 'string', description: 'What it is for' }
+          },
+          required: ['name']
+        }
+      },
+      {
+        name: 'delete_medication',
+        description: 'Delete a medication from the plan by ID.',
+        input_schema: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', description: 'The medication ID' }
+          },
+          required: ['id']
+        }
+      },
+      {
+        name: 'list_medical_sessions',
+        description: 'List medical/mental health sessions. Returns date, duration, plan, practitioner.',
+        input_schema: { type: 'object', properties: {} }
+      },
+      {
+        name: 'add_medical_session',
+        description: 'Add a medical/mental health session.',
+        input_schema: {
+          type: 'object',
+          properties: {
+            date: { type: 'string', description: 'Date in YYYY-MM-DD format' },
+            duration: { type: 'number', description: 'Duration in minutes' },
+            plan: { type: 'string', description: 'Plan type (e.g. MHP, NDIS, Private)' },
+            practitioner: { type: 'string', description: 'Practitioner name' }
+          },
+          required: ['date']
+        }
+      },
+      {
+        name: 'delete_medical_session',
+        description: 'Delete a medical session by ID.',
+        input_schema: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', description: 'The session ID' }
+          },
+          required: ['id']
+        }
+      },
+      {
+        name: 'view_med_logs',
+        description: 'View medication/habit logs. Optionally filter by date range.',
+        input_schema: {
+          type: 'object',
+          properties: {
+            from_date: { type: 'string', description: 'Start date YYYY-MM-DD (optional)' },
+            to_date: { type: 'string', description: 'End date YYYY-MM-DD (optional)' }
+          }
+        }
+      },
+      {
+        name: 'db_query',
+        description: 'General-purpose SELECT from any Supabase table. Use for anything the specific tools don\'t cover. Tables: personal_todos, fiona_tasks, shopping_items, master_items, receipts, receipt_items, medications, habit_meds, habit_logs, medical_sessions, meal_plans, ai_memory.',
+        input_schema: {
+          type: 'object',
+          properties: {
+            table: { type: 'string', description: 'Table name' },
+            select: { type: 'string', description: 'Columns to select (default: *)' },
+            filters: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  column: { type: 'string' },
+                  op: { type: 'string', description: 'eq, neq, gt, gte, lt, lte, like, ilike' },
+                  value: { type: 'string' }
+                }
+              },
+              description: 'Array of filter conditions (optional)'
+            },
+            order_by: { type: 'string', description: 'Column to order by (optional)' },
+            ascending: { type: 'boolean', description: 'Sort ascending (default true)' },
+            limit: { type: 'number', description: 'Max rows to return (default 50)' }
+          },
+          required: ['table']
+        }
+      },
+      {
+        name: 'db_write',
+        description: 'General-purpose INSERT, UPDATE, or DELETE on any Supabase table. Use for anything the specific tools don\'t cover.',
+        input_schema: {
+          type: 'object',
+          properties: {
+            table: { type: 'string', description: 'Table name' },
+            action: { type: 'string', description: 'insert, update, or delete' },
+            data: {
+              type: 'object',
+              description: 'For insert: the row to insert. For update: the fields to set.'
+            },
+            filters: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  column: { type: 'string' },
+                  op: { type: 'string', description: 'eq, neq, ilike' },
+                  value: { type: 'string' }
+                }
+              },
+              description: 'For update/delete: filter conditions to match rows'
+            }
+          },
+          required: ['table', 'action']
+        }
       }
     ];
 
@@ -4428,6 +4632,131 @@
           categories[cat].push(i.name);
         });
         return JSON.stringify({ current_list: categories, total_items: (shopItems || []).length, master_list_size: (masterItems || []).length });
+      }
+      // ─── TO-DO ───
+      if (toolName === 'list_todos') {
+        var { data } = await sb.from('personal_todos').select('*').order('created_at');
+        return JSON.stringify(data || []);
+      }
+      if (toolName === 'add_todo') {
+        await sb.from('personal_todos').insert({ task: toolInput.task, done: false });
+        return JSON.stringify({ added: toolInput.task });
+      }
+      if (toolName === 'complete_todo') {
+        await sb.from('personal_todos').update({ done: toolInput.done }).eq('id', toolInput.id);
+        return JSON.stringify({ id: toolInput.id, done: toolInput.done });
+      }
+      if (toolName === 'delete_todo') {
+        await sb.from('personal_todos').delete().eq('id', toolInput.id);
+        return JSON.stringify({ deleted: toolInput.id });
+      }
+      // ─── FIONA ───
+      if (toolName === 'list_fiona_tasks') {
+        var { data } = await sb.from('fiona_tasks').select('*').order('created_at');
+        return JSON.stringify(data || []);
+      }
+      if (toolName === 'add_fiona_task') {
+        await sb.from('fiona_tasks').insert({ task: toolInput.task, done: false });
+        return JSON.stringify({ added: toolInput.task });
+      }
+      if (toolName === 'complete_fiona_task') {
+        await sb.from('fiona_tasks').update({ done: toolInput.done }).eq('id', toolInput.id);
+        return JSON.stringify({ id: toolInput.id, done: toolInput.done });
+      }
+      if (toolName === 'delete_fiona_task') {
+        await sb.from('fiona_tasks').delete().eq('id', toolInput.id);
+        return JSON.stringify({ deleted: toolInput.id });
+      }
+      // ─── MEDICATIONS ───
+      if (toolName === 'list_medications') {
+        var { data } = await sb.from('medications').select('*');
+        return JSON.stringify(data || []);
+      }
+      if (toolName === 'add_medication') {
+        await sb.from('medications').insert({ name: toolInput.name, dose: toolInput.dose || '', schedule: toolInput.schedule || '', purpose: toolInput.purpose || '' });
+        return JSON.stringify({ added: toolInput.name });
+      }
+      if (toolName === 'delete_medication') {
+        await sb.from('medications').delete().eq('id', toolInput.id);
+        return JSON.stringify({ deleted: toolInput.id });
+      }
+      // ─── MEDICAL SESSIONS ───
+      if (toolName === 'list_medical_sessions') {
+        var { data } = await sb.from('medical_sessions').select('*').order('date', { ascending: false });
+        return JSON.stringify(data || []);
+      }
+      if (toolName === 'add_medical_session') {
+        await sb.from('medical_sessions').insert({ date: toolInput.date, duration: toolInput.duration || 0, plan: toolInput.plan || '', practitioner: toolInput.practitioner || '' });
+        return JSON.stringify({ added: toolInput.date, plan: toolInput.plan });
+      }
+      if (toolName === 'delete_medical_session') {
+        await sb.from('medical_sessions').delete().eq('id', toolInput.id);
+        return JSON.stringify({ deleted: toolInput.id });
+      }
+      // ─── MED LOGS ───
+      if (toolName === 'view_med_logs') {
+        var q = sb.from('habit_logs').select('*, habit_meds(name)').order('created_at', { ascending: false });
+        if (toolInput.from_date) q = q.gte('date', toolInput.from_date);
+        if (toolInput.to_date) q = q.lte('date', toolInput.to_date);
+        var { data } = await q.limit(100);
+        return JSON.stringify(data || []);
+      }
+      // ─── GENERAL DB QUERY ───
+      if (toolName === 'db_query') {
+        var q = sb.from(toolInput.table).select(toolInput.select || '*');
+        if (toolInput.filters) {
+          toolInput.filters.forEach(function(f) {
+            if (f.op === 'eq') q = q.eq(f.column, f.value);
+            else if (f.op === 'neq') q = q.neq(f.column, f.value);
+            else if (f.op === 'gt') q = q.gt(f.column, f.value);
+            else if (f.op === 'gte') q = q.gte(f.column, f.value);
+            else if (f.op === 'lt') q = q.lt(f.column, f.value);
+            else if (f.op === 'lte') q = q.lte(f.column, f.value);
+            else if (f.op === 'like') q = q.like(f.column, f.value);
+            else if (f.op === 'ilike') q = q.ilike(f.column, f.value);
+          });
+        }
+        if (toolInput.order_by) q = q.order(toolInput.order_by, { ascending: toolInput.ascending !== false });
+        var { data, error } = await q.limit(toolInput.limit || 50);
+        if (error) return JSON.stringify({ error: error.message });
+        return JSON.stringify(data || []);
+      }
+      // ─── GENERAL DB WRITE ───
+      if (toolName === 'db_write') {
+        var tbl = toolInput.table;
+        var act = toolInput.action;
+        if (act === 'insert') {
+          var { data, error } = await sb.from(tbl).insert(toolInput.data || {}).select();
+          if (error) return JSON.stringify({ error: error.message });
+          return JSON.stringify({ inserted: (data || []).length, rows: data });
+        }
+        if (act === 'update') {
+          var q = sb.from(tbl).update(toolInput.data || {});
+          if (toolInput.filters) {
+            toolInput.filters.forEach(function(f) {
+              if (f.op === 'eq') q = q.eq(f.column, f.value);
+              else if (f.op === 'neq') q = q.neq(f.column, f.value);
+              else if (f.op === 'ilike') q = q.ilike(f.column, f.value);
+            });
+          }
+          var { data, error } = await q.select();
+          if (error) return JSON.stringify({ error: error.message });
+          return JSON.stringify({ updated: (data || []).length, rows: data });
+        }
+        if (act === 'delete') {
+          var q = sb.from(tbl).delete();
+          if (toolInput.filters) {
+            toolInput.filters.forEach(function(f) {
+              if (f.op === 'eq') q = q.eq(f.column, f.value);
+              else if (f.op === 'neq') q = q.neq(f.column, f.value);
+              else if (f.op === 'ilike') q = q.ilike(f.column, f.value);
+            });
+          }
+          var { data, error } = await q.select();
+          if (error) return JSON.stringify({ error: error.message });
+          return JSON.stringify({ deleted: (data || []).length, rows: data });
+        }
+        return JSON.stringify({ error: 'Invalid action. Use insert, update, or delete.' });
       }
       return '{"error":"Unknown tool"}';
     }
