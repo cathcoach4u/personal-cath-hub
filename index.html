@@ -433,6 +433,46 @@
     #cathHub .contact-grid { grid-template-columns: 1fr !important; }
     #cathHub .wl-picker { left: 0 !important; }
   }
+
+  /* ───── PIN LOCK ───── */
+  .pin-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #cbd5e1; background: white; transition: all 0.15s; }
+  .pin-dot.filled { background: #3b82f6; border-color: #3b82f6; }
+  .pin-key { padding: 14px; font-size: 20px; font-weight: 600; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; cursor: pointer; color: #1e293b; font-family: inherit; transition: background 0.1s; }
+  .pin-key:hover { background: #e2e8f0; }
+  .pin-key:active { background: #3b82f6; color: white; }
+
+  /* ───── DARK MODE ───── */
+  body.dark-mode { background: #0f172a !important; }
+  body.dark-mode #cathHub { background: #0f172a !important; color: #e2e8f0 !important; }
+  body.dark-mode #cathHub .main { background: #0f172a !important; }
+  body.dark-mode #cathHub .main h2 { color: #f1f5f9 !important; }
+  body.dark-mode #cathHub .sidebar { background: #020617 !important; }
+  body.dark-mode #cathHub .dash-section,
+  body.dark-mode #cathHub .hab-section,
+  body.dark-mode #cathHub .cat-group,
+  body.dark-mode #cathHub .am-tile,
+  body.dark-mode #cathHub .am-header-bar,
+  body.dark-mode #cathHub .am-progress,
+  body.dark-mode #cathHub .med-section { background: #1e293b !important; border-color: #334155 !important; color: #e2e8f0 !important; }
+  body.dark-mode #cathHub .dash-card { background: #1e293b !important; border-color: #334155 !important; }
+  body.dark-mode #cathHub .dash-card .card-title,
+  body.dark-mode #cathHub .am-tile .tile-title { color: #f1f5f9 !important; }
+  body.dark-mode #cathHub .shop-item,
+  body.dark-mode #cathHub .dash-shop-item,
+  body.dark-mode #cathHub .dash-receipt-row { border-color: #334155 !important; }
+  body.dark-mode #cathHub .shop-name,
+  body.dark-mode #cathHub .hab-section-header h3 { color: #f1f5f9 !important; }
+  body.dark-mode #cathHub .am-btn { background: #1e293b !important; border-color: #334155 !important; color: #e2e8f0 !important; }
+  body.dark-mode #cathHub .am-btn.primary { background: #10b981 !important; color: white !important; border-color: #10b981 !important; }
+  body.dark-mode #cathHub .am-search,
+  body.dark-mode #cathHub input[type="text"],
+  body.dark-mode #cathHub input[type="date"],
+  body.dark-mode #cathHub input[type="number"],
+  body.dark-mode #cathHub select,
+  body.dark-mode #cathHub textarea { background: #1e293b !important; border-color: #334155 !important; color: #e2e8f0 !important; }
+  body.dark-mode #cathHub .hab-section-header { border-color: #334155 !important; }
+  body.dark-mode #cathHub .nav-item { color: rgba(255,255,255,0.6) !important; }
+  body.dark-mode #cathHub .nav-item.active { color: white !important; }
 </style>
 
 <div id="cathHub-login">
@@ -446,6 +486,39 @@
     <button class="login-btn" onclick="cathLogin()">Sign In</button>
     <div id="login-reset-msg" style="display:none;color:#22c55e;font-size:13px;margin-top:12px;"></div>
     <a href="#" onclick="cathForgotPassword();return false" style="display:block;margin-top:16px;font-size:13px;color:#94a3b8;text-decoration:underline;">Forgot password?</a>
+  </div>
+</div>
+
+<!-- PIN Lock Screen -->
+<div id="cathHub-pin" style="display:none;align-items:center;justify-content:center;min-height:100vh;background:#1e293b;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;">
+  <div style="background:white;border-radius:16px;padding:40px;width:100%;max-width:320px;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.3);">
+    <div style="font-size:48px;margin-bottom:8px;">&#x1F512;</div>
+    <h2 style="font-size:20px;font-weight:700;color:#1e293b;margin:0 0 4px;">Welcome back</h2>
+    <div style="font-size:13px;color:#94a3b8;margin-bottom:24px;">Enter your PIN to unlock</div>
+    <div id="pin-dots" style="display:flex;justify-content:center;gap:12px;margin-bottom:24px;">
+      <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+    </div>
+    <div id="pin-error" style="color:#ef4444;font-size:13px;margin-bottom:12px;display:none;"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;max-width:240px;margin:0 auto;">
+      <button class="pin-key" onclick="pinPress(1)">1</button>
+      <button class="pin-key" onclick="pinPress(2)">2</button>
+      <button class="pin-key" onclick="pinPress(3)">3</button>
+      <button class="pin-key" onclick="pinPress(4)">4</button>
+      <button class="pin-key" onclick="pinPress(5)">5</button>
+      <button class="pin-key" onclick="pinPress(6)">6</button>
+      <button class="pin-key" onclick="pinPress(7)">7</button>
+      <button class="pin-key" onclick="pinPress(8)">8</button>
+      <button class="pin-key" onclick="pinPress(9)">9</button>
+      <button class="pin-key" onclick="pinBackspace()" style="font-size:16px;">&#x232B;</button>
+      <button class="pin-key" onclick="pinPress(0)">0</button>
+      <button class="pin-key" onclick="pinClear()" style="font-size:12px;">Clear</button>
+    </div>
+    <div style="margin-top:20px;">
+      <a href="#" onclick="pinUsePassword();return false" style="font-size:12px;color:#94a3b8;text-decoration:underline;">Use email &amp; password instead</a>
+    </div>
+    <div style="margin-top:8px;">
+      <a href="#" onclick="pinSetup();return false" style="font-size:12px;color:#3b82f6;text-decoration:underline;" id="pin-setup-link">Set up PIN</a>
+    </div>
   </div>
 </div>
 
@@ -474,7 +547,13 @@
     <button class="nav-item" onclick="chNav('travel',this)"><span class="icon">&#x2708;&#xFE0F;</span> Travel</button>
     <button class="nav-item" onclick="chNav('hometab',this)"><span class="icon">&#x1F3E0;</span> Home</button>
     <button class="nav-item" onclick="chNav('about',this)"><span class="icon">&#x2139;&#xFE0F;</span> About</button>
-    <div class="sidebar-footer"><span>Cath Hub v2.0</span><br><a href="#" onclick="cathLogout();return false" style="color:rgba(255,255,255,0.5) !important;font-size:10px !important;text-decoration:underline !important;">Sign out</a></div>
+    <div class="sidebar-footer">
+      <div style="display:flex !important;align-items:center !important;gap:6px !important;margin-bottom:6px !important;">
+        <span style="font-size:12px !important;color:rgba(255,255,255,0.5) !important;">&#x1F319;</span>
+        <button onclick="toggleDarkMode()" style="padding:4px 10px !important;font-size:10px !important;background:rgba(255,255,255,0.1) !important;color:rgba(255,255,255,0.6) !important;border:1px solid rgba(255,255,255,0.15) !important;border-radius:6px !important;cursor:pointer !important;" id="dark-mode-btn">Dark Mode</button>
+      </div>
+      <span>Cath Hub v2.0</span><br><a href="#" onclick="cathLogout();return false" style="color:rgba(255,255,255,0.5) !important;font-size:10px !important;text-decoration:underline !important;">Sign out</a>
+    </div>
   </div>
 
   <div class="main">
@@ -487,6 +566,47 @@
         <button class="am-btn" onclick="dashQuickNav({value:'receipt'})" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F9FE; Upload Receipt</button>
         <button class="am-btn" onclick="dashQuickNav({value:'filing'})" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F4C1; Filing System</button>
         <button class="am-btn" id="dash-meds-btn" onclick="dashTakeMorningMeds()" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:#10b981 !important;border:1px solid #10b981 !important;border-radius:10px !important;color:white !important;">&#x2600;&#xFE0F; Morning Meds</button>
+      </div>
+
+      <!-- Medication Reminder Banner -->
+      <div id="dash-med-reminder" style="display:none !important;background:#fef2f2 !important;border:1px solid #fecaca !important;border-radius:10px !important;padding:12px 16px !important;margin-bottom:12px !important;font-size:13px !important;color:#991b1b !important;display:none !important;">
+        <div style="display:flex !important;align-items:center !important;gap:8px !important;">
+          <span style="font-size:18px !important;">&#x1F48A;</span>
+          <span style="flex:1 !important;" id="dash-med-reminder-text">Morning meds not yet taken today</span>
+          <button onclick="dashTakeMorningMeds()" style="padding:6px 12px !important;font-size:12px !important;background:#10b981 !important;color:white !important;border:none !important;border-radius:6px !important;cursor:pointer !important;">Take Now</button>
+          <button onclick="document.getElementById('dash-med-reminder').style.setProperty('display','none','important')" style="background:none !important;border:none !important;color:#991b1b !important;font-size:16px !important;cursor:pointer !important;padding:0 4px !important;">&times;</button>
+        </div>
+      </div>
+
+      <!-- Fortnightly Week + Bin Night Row -->
+      <div style="display:flex !important;gap:8px !important;margin-bottom:12px !important;flex-wrap:wrap !important;">
+        <div id="dash-fortnight-badge" style="flex:1 !important;text-align:center !important;padding:10px 12px !important;background:#f0fdf4 !important;border:1px solid #bbf7d0 !important;border-radius:10px !important;font-size:12px !important;color:#166534 !important;font-weight:600 !important;"></div>
+        <div id="dash-bin-badge" style="flex:1 !important;text-align:center !important;padding:10px 12px !important;background:#fefce8 !important;border:1px solid #fde68a !important;border-radius:10px !important;font-size:12px !important;color:#92400e !important;font-weight:600 !important;"></div>
+      </div>
+
+      <!-- Water Tracker -->
+      <div class="dash-section" style="margin-bottom:12px !important;">
+        <div style="display:flex !important;align-items:center !important;justify-content:space-between !important;margin-bottom:8px !important;">
+          <h3 style="margin-bottom:0 !important;">&#x1F4A7; Water Tracker</h3>
+          <span style="font-size:12px !important;color:#64748b !important;" id="dash-water-label">0 / 8 glasses</span>
+        </div>
+        <div style="display:flex !important;gap:4px !important;align-items:center !important;">
+          <div id="dash-water-glasses" style="display:flex !important;gap:4px !important;flex:1 !important;flex-wrap:wrap !important;"></div>
+          <button onclick="dashAddWater()" style="padding:8px 12px !important;background:#3b82f6 !important;color:white !important;border:none !important;border-radius:8px !important;font-size:18px !important;cursor:pointer !important;line-height:1 !important;">+</button>
+          <button onclick="dashRemoveWater()" style="padding:8px 10px !important;background:#e2e8f0 !important;color:#64748b !important;border:none !important;border-radius:8px !important;font-size:18px !important;cursor:pointer !important;line-height:1 !important;">&minus;</button>
+        </div>
+        <div style="height:6px !important;background:#e2e8f0 !important;border-radius:3px !important;margin-top:8px !important;overflow:hidden !important;">
+          <div id="dash-water-bar" style="height:100% !important;background:#3b82f6 !important;border-radius:3px !important;transition:width 0.3s !important;width:0% !important;"></div>
+        </div>
+      </div>
+
+      <!-- Daily Rhythm Checklist -->
+      <div class="dash-section" style="margin-bottom:12px !important;">
+        <div style="display:flex !important;align-items:center !important;justify-content:space-between !important;margin-bottom:8px !important;">
+          <h3 style="margin-bottom:0 !important;" id="dash-rhythm-title">&#x2600;&#xFE0F; Daily Rhythm</h3>
+          <span style="font-size:11px !important;color:#94a3b8 !important;" id="dash-rhythm-count"></span>
+        </div>
+        <div id="dash-rhythm-items"></div>
       </div>
 
       <!-- Word of the Year -->
@@ -613,6 +733,7 @@
           <div class="am-header-actions">
             <span class="check-count" id="am-wk-count">&#x2713; 0 of 2</span>
             <button class="am-btn" onclick="amRefresh()">&#x1F504; Refresh</button>
+            <button class="am-btn" onclick="amShareList()">&#x1F4E4; Share</button>
             <button class="am-btn">&#x1F5A8; Print</button>
           </div>
         </div>
@@ -817,6 +938,7 @@
         <div style="display:flex !important;flex-direction:column !important;gap:10px !important;">
           <button class="am-btn" onclick="medGo('mhplan')" style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F9E0; Mental Health Plan <span style="margin-left:auto !important;color:#94a3b8 !important;font-size:12px !important;">Sessions &amp; tracker &rarr;</span></button>
           <button class="am-btn" onclick="medGo('migraine')" style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F4A0; Migraine Care Plan <span style="margin-left:auto !important;color:#94a3b8 !important;font-size:12px !important;">Treatment &amp; prevention &rarr;</span></button>
+          <button class="am-btn" onclick="medGo('migrainediary')" style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F4D3; Migraine Diary <span style="margin-left:auto !important;color:#94a3b8 !important;font-size:12px !important;">Log &amp; track &rarr;</span></button>
           <button class="am-btn" onclick="medGo('cdm')" style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F4CB; Chronic Disease Management <span style="margin-left:auto !important;color:#94a3b8 !important;font-size:12px !important;">CDM plans &rarr;</span></button>
           <button class="am-btn" onclick="medGo('medicare')" style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F3E5; Medicare <span style="margin-left:auto !important;color:#94a3b8 !important;font-size:12px !important;">Claims &amp; history &rarr;</span></button>
           <button class="am-btn" onclick="medGo('medications')" style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F48A; Medications <span style="margin-left:auto !important;color:#94a3b8 !important;font-size:12px !important;">Current plan &rarr;</span></button>
@@ -1218,6 +1340,75 @@
         </div>
 
         <a class="am-btn" href="https://netorgft4053847.sharepoint.com/:f:/s/bakerpersonal-CathPersonal/IgAEdQrlyL4-Qa4rSlz4-SwPAWV2ALT9bZECNDOJyLgPUlU?e=mvuWfJ" target="_blank" rel="noopener" style="width:100% !important;padding:12px !important;justify-content:center !important;background:#3b82f6 !important;color:white !important;border-color:#3b82f6 !important;text-decoration:none !important;">&#x1F4C2; Open Medicare Folder in OneDrive</a>
+      </div>
+
+      <!-- SUB: Migraine Diary -->
+      <div class="am-subscreen" id="med-migrainediary">
+        <button class="am-back" onclick="medGo('home')">&#x2190; Back</button>
+        <h3 style="font-size:18px !important;font-weight:700 !important;margin-bottom:4px !important;">&#x1F4D3; Migraine Diary</h3>
+        <p style="font-size:12px !important;color:#94a3b8 !important;margin-bottom:16px !important;">Log migraine events to track patterns and triggers.</p>
+
+        <!-- Quick Log Form -->
+        <div class="hab-section" style="margin-bottom:16px !important;">
+          <div class="hab-section-header"><h3>&#x26A1; Log Migraine</h3></div>
+          <div style="padding:14px 16px !important;display:flex !important;flex-direction:column !important;gap:10px !important;">
+            <div style="display:flex !important;gap:8px !important;">
+              <div style="flex:1 !important;">
+                <label style="font-size:11px !important;font-weight:600 !important;color:#64748b !important;">Date</label>
+                <input type="date" id="mig-date" style="width:100% !important;padding:8px 10px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:13px !important;">
+              </div>
+              <div style="flex:1 !important;">
+                <label style="font-size:11px !important;font-weight:600 !important;color:#64748b !important;">Severity (1-10)</label>
+                <input type="number" id="mig-severity" min="1" max="10" value="5" style="width:100% !important;padding:8px 10px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:13px !important;">
+              </div>
+            </div>
+            <div>
+              <label style="font-size:11px !important;font-weight:600 !important;color:#64748b !important;">Trigger</label>
+              <select id="mig-trigger" style="width:100% !important;padding:8px 10px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:13px !important;">
+                <option value="">Select trigger...</option>
+                <option>Stress</option><option>Sleep</option><option>Weather</option><option>Food</option><option>Hormonal</option><option>Screen time</option><option>Dehydration</option><option>Skipped meal</option><option>Alcohol</option><option>Unknown</option><option>Other</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:11px !important;font-weight:600 !important;color:#64748b !important;">Meds Taken</label>
+              <input type="text" id="mig-meds" placeholder="e.g. Prochlorperazine, Panadol" style="width:100% !important;padding:8px 10px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:13px !important;">
+            </div>
+            <div style="display:flex !important;gap:8px !important;">
+              <div style="flex:1 !important;">
+                <label style="font-size:11px !important;font-weight:600 !important;color:#64748b !important;">Duration</label>
+                <input type="text" id="mig-duration" placeholder="e.g. 4 hours" style="width:100% !important;padding:8px 10px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:13px !important;">
+              </div>
+              <div style="flex:1 !important;">
+                <label style="font-size:11px !important;font-weight:600 !important;color:#64748b !important;">Notes</label>
+                <input type="text" id="mig-notes" placeholder="Optional notes" style="width:100% !important;padding:8px 10px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:13px !important;">
+              </div>
+            </div>
+            <button class="am-btn" onclick="migLogEntry()" style="width:100% !important;padding:12px !important;background:#ef4444 !important;color:white !important;border-color:#ef4444 !important;font-size:14px !important;justify-content:center !important;border-radius:8px !important;">&#x1F4D3; Log Migraine</button>
+          </div>
+        </div>
+
+        <!-- Weekly Check-in -->
+        <div class="hab-section" style="margin-bottom:16px !important;">
+          <div class="hab-section-header" style="cursor:pointer !important;" onclick="migToggleCheckin()">
+            <h3>&#x1F4CB; Weekly Migraine Check-in</h3>
+            <span style="font-size:11px !important;color:#94a3b8 !important;">Tap to expand</span>
+          </div>
+          <div id="mig-checkin-panel" style="display:none !important;padding:14px 16px !important;">
+            <div style="display:flex !important;flex-direction:column !important;gap:10px !important;" id="mig-checkin-items"></div>
+            <button class="am-btn" onclick="migSaveCheckin()" style="width:100% !important;padding:12px !important;background:#3b82f6 !important;color:white !important;border-color:#3b82f6 !important;font-size:14px !important;justify-content:center !important;border-radius:8px !important;margin-top:10px !important;">Save Check-in</button>
+          </div>
+        </div>
+
+        <!-- Migraine History -->
+        <div class="hab-section">
+          <div class="hab-section-header">
+            <h3>&#x1F4DC; Migraine History</h3>
+            <span style="font-size:11px !important;color:#94a3b8 !important;" id="mig-history-count"></span>
+          </div>
+          <div id="mig-history-list" style="padding:12px !important;">
+            <div style="text-align:center !important;color:#94a3b8 !important;font-size:13px !important;">Loading...</div>
+          </div>
+        </div>
       </div>
 
       <!-- SUB: Medication Tracking -->
@@ -5332,6 +5523,512 @@
     zbSetChecked(storageKey, checked);
     zbOpenZone(zoneId);
   };
+
+  // ═══════════════════════════════════════════════════
+  // FEATURE: Daily Rhythm Dashboard Checklist
+  // ═══════════════════════════════════════════════════
+  var RHYTHM_ITEMS = {
+    morning: [
+      { id: 'wake', label: 'Wake anchor — out of bed' },
+      { id: 'hydration_am', label: 'Hydration — first water' },
+      { id: 'mouthguard_off', label: 'Mouthguard — put away' },
+      { id: 'eat', label: 'Eat anchor — breakfast or snack' },
+      { id: 'cats_am', label: 'Cats — feed and refresh water' },
+      { id: 'env_reset', label: 'Environment reset — blinds/windows' }
+    ],
+    day: [
+      { id: 'movement', label: 'Movement — 10 min walk or activity' },
+      { id: 'regulation', label: 'Regulation — breathing/stretching' },
+      { id: 'kitchen', label: 'Kitchen reset — dishes/benches' },
+      { id: 'laundry', label: 'One laundry action' },
+      { id: 'clutter', label: 'Clutter containment — 2-5 min' },
+      { id: 'hydration_day', label: 'Hydration target — 1.5-2L' },
+      { id: 'food', label: 'Food default — meal or snack' },
+      { id: 'caffeine', label: 'Caffeine cut-off — stop by 1pm' }
+    ],
+    evening: [
+      { id: 'cats_pm', label: 'Cats — feed evening meal' },
+      { id: 'body_support', label: 'Extra body support — stretch' },
+      { id: 'mouthguard_in', label: 'Mouthguard — put in' },
+      { id: 'bedtime', label: 'Bedtime support — screens off 1hr' }
+    ]
+  };
+
+  function dashGetRhythmKey() {
+    var d = new Date();
+    return 'rhythm_' + d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+
+  function dashGetRhythmChecked() {
+    try { return JSON.parse(localStorage.getItem(dashGetRhythmKey()) || '{}'); } catch(e) { return {}; }
+  }
+
+  function dashRenderRhythm() {
+    var h = new Date().getHours();
+    var section = h < 12 ? 'morning' : h < 17 ? 'day' : 'evening';
+    var sectionLabel = section === 'morning' ? 'Morning' : section === 'day' ? 'Through the Day' : 'Evening';
+    var titleEl = document.getElementById('dash-rhythm-title');
+    if (titleEl) titleEl.innerHTML = (section === 'morning' ? '&#x2600;&#xFE0F;' : section === 'day' ? '&#x2B50;' : '&#x1F319;') + ' ' + sectionLabel + ' Rhythm';
+
+    var items = RHYTHM_ITEMS[section];
+    var checked = dashGetRhythmChecked();
+    var allItems = RHYTHM_ITEMS.morning.concat(RHYTHM_ITEMS.day).concat(RHYTHM_ITEMS.evening);
+    var totalDone = 0;
+    allItems.forEach(function(it) { if (checked[it.id]) totalDone++; });
+
+    var countEl = document.getElementById('dash-rhythm-count');
+    if (countEl) countEl.textContent = totalDone + ' / ' + allItems.length + ' today';
+
+    var container = document.getElementById('dash-rhythm-items');
+    if (!container) return;
+    var html = '';
+    items.forEach(function(item) {
+      var done = !!checked[item.id];
+      html += '<div style="display:flex !important;align-items:center !important;gap:10px !important;padding:8px 0 !important;border-bottom:1px solid #f1f5f9 !important;cursor:pointer !important;" onclick="dashToggleRhythm(\'' + item.id + '\')">';
+      html += '<div class="shop-check' + (done ? ' done' : '') + '" style="width:20px !important;height:20px !important;border-radius:5px !important;"></div>';
+      html += '<span style="font-size:13px !important;' + (done ? 'text-decoration:line-through !important;color:#94a3b8 !important;' : '') + '">' + item.label + '</span>';
+      html += '</div>';
+    });
+    container.innerHTML = html;
+  }
+
+  window.dashToggleRhythm = function(id) {
+    var checked = dashGetRhythmChecked();
+    checked[id] = !checked[id];
+    localStorage.setItem(dashGetRhythmKey(), JSON.stringify(checked));
+    dashRenderRhythm();
+  };
+
+  // ═══════════════════════════════════════════════════
+  // FEATURE: Fortnightly Week A/B Indicator
+  // ═══════════════════════════════════════════════════
+  function dashRenderFortnight() {
+    var badge = document.getElementById('dash-fortnight-badge');
+    if (!badge) return;
+    var refDate = new Date(2026, 2, 16); // 16 March 2026 = Week A start
+    var now = new Date();
+    var diffDays = Math.floor((now - refDate) / 86400000);
+    var weekNum = Math.floor(diffDays / 7);
+    var isWeekA = weekNum % 2 === 0;
+    if (isWeekA) {
+      badge.innerHTML = '&#x1F4C5; <strong>Week A</strong> — Jo Jo appointment';
+      badge.style.setProperty('background', '#f0fdf4', 'important');
+      badge.style.setProperty('border-color', '#bbf7d0', 'important');
+      badge.style.setProperty('color', '#166534', 'important');
+    } else {
+      badge.innerHTML = '&#x1F4C5; <strong>Week B</strong> — Daniel chiropractor';
+      badge.style.setProperty('background', '#eff6ff', 'important');
+      badge.style.setProperty('border-color', '#bfdbfe', 'important');
+      badge.style.setProperty('color', '#1e40af', 'important');
+    }
+  }
+
+  // ═══════════════════════════════════════════════════
+  // FEATURE: Medication Reminder Banner
+  // ═══════════════════════════════════════════════════
+  async function dashCheckMedReminder() {
+    var banner = document.getElementById('dash-med-reminder');
+    if (!banner) return;
+    var h = new Date().getHours();
+    if (h < 9) { banner.style.setProperty('display', 'none', 'important'); return; }
+    try {
+      var today = new Date();
+      var todayStr = today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+      var { data: logs } = await sb.from('habit_logs').select('med_id').eq('date', todayStr);
+      var { data: dailyMeds } = await sb.from('habit_meds').select('id').eq('freq', 'daily');
+      var loggedIds = (logs || []).map(function(l) { return l.med_id; });
+      var missed = (dailyMeds || []).filter(function(m) { return loggedIds.indexOf(m.id) === -1; });
+      if (missed.length > 0) {
+        banner.style.setProperty('display', 'block', 'important');
+      } else {
+        banner.style.setProperty('display', 'none', 'important');
+      }
+    } catch(e) { banner.style.setProperty('display', 'none', 'important'); }
+  }
+
+  // ═══════════════════════════════════════════════════
+  // FEATURE: Bin Night Reminder
+  // ═══════════════════════════════════════════════════
+  function dashRenderBinNight() {
+    var badge = document.getElementById('dash-bin-badge');
+    if (!badge) return;
+    var now = new Date();
+    var day = now.getDay(); // 0=Sun
+    var weekNum = Math.ceil((now.getDate()) / 7);
+    // General waste = every week, Recycling = alternate weeks
+    var isRecyclingWeek = weekNum % 2 === 0;
+
+    if (day === 0 || day === 1) { // Sun-Mon: reminder for upcoming collection
+      badge.innerHTML = '&#x1F5D1; <strong>Bin night</strong> — General' + (isRecyclingWeek ? ' + Recycling' : '') + ' (put out tonight)';
+      badge.style.setProperty('background', '#fef2f2', 'important');
+      badge.style.setProperty('border-color', '#fecaca', 'important');
+      badge.style.setProperty('color', '#991b1b', 'important');
+    } else if (day === 2) { // Tuesday: collection day
+      badge.innerHTML = '&#x1F5D1; <strong>Bin day</strong> — General' + (isRecyclingWeek ? ' + Recycling' : '') + ' (bring in after collection)';
+      badge.style.setProperty('background', '#fefce8', 'important');
+      badge.style.setProperty('border-color', '#fde68a', 'important');
+      badge.style.setProperty('color', '#92400e', 'important');
+    } else {
+      badge.innerHTML = '&#x1F5D1; Next bins: ' + (isRecyclingWeek ? 'General + Recycling' : 'General only');
+      badge.style.setProperty('background', '#f8fafc', 'important');
+      badge.style.setProperty('border-color', '#e2e8f0', 'important');
+      badge.style.setProperty('color', '#64748b', 'important');
+    }
+  }
+
+  // ═══════════════════════════════════════════════════
+  // FEATURE: Water Tracker
+  // ═══════════════════════════════════════════════════
+  var WATER_TARGET = 8; // glasses per day
+
+  function dashGetWaterKey() {
+    var d = new Date();
+    return 'water_' + d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+
+  function dashGetWaterCount() {
+    return parseInt(localStorage.getItem(dashGetWaterKey()) || '0', 10);
+  }
+
+  function dashRenderWater() {
+    var count = dashGetWaterCount();
+    var label = document.getElementById('dash-water-label');
+    var bar = document.getElementById('dash-water-bar');
+    var container = document.getElementById('dash-water-glasses');
+    if (label) label.textContent = count + ' / ' + WATER_TARGET + ' glasses';
+    if (bar) bar.style.width = Math.min(100, Math.round(count / WATER_TARGET * 100)) + '%';
+    if (container) {
+      var html = '';
+      for (var i = 0; i < WATER_TARGET; i++) {
+        html += '<div style="width:28px !important;height:28px !important;border-radius:6px !important;display:flex !important;align-items:center !important;justify-content:center !important;font-size:16px !important;' + (i < count ? 'background:#dbeafe !important;' : 'background:#f1f5f9 !important;') + 'cursor:pointer !important;" onclick="dashSetWater(' + (i+1) + ')">' + (i < count ? '&#x1F4A7;' : '&#x25CB;') + '</div>';
+      }
+      container.innerHTML = html;
+    }
+  }
+
+  window.dashAddWater = function() {
+    var count = Math.min(dashGetWaterCount() + 1, 15);
+    localStorage.setItem(dashGetWaterKey(), String(count));
+    dashRenderWater();
+  };
+
+  window.dashRemoveWater = function() {
+    var count = Math.max(dashGetWaterCount() - 1, 0);
+    localStorage.setItem(dashGetWaterKey(), String(count));
+    dashRenderWater();
+  };
+
+  window.dashSetWater = function(n) {
+    localStorage.setItem(dashGetWaterKey(), String(n));
+    dashRenderWater();
+  };
+
+  // ═══════════════════════════════════════════════════
+  // FEATURE: Shopping List Share
+  // ═══════════════════════════════════════════════════
+  window.amShareList = async function() {
+    var { data: items } = await sb.from('shopping_items').select('name, category, store, checked').order('created_at');
+    items = (items || []).filter(function(i) { return !i.checked; });
+    if (!items.length) { alert('Shopping list is empty!'); return; }
+    var byStore = {};
+    items.forEach(function(i) {
+      var s = i.store || 'Other';
+      if (!byStore[s]) byStore[s] = [];
+      byStore[s].push(i.name);
+    });
+    var text = 'Shopping List\n';
+    Object.keys(byStore).forEach(function(store) {
+      text += '\n' + store + ':\n';
+      byStore[store].forEach(function(name) { text += '  - ' + name + '\n'; });
+    });
+    if (navigator.share) {
+      navigator.share({ title: 'Shopping List', text: text }).catch(function(){});
+    } else {
+      navigator.clipboard.writeText(text).then(function() { alert('Shopping list copied to clipboard!'); });
+    }
+  };
+
+  // ═══════════════════════════════════════════════════
+  // FEATURE: Migraine Diary
+  // ═══════════════════════════════════════════════════
+  window.migLogEntry = async function() {
+    var date = document.getElementById('mig-date').value;
+    if (!date) { alert('Please select a date'); return; }
+    var severity = parseInt(document.getElementById('mig-severity').value) || 5;
+    var trigger = document.getElementById('mig-trigger').value;
+    var meds = document.getElementById('mig-meds').value.trim();
+    var duration = document.getElementById('mig-duration').value.trim();
+    var notes = document.getElementById('mig-notes').value.trim();
+    var entry = { date: date, severity: severity, trigger: trigger || '', meds_taken: meds, duration: duration, notes: notes };
+    // Store in localStorage (array of entries)
+    var key = 'migraine_diary';
+    var diary = [];
+    try { diary = JSON.parse(localStorage.getItem(key) || '[]'); } catch(e) { diary = []; }
+    entry.id = Date.now();
+    diary.unshift(entry);
+    localStorage.setItem(key, JSON.stringify(diary));
+    // Reset form
+    document.getElementById('mig-severity').value = '5';
+    document.getElementById('mig-trigger').value = '';
+    document.getElementById('mig-meds').value = '';
+    document.getElementById('mig-duration').value = '';
+    document.getElementById('mig-notes').value = '';
+    alert('Migraine logged for ' + date);
+    migRenderHistory();
+  };
+
+  function migRenderHistory() {
+    var diary = [];
+    try { diary = JSON.parse(localStorage.getItem('migraine_diary') || '[]'); } catch(e) {}
+    var container = document.getElementById('mig-history-list');
+    var countEl = document.getElementById('mig-history-count');
+    if (countEl) countEl.textContent = diary.length + ' entries';
+    if (!diary.length) {
+      container.innerHTML = '<div style="text-align:center !important;color:#94a3b8 !important;font-size:13px !important;">No migraines logged yet.</div>';
+      return;
+    }
+    var html = '';
+    diary.slice(0, 30).forEach(function(e) {
+      var sevColor = e.severity <= 3 ? '#10b981' : e.severity <= 6 ? '#f59e0b' : '#ef4444';
+      html += '<div style="padding:10px 0 !important;border-bottom:1px solid #f1f5f9 !important;">';
+      html += '<div style="display:flex !important;align-items:center !important;gap:8px !important;margin-bottom:4px !important;">';
+      html += '<span style="font-size:12px !important;font-weight:700 !important;color:#1e293b !important;">' + e.date + '</span>';
+      html += '<span style="font-size:11px !important;font-weight:700 !important;color:' + sevColor + ' !important;background:' + sevColor + '20 !important;padding:2px 8px !important;border-radius:99px !important;">' + e.severity + '/10</span>';
+      if (e.trigger) html += '<span style="font-size:11px !important;color:#64748b !important;background:#f1f5f9 !important;padding:2px 8px !important;border-radius:99px !important;">' + esc(e.trigger) + '</span>';
+      html += '</div>';
+      var details = [];
+      if (e.meds_taken) details.push('Meds: ' + e.meds_taken);
+      if (e.duration) details.push('Duration: ' + e.duration);
+      if (e.notes) details.push(e.notes);
+      if (details.length) html += '<div style="font-size:12px !important;color:#64748b !important;">' + esc(details.join(' | ')) + '</div>';
+      html += '<button onclick="migDeleteEntry(' + e.id + ')" style="font-size:11px !important;color:#ef4444 !important;background:none !important;border:none !important;cursor:pointer !important;padding:2px 0 !important;margin-top:2px !important;">Delete</button>';
+      html += '</div>';
+    });
+    container.innerHTML = html;
+  }
+
+  window.migDeleteEntry = function(id) {
+    if (!confirm('Delete this migraine entry?')) return;
+    var diary = [];
+    try { diary = JSON.parse(localStorage.getItem('migraine_diary') || '[]'); } catch(e) {}
+    diary = diary.filter(function(e) { return e.id !== id; });
+    localStorage.setItem('migraine_diary', JSON.stringify(diary));
+    migRenderHistory();
+  };
+
+  // ═══════════════════════════════════════════════════
+  // FEATURE: Weekly Migraine Check-in
+  // ═══════════════════════════════════════════════════
+  var MIG_CHECKIN_QUESTIONS = [
+    { id: 'headache_days', label: 'How many headache/migraine days this week?', type: 'number' },
+    { id: 'severity_avg', label: 'Average severity this week (1-10)?', type: 'number' },
+    { id: 'sleep_quality', label: 'Sleep quality this week?', type: 'select', options: ['Good', 'Fair', 'Poor'] },
+    { id: 'stress_level', label: 'Stress level this week?', type: 'select', options: ['Low', 'Moderate', 'High'] },
+    { id: 'exercise', label: 'Did you exercise this week?', type: 'select', options: ['Yes - regularly', 'Some', 'No'] },
+    { id: 'hydration', label: 'Hydration this week?', type: 'select', options: ['Good', 'Could be better', 'Poor'] },
+    { id: 'caffeine', label: 'Caffeine after 1pm this week?', type: 'select', options: ['Never', 'Once or twice', 'Often'] },
+    { id: 'screens', label: 'Screen time before bed?', type: 'select', options: ['Rarely', 'Sometimes', 'Most nights'] },
+    { id: 'notes', label: 'Any other observations?', type: 'text' }
+  ];
+
+  window.migToggleCheckin = function() {
+    var panel = document.getElementById('mig-checkin-panel');
+    var isHidden = panel.style.display === 'none' || !panel.style.display;
+    panel.style.setProperty('display', isHidden ? 'block' : 'none', 'important');
+    if (isHidden) migRenderCheckin();
+  };
+
+  function migRenderCheckin() {
+    var container = document.getElementById('mig-checkin-items');
+    var html = '';
+    MIG_CHECKIN_QUESTIONS.forEach(function(q) {
+      html += '<div>';
+      html += '<label style="font-size:12px !important;font-weight:600 !important;color:#64748b !important;margin-bottom:4px !important;display:block !important;">' + q.label + '</label>';
+      if (q.type === 'number') {
+        html += '<input type="number" id="mig-ci-' + q.id + '" style="width:100% !important;padding:8px 10px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:13px !important;">';
+      } else if (q.type === 'select') {
+        html += '<select id="mig-ci-' + q.id + '" style="width:100% !important;padding:8px 10px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:13px !important;">';
+        html += '<option value="">Select...</option>';
+        q.options.forEach(function(o) { html += '<option>' + o + '</option>'; });
+        html += '</select>';
+      } else {
+        html += '<input type="text" id="mig-ci-' + q.id + '" style="width:100% !important;padding:8px 10px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:13px !important;">';
+      }
+      html += '</div>';
+    });
+    container.innerHTML = html;
+  }
+
+  window.migSaveCheckin = function() {
+    var entry = { date: new Date().toISOString().split('T')[0] };
+    MIG_CHECKIN_QUESTIONS.forEach(function(q) {
+      var el = document.getElementById('mig-ci-' + q.id);
+      if (el) entry[q.id] = el.value;
+    });
+    var checkins = [];
+    try { checkins = JSON.parse(localStorage.getItem('migraine_checkins') || '[]'); } catch(e) {}
+    checkins.unshift(entry);
+    localStorage.setItem('migraine_checkins', JSON.stringify(checkins));
+    alert('Weekly check-in saved!');
+    document.getElementById('mig-checkin-panel').style.setProperty('display', 'none', 'important');
+  };
+
+  // ═══════════════════════════════════════════════════
+  // FEATURE: Zone Rotation Scheduler
+  // ═══════════════════════════════════════════════════
+  function dashGetZoneSuggestion() {
+    var zones = [
+      { id: 1, name: 'Front Living Hub' },
+      { id: 2, name: 'Front Landing + Entry' },
+      { id: 3, name: 'Family Room + Clothes' },
+      { id: 4, name: 'Small Office' },
+      { id: 5, name: 'Laundry + Bathroom + Cat Litter' },
+      { id: 6, name: 'Outdoor Utility' },
+      { id: 7, name: 'Pool + Outdoor' },
+      { id: 8, name: 'Hallway + Linen' },
+      { id: 9, name: 'Bedrooms + Main Bathroom' },
+      { id: 10, name: 'Car Zone' }
+    ];
+    // Check which zones were done most recently
+    var lastDone = {};
+    zones.forEach(function(z) {
+      var key = 'zone_last_' + z.id;
+      lastDone[z.id] = localStorage.getItem(key) || '2000-01-01';
+    });
+    // Sort by oldest last-done date
+    zones.sort(function(a, b) { return lastDone[a.id].localeCompare(lastDone[b.id]); });
+    return zones[0]; // suggest the zone not done for longest
+  }
+
+  // ═══════════════════════════════════════════════════
+  // FEATURE: Dark Mode
+  // ═══════════════════════════════════════════════════
+  window.toggleDarkMode = function() {
+    var isDark = document.body.classList.toggle('dark-mode');
+    localStorage.setItem('cathHub_darkMode', isDark ? '1' : '0');
+    var btn = document.getElementById('dark-mode-btn');
+    if (btn) btn.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+  };
+
+  // Restore dark mode on load
+  if (localStorage.getItem('cathHub_darkMode') === '1') {
+    document.body.classList.add('dark-mode');
+    var dmBtn = document.getElementById('dark-mode-btn');
+    if (dmBtn) dmBtn.textContent = 'Light Mode';
+  }
+
+  // ═══════════════════════════════════════════════════
+  // FEATURE: PIN Lock
+  // ═══════════════════════════════════════════════════
+  var _pinEntry = '';
+
+  window.pinPress = function(n) {
+    if (_pinEntry.length >= 4) return;
+    _pinEntry += String(n);
+    pinUpdateDots();
+    if (_pinEntry.length === 4) {
+      setTimeout(pinCheck, 150);
+    }
+  };
+
+  window.pinBackspace = function() {
+    _pinEntry = _pinEntry.slice(0, -1);
+    pinUpdateDots();
+  };
+
+  window.pinClear = function() {
+    _pinEntry = '';
+    pinUpdateDots();
+    document.getElementById('pin-error').style.display = 'none';
+  };
+
+  function pinUpdateDots() {
+    var dots = document.querySelectorAll('#cathHub-pin .pin-dot');
+    dots.forEach(function(d, i) {
+      d.classList.toggle('filled', i < _pinEntry.length);
+    });
+  }
+
+  function pinCheck() {
+    var stored = localStorage.getItem('cathHub_pin');
+    if (!stored) { pinSetup(); return; }
+    if (_pinEntry === stored) {
+      document.getElementById('cathHub-pin').style.display = 'none';
+      showApp();
+    } else {
+      document.getElementById('pin-error').textContent = 'Wrong PIN. Try again.';
+      document.getElementById('pin-error').style.display = 'block';
+      _pinEntry = '';
+      pinUpdateDots();
+    }
+  }
+
+  window.pinUsePassword = function() {
+    document.getElementById('cathHub-pin').style.display = 'none';
+    document.getElementById('cathHub-login').style.display = 'flex';
+  };
+
+  window.pinSetup = function() {
+    var newPin = prompt('Set a 4-digit PIN for quick access:');
+    if (newPin && /^\d{4}$/.test(newPin)) {
+      localStorage.setItem('cathHub_pin', newPin);
+      alert('PIN set! You can now use it to unlock the app.');
+      _pinEntry = '';
+      pinUpdateDots();
+    } else if (newPin !== null) {
+      alert('PIN must be exactly 4 digits.');
+    }
+  };
+
+  // Override showLogin to check for PIN
+  var _originalShowLogin = showLogin;
+  showLogin = function() {
+    var hasPin = localStorage.getItem('cathHub_pin');
+    var hasSession = false;
+    sb.auth.getSession().then(function(result) {
+      hasSession = !!(result.data.session);
+      if (hasPin && hasSession) {
+        document.getElementById('cathHub-login').style.display = 'none';
+        document.getElementById('cathHub').style.display = 'none';
+        document.getElementById('cathHub-pin').style.display = 'flex';
+      } else {
+        _originalShowLogin();
+      }
+    });
+  };
+
+  // ═══════════════════════════════════════════════════
+  // Hook into dashLoad for new features
+  // ═══════════════════════════════════════════════════
+  var _origDashLoad = dashLoad;
+  dashLoad = async function() {
+    await _origDashLoad();
+    dashRenderRhythm();
+    dashRenderFortnight();
+    dashRenderBinNight();
+    dashRenderWater();
+    dashCheckMedReminder();
+    // Set migraine diary date to today
+    var migDate = document.getElementById('mig-date');
+    if (migDate && !migDate.value) migDate.value = new Date().toISOString().split('T')[0];
+  };
+
+  // Init migraine diary on medical nav
+  var _origMedGo = window.medGo;
+  window.medGo = function(sub) {
+    _origMedGo(sub);
+    if (sub === 'migrainediary') {
+      migRenderHistory();
+      var migDate = document.getElementById('mig-date');
+      if (migDate && !migDate.value) migDate.value = new Date().toISOString().split('T')[0];
+    }
+  };
+
+  // Re-render rhythm items on initial load
+  dashRenderRhythm();
+  dashRenderFortnight();
+  dashRenderBinNight();
+  dashRenderWater();
 
 })();
 </script>
