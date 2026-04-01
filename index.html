@@ -462,6 +462,7 @@
       <option value="habits">&#x2B50; My Habits</option>
       <option value="travel">&#x2708;&#xFE0F; Travel</option>
       <option value="hometab">&#x1F3E0; Home</option>
+      <option value="about">&#x2139;&#xFE0F; About</option>
     </select>
     <!-- Desktop: button nav -->
     <button class="nav-item active" onclick="chNav('home',this)"><span class="icon">&#x1F4CA;</span> Dashboard</button>
@@ -472,6 +473,7 @@
     <button class="nav-item" onclick="chNav('habits',this)"><span class="icon">&#x2B50;</span> My Habits</button>
     <button class="nav-item" onclick="chNav('travel',this)"><span class="icon">&#x2708;&#xFE0F;</span> Travel</button>
     <button class="nav-item" onclick="chNav('hometab',this)"><span class="icon">&#x1F3E0;</span> Home</button>
+    <button class="nav-item" onclick="chNav('about',this)"><span class="icon">&#x2139;&#xFE0F;</span> About</button>
     <div class="sidebar-footer"><span>Cath Hub v2.0</span><br><a href="#" onclick="cathLogout();return false" style="color:rgba(255,255,255,0.5) !important;font-size:10px !important;text-decoration:underline !important;">Sign out</a></div>
   </div>
 
@@ -1436,9 +1438,6 @@
       <div class="am-subscreen active" id="hm-home">
         <div style="display:flex !important;flex-direction:column !important;gap:10px !important;">
           <button class="am-btn" onclick="hmGo('fiona')" style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F9F9; Fiona's List <span style="margin-left:auto !important;color:#94a3b8 !important;font-size:12px !important;" id="hm-fiona-badge">0 tasks</span></button>
-          <button class="am-btn" disabled style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#94a3b8 !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F527; Maintenance Tasks <span style="margin-left:auto !important;font-size:12px !important;">Coming soon</span></button>
-          <button class="am-btn" disabled style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#94a3b8 !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F4E6; Home Inventory <span style="margin-left:auto !important;font-size:12px !important;">Coming soon</span></button>
-          <button class="am-btn" disabled style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#94a3b8 !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F4DE; Important Contacts <span style="margin-left:auto !important;font-size:12px !important;">Coming soon</span></button>
         </div>
       </div>
 
@@ -1476,6 +1475,54 @@
         </div>
       </div>
 
+    </div>
+
+    <!-- ═══ ABOUT ═══ -->
+    <div class="screen" id="ch-about">
+      <h2>&#x2139;&#xFE0F; About Cath Hub</h2>
+
+      <div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:14px !important;padding:20px !important;margin-bottom:16px !important;">
+        <div style="font-size:16px !important;font-weight:700 !important;margin-bottom:4px !important;">cathcoach4u/personal-cath-hub</div>
+        <div style="font-size:12px !important;color:#64748b !important;margin-bottom:16px !important;">Personal health &amp; household management app</div>
+
+        <div style="font-size:13px !important;font-weight:700 !important;margin-bottom:10px !important;color:#1e293b !important;">Built With</div>
+
+        <div style="display:flex !important;flex-direction:column !important;gap:10px !important;">
+          <div style="display:flex !important;align-items:center !important;gap:12px !important;padding:12px 14px !important;background:#f8fafc !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;">
+            <div style="font-size:24px !important;">&#x1F4BB;</div>
+            <div>
+              <div style="font-size:14px !important;font-weight:600 !important;">GitHub</div>
+              <div style="font-size:11px !important;color:#64748b !important;">Source code hosting &amp; version control</div>
+            </div>
+          </div>
+
+          <div style="display:flex !important;align-items:center !important;gap:12px !important;padding:12px 14px !important;background:#f8fafc !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;">
+            <div style="font-size:24px !important;">&#x1F916;</div>
+            <div>
+              <div style="font-size:14px !important;font-weight:600 !important;">Claude (Anthropic AI)</div>
+              <div style="font-size:11px !important;color:#64748b !important;">AI-assisted development &amp; code generation</div>
+            </div>
+          </div>
+
+          <div style="display:flex !important;align-items:center !important;gap:12px !important;padding:12px 14px !important;background:#f8fafc !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;">
+            <div style="font-size:24px !important;">&#x26A1;</div>
+            <div>
+              <div style="font-size:14px !important;font-weight:600 !important;">Supabase</div>
+              <div style="font-size:11px !important;color:#64748b !important;">Backend database, auth &amp; real-time data</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:14px !important;padding:20px !important;">
+        <div style="font-size:13px !important;font-weight:700 !important;margin-bottom:10px !important;">Stack</div>
+        <div style="font-size:12px !important;color:#64748b !important;line-height:1.8 !important;">
+          &bull; Vanilla HTML / CSS / JavaScript (no frameworks)<br>
+          &bull; Supabase for auth, database &amp; storage<br>
+          &bull; GitHub Pages for hosting<br>
+          &bull; Claude Code for AI-assisted development
+        </div>
+      </div>
     </div>
 
   </div><!-- /main -->
@@ -2794,13 +2841,13 @@
     var v = sel.value;
     sel.value = '';
     if (v === 'shopping') {
-      chNav('aislemate', document.querySelectorAll('#cathHub .nav-item')[1]);
+      chNav('aislemate', document.querySelectorAll('#cathHub .nav-item')[2]);
       setTimeout(function(){ amGo('weekly'); }, 100);
     } else if (v === 'receipt') {
-      chNav('aislemate', document.querySelectorAll('#cathHub .nav-item')[1]);
+      chNav('aislemate', document.querySelectorAll('#cathHub .nav-item')[2]);
       setTimeout(function(){ amGo('receipts'); }, 100);
     } else if (v === 'mentalhealth') {
-      chNav('medical', document.querySelectorAll('#cathHub .nav-item')[3]);
+      chNav('medical', document.querySelectorAll('#cathHub .nav-item')[4]);
       setTimeout(function(){ medGo('mentalhealth'); }, 100);
     } else if (v === 'filing') {
       window.open('https://netorgft4053847.sharepoint.com/:f:/s/bakerpersonal-CathPersonal/IgCDEd3wyYcYTYLNHVmG3vY6AXpwBUtDz6wYy2dclwLsNcw?e=671UAV', '_blank');
