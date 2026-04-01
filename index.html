@@ -416,14 +416,24 @@
   /* ───── MORNING REMINDER BANNER ───── */
   #cathHub .hab-reminder-banner { background: #fef3c7 !important; border: 1px solid #f59e0b !important; border-radius: 10px !important; padding: 12px 16px !important; margin-bottom: 16px !important; display: flex !important; align-items: center !important; gap: 10px !important; font-size: 13px !important; font-weight: 600 !important; color: #92400e !important; }
 
-  /* ───── MOBILE TOP BAR & HAMBURGER ───── */
+  /* ───── MOBILE TOP BAR & SLIDE-OUT DRAWER ───── */
   #cathHub .mobile-top-bar { display: none !important; }
-  #cathHub .mobile-nav-dropdown { display: none !important; position: absolute !important; top: 100% !important; left: 0 !important; right: 0 !important; background: #0d9488 !important; z-index: 100 !important; box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important; }
-  #cathHub .mobile-nav-dropdown.open { display: block !important; }
-  #cathHub .mobile-nav-dropdown .mobile-nav-item { display: flex !important; align-items: center !important; gap: 10px !important; padding: 14px 20px !important; font-size: 15px !important; color: rgba(255,255,255,0.85) !important; cursor: pointer !important; border-bottom: 1px solid rgba(255,255,255,0.1) !important; background: none !important; width: 100% !important; text-align: left !important; }
-  #cathHub .mobile-nav-dropdown .mobile-nav-item:hover { background: rgba(255,255,255,0.1) !important; color: white !important; }
-  #cathHub .mobile-nav-dropdown .mobile-nav-item.active { background: rgba(59,130,246,0.3) !important; border-left: 3px solid #3b82f6 !important; color: white !important; }
-  #cathHub .mobile-nav-dropdown .mobile-nav-item .icon { font-size: 18px !important; width: 24px !important; text-align: center !important; }
+  #cathHub .mobile-drawer-overlay { display: none !important; position: fixed !important; inset: 0 !important; background: rgba(0,0,0,0.4) !important; z-index: 100 !important; opacity: 0 !important; transition: opacity 0.3s ease !important; }
+  #cathHub .mobile-drawer-overlay.open { display: block !important; opacity: 1 !important; }
+  #cathHub .mobile-drawer { position: fixed !important; top: 0 !important; left: 0 !important; bottom: 0 !important; width: 260px !important; background: #0d9488 !important; z-index: 101 !important; transform: translateX(-100%) !important; transition: transform 0.3s cubic-bezier(0.32,0.72,0,1) !important; display: flex !important; flex-direction: column !important; overflow-y: auto !important; padding-top: env(safe-area-inset-top) !important; }
+  #cathHub .mobile-drawer.open { transform: translateX(0) !important; }
+  #cathHub .mobile-drawer-header { padding: 20px 20px 16px !important; display: flex !important; align-items: center !important; justify-content: space-between !important; border-bottom: 1px solid rgba(255,255,255,0.15) !important; }
+  #cathHub .mobile-drawer-header h2 { font-size: 18px !important; font-weight: 700 !important; color: white !important; }
+  #cathHub .mobile-drawer-close { min-width: 40px !important; min-height: 40px !important; display: flex !important; align-items: center !important; justify-content: center !important; background: none !important; border: none !important; color: rgba(255,255,255,0.7) !important; font-size: 22px !important; cursor: pointer !important; border-radius: 8px !important; }
+  #cathHub .mobile-drawer-close:hover { background: rgba(255,255,255,0.1) !important; color: white !important; }
+  #cathHub .mobile-drawer .mobile-nav-item { display: flex !important; align-items: center !important; gap: 10px !important; padding: 14px 20px !important; font-size: 15px !important; color: rgba(255,255,255,0.85) !important; cursor: pointer !important; border-bottom: 1px solid rgba(255,255,255,0.08) !important; background: none !important; width: 100% !important; text-align: left !important; transition: background 0.15s !important; }
+  #cathHub .mobile-drawer .mobile-nav-item:hover { background: rgba(255,255,255,0.1) !important; color: white !important; }
+  #cathHub .mobile-drawer .mobile-nav-item.active { background: rgba(59,130,246,0.3) !important; border-left: 3px solid #3b82f6 !important; color: white !important; }
+  #cathHub .mobile-drawer .mobile-nav-item .icon { font-size: 18px !important; width: 24px !important; text-align: center !important; }
+  #cathHub .mobile-drawer-footer { margin-top: auto !important; padding: 14px 20px !important; border-top: 1px solid rgba(255,255,255,0.15) !important; }
+  #cathHub .mobile-drawer-footer span { font-size: 10px !important; color: rgba(255,255,255,0.4) !important; }
+  #cathHub .mobile-drawer-footer .dm-row { display: flex !important; align-items: center !important; gap: 6px !important; margin-bottom: 8px !important; }
+  #cathHub .mobile-drawer-footer .dm-btn { padding: 4px 10px !important; font-size: 10px !important; background: rgba(255,255,255,0.1) !important; color: rgba(255,255,255,0.6) !important; border: 1px solid rgba(255,255,255,0.15) !important; border-radius: 6px !important; cursor: pointer !important; }
 
   /* ───── RESPONSIVE ───── */
   @media (max-width: 900px) { #cathHub .dash-grid { grid-template-columns: 1fr 1fr !important; } }
@@ -483,7 +493,7 @@
   body.dark-mode #cathHub .nav-item { color: rgba(255,255,255,0.6) !important; }
   body.dark-mode #cathHub .nav-item.active { color: white !important; }
   body.dark-mode #cathHub .mobile-top-bar { background: #0f766e !important; }
-  body.dark-mode #cathHub .mobile-nav-dropdown { background: #0f766e !important; }
+  body.dark-mode #cathHub .mobile-drawer { background: #0f766e !important; }
 </style>
 
 <div id="cathHub-login">
@@ -534,21 +544,36 @@
 </div>
 
 <div id="cathHub">
-  <!-- Mobile top bar with hamburger -->
-  <div class="mobile-top-bar" style="position:relative !important;">
-    <h1>&#x1F3E0; Cath Hub</h1>
+  <!-- Mobile top bar -->
+  <div class="mobile-top-bar">
     <button class="hamburger-btn" onclick="toggleMobileNav()" aria-label="Menu">&#x2630;</button>
-    <div class="mobile-nav-dropdown" id="mobile-nav-dropdown">
-      <button class="mobile-nav-item active" data-nav="home" onclick="chNavMobile('home',this)"><span class="icon">&#x1F4CA;</span> Dashboard</button>
-      <button class="mobile-nav-item" data-nav="todo" onclick="chNavMobile('todo',this)"><span class="icon">&#x2705;</span> To-Do</button>
-      <button class="mobile-nav-item" data-nav="aislemate" onclick="chNavMobile('aislemate',this)"><span class="icon">&#x1F6D2;</span> AisleMate</button>
-      <button class="mobile-nav-item" data-nav="workout" onclick="chNavMobile('workout',this)"><span class="icon">&#x1F4AA;</span> Workout Log</button>
-      <button class="mobile-nav-item" data-nav="medical" onclick="chNavMobile('medical',this)"><span class="icon">&#x1FA7A;</span> Medical</button>
-      <button class="mobile-nav-item" data-nav="habits" onclick="chNavMobile('habits',this)"><span class="icon">&#x2B50;</span> My Habits</button>
-      <button class="mobile-nav-item" data-nav="travel" onclick="chNavMobile('travel',this)"><span class="icon">&#x2708;&#xFE0F;</span> Travel</button>
-      <button class="mobile-nav-item" data-nav="hometab" onclick="chNavMobile('hometab',this)"><span class="icon">&#x1F3E0;</span> Home</button>
-      <button class="mobile-nav-item" data-nav="about" onclick="chNavMobile('about',this)"><span class="icon">&#x2139;&#xFE0F;</span> About</button>
-      <button class="mobile-nav-item" onclick="cathLogout()"><span class="icon">&#x1F6AA;</span> Sign Out</button>
+    <h1>&#x1F3E0; Cath Hub</h1>
+    <div style="width:48px !important;"></div>
+  </div>
+
+  <!-- Mobile slide-out drawer -->
+  <div class="mobile-drawer-overlay" id="mobile-drawer-overlay" onclick="closeMobileNav()"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="mobile-drawer-header">
+      <h2>&#x1F3E0; Cath Hub</h2>
+      <button class="mobile-drawer-close" onclick="closeMobileNav()" aria-label="Close">&#x2715;</button>
+    </div>
+    <button class="mobile-nav-item active" data-nav="home" onclick="chNavMobile('home',this)"><span class="icon">&#x1F4CA;</span> Dashboard</button>
+    <button class="mobile-nav-item" data-nav="todo" onclick="chNavMobile('todo',this)"><span class="icon">&#x2705;</span> To-Do</button>
+    <button class="mobile-nav-item" data-nav="aislemate" onclick="chNavMobile('aislemate',this)"><span class="icon">&#x1F6D2;</span> AisleMate</button>
+    <button class="mobile-nav-item" data-nav="workout" onclick="chNavMobile('workout',this)"><span class="icon">&#x1F4AA;</span> Workout Log</button>
+    <button class="mobile-nav-item" data-nav="medical" onclick="chNavMobile('medical',this)"><span class="icon">&#x1FA7A;</span> Medical</button>
+    <button class="mobile-nav-item" data-nav="habits" onclick="chNavMobile('habits',this)"><span class="icon">&#x2B50;</span> My Habits</button>
+    <button class="mobile-nav-item" data-nav="travel" onclick="chNavMobile('travel',this)"><span class="icon">&#x2708;&#xFE0F;</span> Travel</button>
+    <button class="mobile-nav-item" data-nav="hometab" onclick="chNavMobile('hometab',this)"><span class="icon">&#x1F3E0;</span> Home</button>
+    <button class="mobile-nav-item" data-nav="about" onclick="chNavMobile('about',this)"><span class="icon">&#x2139;&#xFE0F;</span> About</button>
+    <div class="mobile-drawer-footer">
+      <div class="dm-row">
+        <span style="font-size:12px !important;color:rgba(255,255,255,0.5) !important;">&#x1F319;</span>
+        <button class="dm-btn" onclick="toggleDarkMode()">Dark Mode</button>
+      </div>
+      <span>Cath Hub v2.0</span><br>
+      <button class="mobile-nav-item" onclick="cathLogout()" style="padding:10px 0 !important;border:none !important;font-size:13px !important;color:rgba(255,255,255,0.5) !important;">&#x1F6AA; Sign Out</button>
     </div>
   </div>
 
@@ -1869,14 +1894,23 @@
   // ─── NAVIGATION ───
   // ─── MOBILE HAMBURGER NAV ───
   window.toggleMobileNav = function() {
-    var dd = document.getElementById('mobile-nav-dropdown');
-    if (dd) dd.classList.toggle('open');
+    var drawer = document.getElementById('mobile-drawer');
+    var overlay = document.getElementById('mobile-drawer-overlay');
+    if (drawer && overlay) {
+      drawer.classList.toggle('open');
+      overlay.classList.toggle('open');
+    }
+  };
+
+  window.closeMobileNav = function() {
+    var drawer = document.getElementById('mobile-drawer');
+    var overlay = document.getElementById('mobile-drawer-overlay');
+    if (drawer) drawer.classList.remove('open');
+    if (overlay) overlay.classList.remove('open');
   };
 
   window.chNavMobile = function(name, btn) {
-    // Close dropdown
-    var dd = document.getElementById('mobile-nav-dropdown');
-    if (dd) dd.classList.remove('open');
+    closeMobileNav();
     // Update mobile nav active state
     document.querySelectorAll('#cathHub .mobile-nav-item').forEach(function(n){ n.classList.remove('active'); });
     if (btn) btn.classList.add('active');
