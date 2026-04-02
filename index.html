@@ -620,10 +620,9 @@
         </div>
       </div>
 
-      <!-- Fortnightly Week + Bin Night Row -->
+      <!-- Fortnightly Week Badge -->
       <div style="display:flex !important;gap:8px !important;margin-bottom:12px !important;flex-wrap:wrap !important;">
         <div id="dash-fortnight-badge" style="flex:1 !important;text-align:center !important;padding:10px 12px !important;background:#f0fdf4 !important;border:1px solid #bbf7d0 !important;border-radius:10px !important;font-size:12px !important;color:#166534 !important;font-weight:600 !important;"></div>
-        <div id="dash-bin-badge" style="flex:1 !important;text-align:center !important;padding:10px 12px !important;background:#fefce8 !important;border:1px solid #fde68a !important;border-radius:10px !important;font-size:12px !important;color:#92400e !important;font-weight:600 !important;"></div>
       </div>
 
       <!-- Water Tracker -->
@@ -5718,53 +5717,6 @@
   }
 
   // ═══════════════════════════════════════════════════
-  // FEATURE: Bin Night Reminder (uses Week A/B cycle)
-  // Northern Beaches Council: 4-bin system
-  // Red (general) = weekly, Yellow (recycling) & Green (vegetation) = fortnightly alternating
-  // Week A/B from same 16 Mar 2026 reference
-  // Adjust which bins go out on which week below:
-  // ═══════════════════════════════════════════════════
-  function dashGetWeekAB() {
-    var refDate = new Date(2026, 2, 16); // 16 March 2026 = Week A
-    var now = new Date();
-    var diffDays = Math.floor((now - refDate) / 86400000);
-    var weekNum = Math.floor(diffDays / 7);
-    return weekNum % 2 === 0 ? 'A' : 'B';
-  }
-
-  function dashRenderBinNight() {
-    var badge = document.getElementById('dash-bin-badge');
-    if (!badge) return;
-    var now = new Date();
-    var day = now.getDay(); // 0=Sun
-    var week = dashGetWeekAB();
-
-    // Week A: Red (general) + Yellow (recycling)
-    // Week B: Red (general) + Green (vegetation/garden organics)
-    var binsThisWeek = week === 'A'
-      ? 'Red (general) + Yellow (recycling)'
-      : 'Red (general) + Green (garden organics)';
-    var binEmoji = week === 'A' ? '&#x1F534;&#x1F7E1;' : '&#x1F534;&#x1F7E2;';
-
-    if (day === 0 || day === 1) { // Sun-Mon: put out tonight
-      badge.innerHTML = binEmoji + ' <strong>Bin night</strong> — ' + binsThisWeek;
-      badge.style.setProperty('background', '#fef2f2', 'important');
-      badge.style.setProperty('border-color', '#fecaca', 'important');
-      badge.style.setProperty('color', '#991b1b', 'important');
-    } else if (day === 2) { // Tuesday: collection day
-      badge.innerHTML = binEmoji + ' <strong>Bin day</strong> — bring in after collection';
-      badge.style.setProperty('background', '#fefce8', 'important');
-      badge.style.setProperty('border-color', '#fde68a', 'important');
-      badge.style.setProperty('color', '#92400e', 'important');
-    } else {
-      badge.innerHTML = '&#x1F5D1; Next bins (' + (week === 'A' ? 'Wk A' : 'Wk B') + '): ' + binsThisWeek;
-      badge.style.setProperty('background', '#f8fafc', 'important');
-      badge.style.setProperty('border-color', '#e2e8f0', 'important');
-      badge.style.setProperty('color', '#64748b', 'important');
-    }
-  }
-
-  // ═══════════════════════════════════════════════════
   // FEATURE: Water Tracker
   // ═══════════════════════════════════════════════════
   var WATER_TARGET = 8; // glasses per day
@@ -6093,7 +6045,7 @@
     await _origDashLoad();
     dashRenderRhythm();
     dashRenderFortnight();
-    dashRenderBinNight();
+
 
     dashRenderWater();
     dashCheckMedReminder();
