@@ -611,10 +611,12 @@
       </div>
       <div id="dash-fortnight-cards" style="display:flex !important;flex-direction:column !important;gap:8px !important;margin-bottom:16px !important;"></div>
 
+      <!-- Morning Meds - prominent button -->
+      <button class="am-btn" id="dash-meds-btn" onclick="dashTakeMorningMeds()" style="width:100% !important;padding:16px 20px !important;font-size:16px !important;font-weight:700 !important;text-align:center !important;background:#10b981 !important;border:2px solid #10b981 !important;border-radius:12px !important;color:white !important;margin-bottom:12px !important;display:flex !important;align-items:center !important;justify-content:center !important;gap:8px !important;">&#x1F48A; Take Morning Meds</button>
+
       <div style="display:flex !important;gap:8px !important;margin-bottom:16px !important;flex-wrap:wrap !important;">
         <button class="am-btn" onclick="dashQuickNav({value:'receipt'})" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F9FE; Upload Receipt</button>
         <button class="am-btn" onclick="dashQuickNav({value:'filing'})" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F4C1; Filing System</button>
-        <button class="am-btn" id="dash-meds-btn" onclick="dashTakeMorningMeds()" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:#10b981 !important;border:1px solid #10b981 !important;border-radius:10px !important;color:white !important;">&#x2600;&#xFE0F; Morning Meds</button>
       </div>
 
       <!-- Medication Reminder Banner -->
@@ -3041,14 +3043,14 @@
     if (_medRecordingLock) return;
     _medRecordingLock = true;
     var btn = document.getElementById('dash-meds-btn');
-    btn.textContent = 'Recording...';
+    btn.innerHTML = '\u23F3 Recording...';
     btn.disabled = true;
     try {
       var { data: allHabs } = await sb.from('habit_meds').select('*').eq('freq', 'daily');
       var { data: medsList } = await sb.from('medications').select('name');
       var medNames = (medsList || []).map(function(m){ return m.name.toLowerCase(); });
       var meds = (allHabs || []).filter(function(h){ return medNames.indexOf(h.name.toLowerCase()) !== -1; });
-      if (!meds.length) { btn.textContent = 'No meds found'; _medRecordingLock = false; return; }
+      if (!meds.length) { btn.innerHTML = 'No meds found'; _medRecordingLock = false; return; }
       var today = new Date();
       var todayStr = today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
       // Re-check right before insert to avoid race conditions
@@ -3058,13 +3060,13 @@
       for (var i = 0; i < toInsert.length; i++) {
         await safeDailyInsert(toInsert[i].id, todayStr, new Date().toISOString());
       }
-      btn.textContent = '\u2705 All Taken';
+      btn.innerHTML = '\u2705 All Meds Taken';
       btn.style.background = '#64748b';
       btn.style.borderColor = '#64748b';
       btn.disabled = true;
       dashLoad();
     } catch(e) {
-      btn.textContent = 'Error - tap to retry';
+      btn.innerHTML = '\u26A0\uFE0F Error - tap to retry';
       btn.style.background = '#ef4444';
       btn.style.borderColor = '#ef4444';
       btn.disabled = false;
@@ -3087,12 +3089,12 @@
       var doneIds = (existing || []).map(function(l){ return l.med_id; });
       var allDone = meds.every(function(m){ return doneIds.indexOf(m.id) !== -1; });
       if (allDone) {
-        btn.textContent = '\u2705 All Taken';
+        btn.innerHTML = '\u2705 All Meds Taken';
         btn.style.background = '#64748b';
         btn.style.borderColor = '#64748b';
         btn.disabled = true;
       } else {
-        btn.textContent = '\u2600\uFE0F Morning Meds';
+        btn.innerHTML = '\uD83D\uDC8A Take Morning Meds';
         btn.style.background = '#10b981';
         btn.style.borderColor = '#10b981';
         btn.disabled = false;
@@ -6095,6 +6097,14 @@
     // Set migraine diary date to today
     var migDate = document.getElementById('mig-date');
     if (migDate && !migDate.value) migDate.value = new Date().toISOString().split('T')[0];
+
+    // Apple Shortcut: auto-take meds if ?action=take-meds in URL
+    var urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('action') === 'take-meds') {
+      // Clean the URL so refreshing doesn't re-trigger
+      window.history.replaceState({}, '', window.location.pathname);
+      dashTakeMorningMeds();
+    }
   };
 
   // Init migraine diary on medical nav
