@@ -604,6 +604,11 @@
     <div class="screen active" id="ch-home">
       <h2 style="font-size:20px !important;margin-bottom:16px !important;">Dashboard</h2>
 
+      <!-- Fortnightly Week Badge -->
+      <div style="display:flex !important;gap:8px !important;margin-bottom:12px !important;flex-wrap:wrap !important;">
+        <div id="dash-fortnight-badge" style="flex:1 !important;text-align:center !important;padding:10px 12px !important;background:#f0fdf4 !important;border:1px solid #bbf7d0 !important;border-radius:10px !important;font-size:12px !important;color:#166534 !important;font-weight:600 !important;"></div>
+      </div>
+
       <div style="display:flex !important;gap:8px !important;margin-bottom:16px !important;flex-wrap:wrap !important;">
         <button class="am-btn" onclick="dashQuickNav({value:'receipt'})" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F9FE; Upload Receipt</button>
         <button class="am-btn" onclick="dashQuickNav({value:'filing'})" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F4C1; Filing System</button>
@@ -618,11 +623,6 @@
           <button onclick="dashTakeMorningMeds()" style="padding:6px 12px !important;font-size:12px !important;background:#10b981 !important;color:white !important;border:none !important;border-radius:6px !important;cursor:pointer !important;">Take Now</button>
           <button onclick="document.getElementById('dash-med-reminder').style.setProperty('display','none','important')" style="background:none !important;border:none !important;color:#991b1b !important;font-size:16px !important;cursor:pointer !important;padding:0 4px !important;">&times;</button>
         </div>
-      </div>
-
-      <!-- Fortnightly Week Badge -->
-      <div style="display:flex !important;gap:8px !important;margin-bottom:12px !important;flex-wrap:wrap !important;">
-        <div id="dash-fortnight-badge" style="flex:1 !important;text-align:center !important;padding:10px 12px !important;background:#f0fdf4 !important;border:1px solid #bbf7d0 !important;border-radius:10px !important;font-size:12px !important;color:#166534 !important;font-weight:600 !important;"></div>
       </div>
 
       <!-- Water Tracker -->
