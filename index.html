@@ -612,7 +612,7 @@
       <div id="dash-fortnight-cards" style="display:flex !important;flex-direction:column !important;gap:8px !important;margin-bottom:16px !important;"></div>
 
       <!-- Morning Meds - prominent button -->
-      <button class="am-btn" id="dash-meds-btn" onclick="dashTakeMorningMeds()" style="width:100% !important;padding:16px 20px !important;font-size:16px !important;font-weight:700 !important;text-align:center !important;background:#10b981 !important;border:2px solid #10b981 !important;border-radius:12px !important;color:white !important;margin-bottom:12px !important;display:flex !important;align-items:center !important;justify-content:center !important;gap:8px !important;">&#x1F48A; Take Morning Meds</button>
+      <button class="am-btn" id="dash-meds-btn" onclick="dashTakeMorningMeds()" style="width:100% !important;padding:16px 20px !important;font-size:16px !important;font-weight:700 !important;text-align:center !important;background:#10b981 !important;border:2px solid #10b981 !important;border-radius:12px !important;color:white !important;margin-bottom:12px !important;display:flex !important;align-items:center !important;justify-content:center !important;gap:8px !important;">Take Morning Meds</button>
 
       <div style="display:flex !important;gap:8px !important;margin-bottom:16px !important;flex-wrap:wrap !important;">
         <button class="am-btn" onclick="dashQuickNav({value:'receipt'})" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F9FE; Upload Receipt</button>
@@ -3060,7 +3060,7 @@
       for (var i = 0; i < toInsert.length; i++) {
         await safeDailyInsert(toInsert[i].id, todayStr, new Date().toISOString());
       }
-      btn.innerHTML = '\u2705 All Meds Taken';
+      btn.innerHTML = '\uD83D\uDC8A All Meds Taken';
       btn.style.background = '#64748b';
       btn.style.borderColor = '#64748b';
       btn.disabled = true;
@@ -3089,12 +3089,12 @@
       var doneIds = (existing || []).map(function(l){ return l.med_id; });
       var allDone = meds.every(function(m){ return doneIds.indexOf(m.id) !== -1; });
       if (allDone) {
-        btn.innerHTML = '\u2705 All Meds Taken';
+        btn.innerHTML = '\uD83D\uDC8A All Meds Taken';
         btn.style.background = '#64748b';
         btn.style.borderColor = '#64748b';
         btn.disabled = true;
       } else {
-        btn.innerHTML = '\uD83D\uDC8A Take Morning Meds';
+        btn.innerHTML = 'Take Morning Meds';
         btn.style.background = '#10b981';
         btn.style.borderColor = '#10b981';
         btn.disabled = false;
