@@ -1778,14 +1778,8 @@
       <div class="ai-float-title">&#x1F916; AI Assistant</div>
       <span class="ai-float-x" onclick="aiFToggle()">&#x2715;</span>
     </div>
-    <!-- Setup state -->
-    <div class="ai-float-setup" id="ai-float-setup">
-      <p>Enter your Anthropic API key to start chatting. It&#x2019;s saved in your browser only.</p>
-      <div class="ai-float-key-row">
-        <input class="ai-float-key-input" id="ai-float-key-input" type="password" placeholder="sk-ant-...">
-        <button class="ai-float-key-save" onclick="aiFSaveKey()">Save</button>
-      </div>
-    </div>
+    <!-- Setup state (hidden - API key is server-side) -->
+    <div class="ai-float-setup" id="ai-float-setup" style="display:none !important;"></div>
     <!-- Chat state -->
     <div class="ai-float-body" id="ai-float-body">
       <div class="ai-float-msgs" id="ai-float-msgs">
@@ -5107,8 +5101,6 @@
       var input = document.getElementById('ai-float-input');
       var text  = input.value.trim();
       if (!text) return;
-      var key = afGetKey();
-      if (!key) { afInit(); return; }
 
       input.value = '';
       afMessages.push({role: 'user', content: text});
