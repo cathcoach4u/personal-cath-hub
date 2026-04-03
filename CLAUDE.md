@@ -4,10 +4,13 @@
 
 Cath Hub is a personal health & household management PWA built with vanilla HTML/CSS/JS (no frameworks), Supabase backend, hosted on GitHub Pages. Repository: cathcoach4u/personal-cath-hub.
 
+**Timezone:** Australia/Sydney (AEST/AEDT). Always use Sydney time.
+
 ## Architecture
 
 - Single-page app: `index.html` contains all screens with sidebar navigation
-- Standalone utility pages: `fiona.html`, `morning.html`, `shopping.html`, `todo.html`, `workout.html`
+- Standalone utility pages: `fiona.html`, `morning.html`, `todo.html`, `workout.html`, `ai.html`
+- ARCHIVED: `shopping.html` and AisleMate screen (moved to Baker Hub)
 - Login via Supabase Auth (email/password) with optional PIN lock
 - Navigation: `chNav(screenName, btn)` function switches screens
 - All CSS is inline in `<style>` tags, scoped with `#cathHub` prefix and `!important`

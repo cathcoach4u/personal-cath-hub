@@ -560,7 +560,9 @@
     </div>
     <button class="mobile-nav-item active" data-nav="home" onclick="chNavMobile('home',this)"><span class="icon">&#x1F4CA;</span> Dashboard</button>
     <button class="mobile-nav-item" data-nav="todo" onclick="chNavMobile('todo',this)"><span class="icon">&#x2705;</span> To-Do</button>
+    <!-- ARCHIVED: AisleMate moved to Baker Hub
     <button class="mobile-nav-item" data-nav="aislemate" onclick="chNavMobile('aislemate',this)"><span class="icon">&#x1F6D2;</span> AisleMate</button>
+    -->
     <button class="mobile-nav-item" data-nav="workout" onclick="chNavMobile('workout',this)"><span class="icon">&#x1F4AA;</span> Workout Log</button>
     <button class="mobile-nav-item" data-nav="medical" onclick="chNavMobile('medical',this)"><span class="icon">&#x1FA7A;</span> Medical</button>
     <button class="mobile-nav-item" data-nav="habits" onclick="chNavMobile('habits',this)"><span class="icon">&#x2B50;</span> My Habits</button>
@@ -582,7 +584,9 @@
     <!-- Desktop: button nav -->
     <button class="nav-item active" onclick="chNav('home',this)"><span class="icon">&#x1F4CA;</span> Dashboard</button>
     <button class="nav-item" onclick="chNav('todo',this)"><span class="icon">&#x2705;</span> To-Do</button>
+    <!-- ARCHIVED: AisleMate moved to Baker Hub
     <button class="nav-item" onclick="chNav('aislemate',this)"><span class="icon">&#x1F6D2;</span> AisleMate</button>
+    -->
     <button class="nav-item" onclick="chNav('workout',this)"><span class="icon">&#x1F4AA;</span> Workout Log</button>
     <button class="nav-item" onclick="chNav('medical',this)"><span class="icon">&#x1FA7A;</span> Medical</button>
     <button class="nav-item" onclick="chNav('habits',this)"><span class="icon">&#x2B50;</span> My Habits</button>
@@ -615,7 +619,9 @@
       <button class="am-btn" id="dash-meds-btn" onclick="dashTakeMorningMeds()" style="width:100% !important;padding:16px 20px !important;font-size:16px !important;font-weight:700 !important;text-align:center !important;background:#10b981 !important;border:2px solid #10b981 !important;border-radius:12px !important;color:white !important;margin-bottom:12px !important;display:flex !important;align-items:center !important;justify-content:center !important;gap:8px !important;">Take Morning Meds</button>
 
       <div style="display:flex !important;gap:8px !important;margin-bottom:16px !important;flex-wrap:wrap !important;">
+        <!-- ARCHIVED: Upload Receipt moved to Baker Hub
         <button class="am-btn" onclick="dashQuickNav({value:'receipt'})" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F9FE; Upload Receipt</button>
+        -->
         <button class="am-btn" onclick="dashQuickNav({value:'filing'})" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F4C1; Filing System</button>
       </div>
 
@@ -697,6 +703,7 @@
         </div>
       </div>
 
+      <!-- ARCHIVED: AisleMate moved to Baker Hub
       <div class="dash-section">
         <div style="display:flex !important;justify-content:space-between !important;align-items:center !important;margin-bottom:12px !important;">
           <h3 style="margin-bottom:0 !important;">&#x1F6D2; Shopping List</h3>
@@ -704,6 +711,7 @@
         </div>
         <div id="dash-shopping-list"></div>
       </div>
+      -->
 
       <div class="dash-section">
         <div style="display:flex !important;justify-content:space-between !important;align-items:center !important;margin-bottom:12px !important;">
@@ -1724,7 +1732,7 @@
         <div style="font-size:12px !important;color:#64748b !important;line-height:1.8 !important;">
           &bull; Dashboard with quick stats &amp; navigation cards<br>
           &bull; To-Do lists with categories &amp; due dates<br>
-          &bull; AisleMate shopping system (lists, master items, receipts, meal plans, QR share)<br>
+          &bull; AisleMate shopping system (archived &mdash; now in Baker Hub)<br>
           &bull; Workout logging with exercise library &amp; custom exercises<br>
           &bull; Medical records (medications, sessions, contacts, mental health)<br>
           &bull; Daily habit tracking with 7-day view &amp; streaks<br>
@@ -1922,7 +1930,7 @@
     var mainEl = document.querySelector('#cathHub .main');
     if (mainEl) mainEl.scrollTop = 0;
     window.scrollTo(0, 0);
-    if(name === 'aislemate') amGo('home');
+    // ARCHIVED: if(name === 'aislemate') amGo('home');
     if(name === 'medical') medGo('home');
     if(name === 'hometab') hmGo('home');
     if(name === 'todo') tdLoad();
@@ -4317,7 +4325,7 @@
     var afMessages = [];
     var afOpen = false;
     var _afToday = new Date(); var _afTodayStr = _afToday.getFullYear()+'-'+String(_afToday.getMonth()+1).padStart(2,'0')+'-'+String(_afToday.getDate()).padStart(2,'0');
-    var afSystemPrompt = "Today's date is " + _afTodayStr + " (DD/MM/YYYY: " + _afTodayStr.split('-').reverse().join('/') + ").\n\nYou are Cath's warm and practical personal AI assistant built into Cath Hub. Cath is an Australian woman who runs a coaching business called Coach4U. She uses Cath Hub to manage her personal life — shopping, workouts, medical appointments, and habits. Be friendly, concise, and helpful. Use Australian English. Currency is AUD ($). Dates in DD/MM/YYYY format. Don't be overly formal.\n\nYou have tools to manage the Supabase database:\n- search_items: search the master item list\n- update_items: update category, store, family_member, or name for items matching a filter\n- delete_items: delete items matching a filter\n- add_item: add a new item to the master list\n\nValid categories: Fruit & Veg, Meat, Dairy, Pantry, Frozen, Drinks, Household, Other\nValid family members: Cath, Andrew, Sarah, Russell (or empty string to unassign)\n\nWhen Cath asks to change items, use the tools. Always confirm what you did after.\n\nWhen Cath asks to add something to the shopping list (e.g. 'add milk'):\n1. First use search_items to check if it's in the master list\n2. If found, use add_to_shopping_list with the master list details (name, category, store). Just do it, don't ask for confirmation.\n3. If not found, add it as a quick-add with category Other and no store (leave store empty).\n4. NEVER offer to add items to the master list. The master list is populated automatically from scanned receipts — receipts are the source of truth.\n\nYou can also:\n- View the shopping list and remove items\n- Repeat last shop (add all items from most recent receipt)\n- Add all of a family member's items at once (e.g. 'add all of Sarah's items')\n- Add multiple items in one go (e.g. 'add milk, bread and bananas')\n- Suggest items Cath might be low on based on purchase frequency\n- Show spending summaries by store or date range\n- Compare prices for items across stores and dates\n\nBe proactive — if Cath asks to add items, handle it. If she asks about spending, use the tools. Always be concise in responses.\n\nMEAL PLANNING:\nCath's family: Cath, Andrew, Sarah, Russell. When asked to plan meals:\n1. Ask who will be home each night (Mon-Sun)\n2. Suggest practical meals based on what's in the master list and what they usually buy\n3. Use set_meal_plan tool to save each day's meal\n4. Offer to add any missing ingredients to the shopping list\n\nSHOPPING LIST REVIEW:\nWhen Cath says the list is finalised or asks you to review it, use view_shopping_list to check it, then analyse and suggest anything obviously missing (e.g. if there's pasta but no sauce, meat but no veggies, breakfast items missing, etc). Be practical not pushy.\n\nTO-DO LIST:\nYou can add, complete, and remove tasks from Cath's personal to-do list and Fiona's cleaning list. Use the todo/fiona tools when asked.\n\nMEDICATIONS & MEDICAL:\nYou can view and manage medications, medical sessions (for the Mental Health Plan tracker), and habit/medication logs. Use these tools when Cath asks about her meds, appointments, or health tracking.\n\nCath's daily meds: Vyvanse, Valtrex, Levothyroxine. As-needed: Nurofen, Panadol, Nexium Antacid, Prochlorperazine, Cizinate, Ondansetron.\n\nGENERAL DATABASE:\nYou have a general-purpose query tool (db_query) that can select from ANY table, and a general-purpose write tool (db_write) that can insert, update, or delete from ANY table. Use these for anything the specific tools don't cover.";
+    var afSystemPrompt = "Today's date is " + _afTodayStr + " (DD/MM/YYYY: " + _afTodayStr.split('-').reverse().join('/') + "). Cath's timezone is Australia/Sydney (AEST/AEDT). Always show times in Sydney time.\n\nYou are Cath's warm and practical personal AI assistant built into Cath Hub. Cath is an Australian woman who runs a coaching business called Coach4U. She uses Cath Hub to manage her personal life \u2014 workouts, medical appointments, habits, and to-do lists. Be friendly, concise, and helpful. Use Australian English. Currency is AUD ($). Dates in DD/MM/YYYY format. Don't be overly formal.\n\nIMPORTANT: Shopping and AisleMate features have moved to Baker Hub. If Cath asks about shopping, tell her to use Baker Hub instead. Do NOT use shopping-related tools (search_items, add_to_shopping_list, view_shopping_list, etc.).\n\nTO-DO LIST:\nYou can add, complete, and remove tasks from Cath's personal to-do list and Fiona's cleaning list. Use the todo/fiona tools when asked.\n\nMEDICATIONS & MEDICAL:\nYou can view and manage medications, medical sessions (for the Mental Health Plan tracker), and habit/medication logs. Use these tools when Cath asks about her meds, appointments, or health tracking.\n\nCath's daily meds: Vyvanse, Valtrex, Levothyroxine. As-needed: Nurofen, Panadol, Nexium Antacid, Prochlorperazine, Cizinate, Ondansetron.\n\nMEMORIES:\nYou can save and recall facts about Cath using save_memory, forget_memory, and list_memories.\n\nGENERAL DATABASE:\nYou have a general-purpose query tool (db_query) that can select from ANY table, and a general-purpose write tool (db_write) that can insert, update, or delete from ANY table. Use these for anything the specific tools don't cover.\n\nTables: personal_todos, fiona_tasks, medications, habit_meds, habit_logs, medical_sessions, ai_memory.";
 
     var afTools = [
       {
