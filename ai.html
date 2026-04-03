@@ -49,6 +49,9 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .send-btn:hover { background: #6d28d9; }
 .send-btn:disabled { background: #e2e8f0; cursor: default; }
 .hidden { display: none !important; }
+.chips { display: flex; gap: 8px; padding: 8px 16px 0; flex-wrap: wrap; flex-shrink: 0; background: white; }
+.chip { padding: 6px 14px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 99px; font-size: 12px; font-weight: 600; color: #64748b; cursor: pointer; white-space: nowrap; font-family: inherit; }
+.chip:hover { background: #ede9fe; border-color: #7c3aed; color: #7c3aed; }
 </style>
 </head>
 <body>
@@ -78,6 +81,14 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
       <h3>Hi Cath!</h3>
       <p>Ask me anything about your shopping, meds, habits, todos, or meals.</p>
     </div>
+  </div>
+  <div class="chips" id="chips">
+    <button class="chip" onclick="quickSend('Show my open todos')">&#x1F4CB; Open todos</button>
+    <button class="chip" onclick="quickSend('What meds have I taken today?')">&#x1F48A; Meds today</button>
+    <button class="chip" onclick="quickSend('Show my shopping list')">&#x1F6D2; Shopping list</button>
+    <button class="chip" onclick="quickSend('What tasks are overdue?')">&#x23F0; Overdue tasks</button>
+    <button class="chip" onclick="quickSend('Show this weeks meal plan')">&#x1F372; Meal plan</button>
+    <button class="chip" onclick="quickSend('What do you remember about me?')">&#x1F9E0; Memories</button>
   </div>
   <div class="input-row">
     <textarea id="chat-input" rows="1" placeholder="Ask me anything..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg();}"></textarea>
@@ -352,11 +363,19 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
     container.scrollTop = container.scrollHeight;
   }
 
+  window.quickSend = function(text) {
+    document.getElementById('chat-input').value = text;
+    sendMsg();
+  };
+
   window.sendMsg = async function() {
     var input = document.getElementById('chat-input');
     var text = input.value.trim();
     if (!text) return;
     input.value = '';
+    // Hide chips after first message
+    var chips = document.getElementById('chips');
+    if (chips) chips.classList.add('hidden');
     messages.push({ role: 'user', content: text });
     render();
 
