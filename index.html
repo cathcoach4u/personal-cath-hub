@@ -3055,14 +3055,14 @@
         await safeDailyInsert(toInsert[i].id, todayStr, new Date().toISOString());
       }
       btn.innerHTML = '\uD83D\uDC8A All Meds Taken';
-      btn.style.background = '#64748b';
-      btn.style.borderColor = '#64748b';
+      btn.style.setProperty('background', '#64748b', 'important');
+      btn.style.setProperty('border-color', '#64748b', 'important');
       btn.disabled = true;
       dashLoad();
     } catch(e) {
       btn.innerHTML = '\u26A0\uFE0F Error - tap to retry';
-      btn.style.background = '#ef4444';
-      btn.style.borderColor = '#ef4444';
+      btn.style.setProperty('background', '#ef4444', 'important');
+      btn.style.setProperty('border-color', '#ef4444', 'important');
       btn.disabled = false;
     }
     _medRecordingLock = false;
@@ -3084,13 +3084,13 @@
       var allDone = meds.every(function(m){ return doneIds.indexOf(m.id) !== -1; });
       if (allDone) {
         btn.innerHTML = '\uD83D\uDC8A All Meds Taken';
-        btn.style.background = '#64748b';
-        btn.style.borderColor = '#64748b';
+        btn.style.setProperty('background', '#64748b', 'important');
+        btn.style.setProperty('border-color', '#64748b', 'important');
         btn.disabled = true;
       } else {
         btn.innerHTML = 'Take Morning Meds';
-        btn.style.background = '#10b981';
-        btn.style.borderColor = '#10b981';
+        btn.style.setProperty('background', '#10b981', 'important');
+        btn.style.setProperty('border-color', '#10b981', 'important');
         btn.disabled = false;
       }
     } catch(e) {}
