@@ -1031,41 +1031,26 @@
       <!-- SUB: Medications -->
       <div class="am-subscreen" id="med-medications">
         <button class="am-back" onclick="medGo('home')">&#x2190; Back</button>
-        <h3 style="font-size:18px !important;font-weight:700 !important;margin-bottom:16px !important;">&#x1F48A; Current Medication Plan</h3>
-        <div class="med-section">
-          <div style="overflow-x:auto !important;">
-            <table class="med-table">
-              <thead>
-                <tr>
-                  <th>Medication</th>
-                  <th>Dose</th>
-                  <th>Schedule</th>
-                  <th>Conditions</th>
-                  <th>Purpose</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody id="med-meds-body"></tbody>
-            </table>
-          </div>
-        </div>
+        <h3 style="font-size:18px !important;font-weight:700 !important;margin-bottom:16px !important;">&#x1F48A; My Medications</h3>
+        <div id="med-meds-cards"></div>
 
         <!-- Add medication form -->
-        <div class="med-section" style="margin-top:12px !important;">
-          <div class="med-section-header" style="cursor:pointer !important;" onclick="document.getElementById('med-add-form').style.display=document.getElementById('med-add-form').style.display==='none'?'block':'none'">
-            <h3 style="font-size:14px !important;">+ Add Medication</h3>
+        <div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:12px !important;margin-top:12px !important;overflow:hidden !important;">
+          <div style="padding:14px 16px !important;cursor:pointer !important;display:flex !important;align-items:center !important;justify-content:space-between !important;" onclick="document.getElementById('med-add-form').style.display=document.getElementById('med-add-form').style.display==='none'?'block':'none'">
+            <span style="font-size:14px !important;font-weight:700 !important;color:#1e293b !important;">+ Add Medication</span>
+            <span style="font-size:11px !important;color:#94a3b8 !important;">tap to expand</span>
           </div>
-          <div id="med-add-form" style="display:none !important;padding:14px 16px !important;">
+          <div id="med-add-form" style="display:none !important;padding:0 16px 16px !important;">
             <div style="display:flex !important;flex-direction:column !important;gap:10px !important;">
-              <input type="text" id="med-add-name" placeholder="Medication name" style="width:100% !important;padding:10px 12px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:14px !important;box-sizing:border-box !important;">
-              <input type="text" id="med-add-dose" placeholder="Dose (e.g. 2 tablets)" style="width:100% !important;padding:10px 12px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:14px !important;box-sizing:border-box !important;">
-              <select id="med-add-schedule" style="width:100% !important;padding:10px 12px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:14px !important;">
+              <input type="text" id="med-add-name" placeholder="Medication name" style="width:100% !important;padding:10px 12px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:16px !important;box-sizing:border-box !important;">
+              <input type="text" id="med-add-dose" placeholder="Dose (e.g. 2 tablets)" style="width:100% !important;padding:10px 12px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:16px !important;box-sizing:border-box !important;">
+              <select id="med-add-schedule" style="width:100% !important;padding:10px 12px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:16px !important;">
                 <option value="As needed">As needed</option>
                 <option value="1 tablet daily">1 tablet daily</option>
                 <option value="Once weekly">Once weekly</option>
                 <option value="Apply as directed">Apply as directed</option>
               </select>
-              <input type="text" id="med-add-purpose" placeholder="Purpose (optional)" style="width:100% !important;padding:10px 12px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:14px !important;box-sizing:border-box !important;">
+              <input type="text" id="med-add-purpose" placeholder="Purpose (optional)" style="width:100% !important;padding:10px 12px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:16px !important;box-sizing:border-box !important;">
               <button class="am-btn" onclick="medAddMedication()" style="width:100% !important;padding:12px !important;background:#7c3aed !important;color:white !important;border-color:#7c3aed !important;font-size:14px !important;justify-content:center !important;border-radius:8px !important;">Save Medication</button>
             </div>
           </div>
@@ -3290,33 +3275,82 @@
   var DAILY_MED_NAMES = ['Vyvanse', 'Valtrex', 'Levothyroxine', 'Xobet'];
   var AS_NEEDED_NAMES = ['Nurofen', 'Panadol', 'Nexium', 'Prochlorperazine', 'Cizinate', 'Ondansetron'];
 
+  // Migraine med names for grouping
+  var MIGRAINE_NAMES = ['Prochlorperazine', 'Cizinate', 'Ondansetron'];
+  var MIGRAINE_DEFAULTS = [
+    { name: 'Prochlorperazine', dose: '5-10mg up to 3x daily', schedule: 'As needed', purpose: 'Anti-nausea/anti-vertigo for migraine attacks. Blocks dopamine. Can cause drowsiness.' },
+    { name: 'Cizinate', dose: '20/40mg up to 3x daily', schedule: 'As needed', purpose: 'For dizziness if Prochlorperazine insufficient. Cinnarizine/dimenhydrinate combo. Avoid daily use beyond 4 weeks.' },
+    { name: 'Ondansetron', dose: '8mg wafer up to 3x daily', schedule: 'As needed', purpose: 'For nausea during migraine. Dissolve wafer on tongue (no water needed). Can cause headache or constipation.' }
+  ];
+
+  async function ensureMigraineMeds(existingMeds) {
+    var names = (existingMeds || []).map(function(m){ return m.name.toLowerCase(); });
+    for (var i = 0; i < MIGRAINE_DEFAULTS.length; i++) {
+      var md = MIGRAINE_DEFAULTS[i];
+      if (names.indexOf(md.name.toLowerCase()) === -1) {
+        try { await sb.from('medications').insert(md); } catch(e) {}
+      }
+    }
+  }
+
   async function loadMedicationPlan() {
     var { data: meds } = await sb.from('medications').select('*');
-    var medsBody = document.getElementById('med-meds-body');
-    medsBody.innerHTML = '';
-    // Sort: daily first, then as-needed, then weekly
-    var sortedMeds = (meds || []).slice().sort(function(a, b) {
-      function rank(m) {
-        if (DAILY_MED_NAMES.some(function(d){ return m.name.toLowerCase().indexOf(d.toLowerCase()) !== -1; })) return 0;
-        if (AS_NEEDED_NAMES.some(function(d){ return m.name.toLowerCase().indexOf(d.toLowerCase()) !== -1; })) return 1;
-        return 2;
-      }
-      return rank(a) - rank(b);
-    });
-    sortedMeds.forEach(function(m) {
+    // Auto-seed migraine meds if missing
+    var migraineNames = (meds || []).map(function(m){ return m.name.toLowerCase(); });
+    var needsSeed = MIGRAINE_DEFAULTS.some(function(md){ return migraineNames.indexOf(md.name.toLowerCase()) === -1; });
+    if (needsSeed) {
+      await ensureMigraineMeds(meds);
+      var r = await sb.from('medications').select('*');
+      meds = r.data;
+    }
+    var container = document.getElementById('med-meds-cards');
+    if (!container) return;
+
+    // Classify each med
+    var daily = [], migraine = [], asNeeded = [], other = [];
+    (meds || []).forEach(function(m) {
       var isDaily = DAILY_MED_NAMES.some(function(d){ return m.name.toLowerCase().indexOf(d.toLowerCase()) !== -1; });
-      var isAsNeeded = AS_NEEDED_NAMES.some(function(d){ return m.name.toLowerCase().indexOf(d.toLowerCase()) !== -1; }) || (m.schedule && m.schedule.toLowerCase().indexOf('as needed') !== -1);
-      var freqBadge;
-      if (isDaily) {
-        freqBadge = '<span style="font-size:10px !important;background:#dbeafe !important;color:#1d4ed8 !important;padding:2px 6px !important;border-radius:4px !important;font-weight:600 !important;">DAILY</span> ';
-      } else if (isAsNeeded) {
-        freqBadge = '<span style="font-size:10px !important;background:#f0fdf4 !important;color:#15803d !important;padding:2px 6px !important;border-radius:4px !important;font-weight:600 !important;">AS NEEDED</span> ';
-      } else {
-        freqBadge = '<span style="font-size:10px !important;background:#fef3c7 !important;color:#92400e !important;padding:2px 6px !important;border-radius:4px !important;font-weight:600 !important;">WEEKLY</span> ';
-      }
-      var conditions = m.conditions ? esc(m.conditions) : '-';
-      medsBody.innerHTML += '<tr><td style="font-weight:600 !important;">' + freqBadge + esc(m.name) + '</td><td>' + esc(m.dose || '-') + '</td><td>' + esc(m.schedule) + '</td><td>' + conditions + '</td><td class="meds-reason">' + esc(m.purpose || '-') + '</td><td><span onclick="medDeleteMedication(\''+m.id+'\')" style="cursor:pointer !important;color:#94a3b8 !important;font-size:14px !important;" title="Remove">&#x1F5D1;</span></td></tr>';
+      var isMigraine = MIGRAINE_NAMES.some(function(d){ return m.name.toLowerCase().indexOf(d.toLowerCase()) !== -1; });
+      var isAN = AS_NEEDED_NAMES.some(function(d){ return m.name.toLowerCase().indexOf(d.toLowerCase()) !== -1; }) || (m.schedule && m.schedule.toLowerCase().indexOf('as needed') !== -1);
+      if (isDaily) daily.push(m);
+      else if (isMigraine) migraine.push(m);
+      else if (isAN) asNeeded.push(m);
+      else other.push(m);
     });
+
+    function renderCard(m) {
+      var h = '<div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:14px 16px !important;margin-bottom:8px !important;">';
+      h += '<div style="display:flex !important;align-items:center !important;justify-content:space-between !important;margin-bottom:6px !important;">';
+      h += '<div style="font-size:15px !important;font-weight:700 !important;color:#1e293b !important;">' + esc(m.name) + '</div>';
+      h += '<span onclick="medDeleteMedication(\'' + m.id + '\')" style="cursor:pointer !important;color:#94a3b8 !important;font-size:16px !important;padding:4px !important;" title="Remove">&#x1F5D1;</span>';
+      h += '</div>';
+      if (m.dose) h += '<div style="font-size:13px !important;color:#1e293b !important;margin-bottom:4px !important;"><strong>Dose:</strong> ' + esc(m.dose) + '</div>';
+      if (m.schedule) h += '<div style="font-size:13px !important;color:#1e293b !important;margin-bottom:4px !important;"><strong>When:</strong> ' + esc(m.schedule) + '</div>';
+      if (m.purpose) h += '<div style="font-size:12px !important;color:#64748b !important;line-height:1.4 !important;">' + esc(m.purpose) + '</div>';
+      if (m.conditions) h += '<div style="font-size:12px !important;color:#7c3aed !important;margin-top:4px !important;"><strong>For:</strong> ' + esc(m.conditions) + '</div>';
+      h += '</div>';
+      return h;
+    }
+
+    function renderSection(icon, title, subtitle, badgeColor, badgeBg, items) {
+      if (!items.length) return '';
+      var h = '<div style="margin-bottom:16px !important;">';
+      h += '<div style="display:flex !important;align-items:center !important;gap:8px !important;margin-bottom:10px !important;">';
+      h += '<span style="font-size:10px !important;font-weight:700 !important;text-transform:uppercase !important;letter-spacing:0.5px !important;background:' + badgeBg + ' !important;color:' + badgeColor + ' !important;padding:4px 10px !important;border-radius:6px !important;">' + icon + ' ' + title + '</span>';
+      if (subtitle) h += '<span style="font-size:11px !important;color:#94a3b8 !important;">' + subtitle + '</span>';
+      h += '</div>';
+      items.forEach(function(m) { h += renderCard(m); });
+      h += '</div>';
+      return h;
+    }
+
+    var html = '';
+    html += renderSection('&#x2600;&#xFE0F;', 'DAILY', 'Every morning', '#1d4ed8', '#dbeafe', daily);
+    html += renderSection('&#x1F7E3;', 'MIGRAINE', 'As needed during attacks', '#7c3aed', '#ede9fe', migraine);
+    html += renderSection('&#x1F7E2;', 'AS NEEDED', 'Take when required', '#15803d', '#f0fdf4', asNeeded);
+    html += renderSection('&#x1F7E1;', 'OTHER', '', '#92400e', '#fef3c7', other);
+
+    container.innerHTML = html || '<div style="text-align:center !important;color:#94a3b8 !important;padding:20px !important;">No medications added yet.</div>';
     window._cathMeds = meds || [];
   }
 
