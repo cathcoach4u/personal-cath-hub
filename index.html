@@ -616,7 +616,10 @@
       <div id="dash-fortnight-cards" style="display:flex !important;flex-direction:column !important;gap:8px !important;margin-bottom:16px !important;"></div>
 
       <!-- Morning Meds - prominent button -->
-      <button class="am-btn" id="dash-meds-btn" onclick="dashTakeMorningMeds()" style="width:100% !important;padding:16px 20px !important;font-size:16px !important;font-weight:700 !important;text-align:center !important;background:#10b981 !important;border:2px solid #10b981 !important;border-radius:12px !important;color:white !important;margin-bottom:12px !important;display:flex !important;align-items:center !important;justify-content:center !important;gap:8px !important;">Take Morning Meds</button>
+      <button class="am-btn" id="dash-meds-btn" onclick="dashTakeMorningMeds()" style="width:100% !important;padding:16px 20px !important;font-size:16px !important;font-weight:700 !important;text-align:center !important;background:#10b981 !important;border:2px solid #10b981 !important;border-radius:12px !important;color:white !important;margin-bottom:4px !important;display:flex !important;align-items:center !important;justify-content:center !important;gap:8px !important;">Take Morning Meds</button>
+      <div style="display:flex !important;align-items:center !important;justify-content:flex-end !important;margin-bottom:12px !important;gap:8px !important;">
+        <span id="dash-meds-backfill" onclick="dashBackfillMeds()" style="font-size:12px !important;color:#3b82f6 !important;cursor:pointer !important;text-decoration:underline !important;">Missed a day? Log it</span>
+      </div>
 
       <div style="display:flex !important;gap:8px !important;margin-bottom:16px !important;flex-wrap:wrap !important;">
         <!-- ARCHIVED: Upload Receipt moved to Baker Hub
@@ -3076,6 +3079,43 @@
       btn.disabled = false;
     }
     _medRecordingLock = false;
+  };
+
+  window.dashBackfillMeds = async function() {
+    var dateStr = prompt('Enter the date you took meds (YYYY-MM-DD).\nYesterday: press OK to use yesterday, or type a date.');
+    if (dateStr === null) return;
+    dateStr = dateStr.trim();
+    // Default to yesterday if empty or user just hit OK
+    if (!dateStr) {
+      var y = new Date();
+      y.setDate(y.getDate() - 1);
+      dateStr = y.getFullYear()+'-'+String(y.getMonth()+1).padStart(2,'0')+'-'+String(y.getDate()).padStart(2,'0');
+    }
+    // Validate format
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+      alert('Please use YYYY-MM-DD format (e.g. 2026-04-05)');
+      return;
+    }
+    try {
+      var { data: allHabs } = await sb.from('habit_meds').select('*').eq('freq', 'daily');
+      var { data: medsList } = await sb.from('medications').select('name');
+      var medNames = (medsList || []).map(function(m){ return m.name.toLowerCase(); });
+      var meds = (allHabs || []).filter(function(h){ return medNames.indexOf(h.name.toLowerCase()) !== -1; });
+      if (!meds.length) { alert('No medications found'); return; }
+      var { data: existing } = await sb.from('habit_logs').select('med_id').eq('date', dateStr);
+      var doneIds = (existing || []).map(function(l){ return l.med_id; });
+      var toInsert = meds.filter(function(m){ return doneIds.indexOf(m.id) === -1; });
+      if (!toInsert.length) {
+        alert('Meds already logged for ' + dateStr);
+        return;
+      }
+      for (var i = 0; i < toInsert.length; i++) {
+        await sb.from('habit_logs').insert({ med_id: toInsert[i].id, date: dateStr, created_at: new Date(dateStr + 'T08:00:00+10:00').toISOString() });
+      }
+      alert('Logged ' + toInsert.length + ' meds for ' + dateStr);
+    } catch(e) {
+      alert('Error: ' + e.message);
+    }
   };
 
   window.dashUpdateMedsBtn = async function() {
