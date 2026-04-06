@@ -696,7 +696,7 @@
       <div class="dash-section">
         <div style="display:flex !important;justify-content:space-between !important;align-items:center !important;margin-bottom:12px !important;">
           <h3 style="margin-bottom:0 !important;">&#x1F9F9; Fiona's List</h3>
-          <span style="font-size:12px !important;color:#3b82f6 !important;cursor:pointer !important;" onclick="chNav('hometab',document.querySelectorAll('#cathHub .nav-item')[7]);setTimeout(function(){hmGo('fiona')},100)">View all &rarr;</span>
+          <span style="font-size:12px !important;color:#3b82f6 !important;cursor:pointer !important;" onclick="chNav('hometab',document.querySelectorAll('#cathHub .nav-item')[6]);setTimeout(function(){hmGo('fiona')},100)">View all &rarr;</span>
         </div>
         <div id="dash-fiona-summary">
           <div style="font-size:13px !important;color:#94a3b8 !important;">Loading...</div>
@@ -716,7 +716,7 @@
       <div class="dash-section">
         <div style="display:flex !important;justify-content:space-between !important;align-items:center !important;margin-bottom:12px !important;">
           <h3 style="margin-bottom:0 !important;">&#x1F9E0; Mental Health Summary</h3>
-          <span style="font-size:12px !important;color:#3b82f6 !important;cursor:pointer !important;" onclick="chNav('medical',document.querySelectorAll('#cathHub .nav-item')[4]);setTimeout(function(){medGo('mentalhealth')},100)">View all &rarr;</span>
+          <span style="font-size:12px !important;color:#3b82f6 !important;cursor:pointer !important;" onclick="chNav('medical',document.querySelectorAll('#cathHub .nav-item')[3]);setTimeout(function(){medGo('mentalhealth')},100)">View all &rarr;</span>
         </div>
         <div class="dash-mh-summary" id="dash-mh-summary">
           <div class="dash-mh-stat"><div class="mh-num" id="dash-mh-total">-</div><div class="mh-label">Total Sessions</div></div>
@@ -1940,28 +1940,30 @@
 
   // ─── DASHBOARD DATA ───
   async function dashLoad() {
-    // Shopping list summary
-    var { data: items } = await sb.from('shopping_items').select('name, category, store, checked').order('created_at');
-    items = items || [];
+    // Shopping list summary (ARCHIVED - moved to Baker Hub)
     var container = document.getElementById('dash-shopping-list');
-    if (!items.length) {
-      container.innerHTML = '<div style="text-align:center;padding:12px;color:#94a3b8;font-size:13px;">No items on your list yet</div>';
-    } else {
-      var html = '';
-      items.slice(0, 15).forEach(function(item) {
-        html += '<div class="dash-shop-item">';
-        html += '<span style="font-size:14px !important;">' + (item.checked ? '&#x2611;' : '&#x2610;') + '</span>';
-        html += '<span style="flex:1 !important;' + (item.checked ? 'text-decoration:line-through;color:#94a3b8;' : '') + '">' + esc(item.name) + '</span>';
-        if (item.store) {
-          var storeCls = (item.store || '').toLowerCase().replace(/[^a-z]/g,'');
-          html += '<span class="mi-store ' + storeCls + '">' + esc(item.store) + '</span>';
-        }
-        html += '</div>';
-      });
-      if (items.length > 15) html += '<div style="font-size:12px;color:#94a3b8;padding-top:6px;">+ ' + (items.length - 15) + ' more items</div>';
-      var checked = items.filter(function(i){ return i.checked; }).length;
-      html = '<div style="font-size:12px;color:#64748b;margin-bottom:8px;">' + checked + ' of ' + items.length + ' checked</div>' + html;
-      container.innerHTML = html;
+    if (container) {
+      var { data: items } = await sb.from('shopping_items').select('name, category, store, checked').order('created_at');
+      items = items || [];
+      if (!items.length) {
+        container.innerHTML = '<div style="text-align:center;padding:12px;color:#94a3b8;font-size:13px;">No items on your list yet</div>';
+      } else {
+        var html = '';
+        items.slice(0, 15).forEach(function(item) {
+          html += '<div class="dash-shop-item">';
+          html += '<span style="font-size:14px !important;">' + (item.checked ? '&#x2611;' : '&#x2610;') + '</span>';
+          html += '<span style="flex:1 !important;' + (item.checked ? 'text-decoration:line-through;color:#94a3b8;' : '') + '">' + esc(item.name) + '</span>';
+          if (item.store) {
+            var storeCls = (item.store || '').toLowerCase().replace(/[^a-z]/g,'');
+            html += '<span class="mi-store ' + storeCls + '">' + esc(item.store) + '</span>';
+          }
+          html += '</div>';
+        });
+        if (items.length > 15) html += '<div style="font-size:12px;color:#94a3b8;padding-top:6px;">+ ' + (items.length - 15) + ' more items</div>';
+        var checked = items.filter(function(i){ return i.checked; }).length;
+        html = '<div style="font-size:12px;color:#64748b;margin-bottom:8px;">' + checked + ' of ' + items.length + ' checked</div>' + html;
+        container.innerHTML = html;
+      }
     }
 
     // Personal To-Do summary
@@ -3107,14 +3109,9 @@
   window.dashQuickNav = function(sel) {
     var v = sel.value;
     sel.value = '';
-    if (v === 'shopping') {
-      chNav('aislemate', document.querySelectorAll('#cathHub .nav-item')[2]);
-      setTimeout(function(){ amGo('weekly'); }, 100);
-    } else if (v === 'receipt') {
-      chNav('aislemate', document.querySelectorAll('#cathHub .nav-item')[2]);
-      setTimeout(function(){ amGo('receipts'); }, 100);
-    } else if (v === 'mentalhealth') {
-      chNav('medical', document.querySelectorAll('#cathHub .nav-item')[4]);
+    // ARCHIVED: shopping and receipt nav moved to Baker Hub
+    if (v === 'mentalhealth') {
+      chNav('medical', document.querySelectorAll('#cathHub .nav-item')[3]);
       setTimeout(function(){ medGo('mentalhealth'); }, 100);
     } else if (v === 'filing') {
       window.open('https://netorgft4053847.sharepoint.com/:f:/s/bakerpersonal-CathPersonal/IgCDEd3wyYcYTYLNHVmG3vY6AXpwBUtDz6wYy2dclwLsNcw?e=671UAV', '_blank');
