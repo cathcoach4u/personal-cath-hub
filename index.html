@@ -617,9 +617,7 @@
 
       <!-- Morning Meds - prominent button -->
       <button class="am-btn" id="dash-meds-btn" onclick="dashTakeMorningMeds()" style="width:100% !important;padding:16px 20px !important;font-size:16px !important;font-weight:700 !important;text-align:center !important;background:#10b981 !important;border:2px solid #10b981 !important;border-radius:12px !important;color:white !important;margin-bottom:4px !important;display:flex !important;align-items:center !important;justify-content:center !important;gap:8px !important;">Take Morning Meds</button>
-      <div style="display:flex !important;align-items:center !important;justify-content:flex-end !important;margin-bottom:12px !important;gap:8px !important;">
-        <span id="dash-meds-backfill" onclick="dashBackfillMeds()" style="font-size:12px !important;color:#3b82f6 !important;cursor:pointer !important;text-decoration:underline !important;">Missed a day? Log it</span>
-      </div>
+      <div style="margin-bottom:12px !important;"></div>
 
       <div style="display:flex !important;gap:8px !important;margin-bottom:16px !important;flex-wrap:wrap !important;">
         <!-- ARCHIVED: Upload Receipt moved to Baker Hub
@@ -1466,6 +1464,9 @@
         <div style="display:flex !important;gap:8px !important;margin-bottom:16px !important;flex-wrap:wrap !important;">
           <button class="am-btn" id="hab-take-all-btn" onclick="habTakeAllDaily()" style="flex:1 !important;justify-content:center !important;background:#10b981 !important;color:white !important;border-color:#10b981 !important;padding:12px 16px !important;font-size:14px !important;">&#x2600;&#xFE0F; Take All Daily Meds</button>
           <button class="am-btn" id="hab-undo-btn" onclick="habUndoTakeAll()" style="display:none !important;background:#ef4444 !important;color:white !important;border-color:#ef4444 !important;padding:12px !important;font-size:12px !important;">Undo</button>
+        </div>
+        <div style="text-align:right !important;margin:-8px 0 12px !important;">
+          <span onclick="dashBackfillMeds()" style="font-size:12px !important;color:#3b82f6 !important;cursor:pointer !important;text-decoration:underline !important;">Missed a day? Log it</span>
         </div>
 
         <!-- DAILY Medications -->
@@ -4793,6 +4794,18 @@
         }
       },
       {
+        name: 'backfill_meds',
+        description: 'Log daily medications for a past date (backfill missed meds). Specify the date and optionally which meds to log. If med_names is omitted, logs ALL daily meds. Skips any already logged for that date.',
+        input_schema: {
+          type: 'object',
+          properties: {
+            date: { type: 'string', description: 'Date to backfill YYYY-MM-DD' },
+            med_names: { type: 'array', items: { type: 'string' }, description: 'Optional: specific medication names to log. If omitted, logs all daily meds.' }
+          },
+          required: ['date']
+        }
+      },
+      {
         name: 'db_query',
         description: 'General-purpose SELECT from any Supabase table. Use for anything the specific tools don\'t cover. Tables: personal_todos, fiona_tasks, shopping_items, master_items, receipts, receipt_items, medications, habit_meds, habit_logs, medical_sessions, meal_plans, ai_memory.',
         input_schema: {
@@ -5097,6 +5110,32 @@
         if (toolInput.to_date) q = q.lte('date', toolInput.to_date);
         var { data } = await q.limit(100);
         return JSON.stringify(data || []);
+      }
+      // ─── BACKFILL MEDS ───
+      if (toolName === 'backfill_meds') {
+        var bfDate = toolInput.date;
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(bfDate)) return JSON.stringify({ error: 'Invalid date format. Use YYYY-MM-DD.' });
+        var { data: allHabs } = await sb.from('habit_meds').select('*').eq('freq', 'daily');
+        var { data: medsList } = await sb.from('medications').select('name');
+        var medNames = (medsList || []).map(function(m){ return m.name.toLowerCase(); });
+        var dailyMeds = (allHabs || []).filter(function(h){ return medNames.indexOf(h.name.toLowerCase()) !== -1; });
+        if (toolInput.med_names && toolInput.med_names.length > 0) {
+          var requested = toolInput.med_names.map(function(n){ return n.toLowerCase(); });
+          dailyMeds = dailyMeds.filter(function(m){ return requested.some(function(r){ return m.name.toLowerCase().indexOf(r) !== -1; }); });
+        }
+        if (!dailyMeds.length) return JSON.stringify({ error: 'No matching daily medications found.' });
+        var { data: existing } = await sb.from('habit_logs').select('med_id').eq('date', bfDate);
+        var doneIds = (existing || []).map(function(l){ return l.med_id; });
+        var toInsert = dailyMeds.filter(function(m){ return doneIds.indexOf(m.id) === -1; });
+        if (!toInsert.length) return JSON.stringify({ message: 'All specified meds already logged for ' + bfDate });
+        var logged = [];
+        var errors = [];
+        for (var bi = 0; bi < toInsert.length; bi++) {
+          var { error } = await sb.from('habit_logs').insert({ med_id: toInsert[bi].id, date: bfDate, created_at: new Date(bfDate + 'T08:00:00+10:00').toISOString() });
+          if (error) errors.push(toInsert[bi].name + ': ' + error.message);
+          else logged.push(toInsert[bi].name);
+        }
+        return JSON.stringify({ logged: logged, errors: errors, date: bfDate });
       }
       // ─── GENERAL DB QUERY ───
       if (toolName === 'db_query') {
