@@ -3668,9 +3668,9 @@
       { name: 'Nurofen', dose: '2 tablets' },
       { name: 'Panadol', dose: '2 tablets' },
       { name: 'Nexium Antacid', dose: '', hasBrands: true },
-      { name: 'Prochlorperazine', dose: '5-10mg up to 3x daily', group: 'Migraine' },
-      { name: 'Cizinate', dose: '20/40mg up to 3x daily', group: 'Migraine' },
-      { name: 'Ondansetron', dose: '8mg wafer up to 3x daily', group: 'Migraine' }
+      { name: 'Prochlorperazine', dose: '5-10mg up to 3x daily', group: 'Migraine', purpose: 'For dizziness/vertigo. Anti-emetic that blocks dopamine. Take orally or under tongue. Can cause drowsiness.' },
+      { name: 'Cizinate', dose: '20/40mg up to 3x daily', group: 'Migraine', purpose: 'For dizziness if Prochlorperazine not enough. Cinnarizine/dimenhydrinate combo. Avoid daily use beyond 4 weeks (risk of Parkinson-like symptoms).' },
+      { name: 'Ondansetron', dose: '8mg wafer up to 3x daily', group: 'Migraine', purpose: 'For nausea. Dissolve wafer on tongue (no water needed). Blocks serotonin to stop nausea signals. Can cause headache or constipation.' }
     ];
 
     // Load antacid brands from localStorage (user can add more via UI)
@@ -4065,7 +4065,11 @@
             } catch(e) {}
             h += '<div class="hab-med-row" style="flex-wrap:wrap !important;">';
             h += '<button class="am-btn" onclick="habShowRecordOptions(' + med.id + ',' + hasBrands + ')" style="background:#3b82f6 !important;color:white !important;border-color:#3b82f6 !important;padding:6px 12px !important;font-size:12px !important;">Record dose</button>';
+            var purposeText = asInfo && asInfo.purpose ? asInfo.purpose : '';
             h += '<div style="flex:1 !important;"><div class="hab-med-name" style="margin-bottom:0 !important;">' + esc(med.name) + esc(doseLabel) + '</div>';
+            if (purposeText) {
+              h += '<div style="font-size:11px !important;color:#94a3b8 !important;line-height:1.4 !important;margin:2px 0 4px !important;">' + esc(purposeText) + '</div>';
+            }
             if (todayLogs.length > 0) {
               h += '<div style="font-size:11px !important;color:#10b981 !important;">' + todayLogs.length + ' dose' + (todayLogs.length > 1 ? 's' : '') + ' today</div>';
               todayLogs.forEach(function(tl) {
