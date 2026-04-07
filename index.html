@@ -1429,23 +1429,23 @@
         <div id="hab-morning-banner"></div>
 
         <!-- Today's Status -->
-        <div style="display:grid !important;grid-template-columns:1fr 1fr 1fr !important;gap:8px !important;margin-bottom:16px !important;">
-          <div style="text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:14px 8px !important;">
-            <div style="font-size:22px !important;font-weight:700 !important;color:#10b981 !important;" id="hab-daily-done">0</div>
+        <div style="display:grid !important;grid-template-columns:1fr 1fr 1fr !important;gap:6px !important;margin-bottom:10px !important;">
+          <div style="text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:10px 6px !important;">
+            <div style="font-size:20px !important;font-weight:700 !important;color:#10b981 !important;" id="hab-daily-done">0</div>
             <div style="font-size:10px !important;color:#64748b !important;">Taken today</div>
           </div>
-          <div style="text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:14px 8px !important;">
-            <div style="font-size:22px !important;font-weight:700 !important;color:#3b82f6 !important;" id="hab-weekly-done">0</div>
+          <div style="text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:10px 6px !important;">
+            <div style="font-size:20px !important;font-weight:700 !important;color:#3b82f6 !important;" id="hab-weekly-done">0</div>
             <div style="font-size:10px !important;color:#64748b !important;">Weekly this week</div>
           </div>
-          <div style="text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:14px 8px !important;">
-            <div style="font-size:22px !important;font-weight:700 !important;color:#f59e0b !important;" id="hab-streak">0</div>
+          <div style="text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:10px 6px !important;">
+            <div style="font-size:20px !important;font-weight:700 !important;color:#f59e0b !important;" id="hab-streak">0</div>
             <div style="font-size:10px !important;color:#64748b !important;">Day streak</div>
           </div>
         </div>
 
         <!-- Quick action -->
-        <div style="display:flex !important;gap:8px !important;margin-bottom:16px !important;flex-wrap:wrap !important;">
+        <div style="display:flex !important;gap:8px !important;margin-bottom:10px !important;flex-wrap:wrap !important;">
           <button class="am-btn" id="hab-take-all-btn" onclick="habTakeAllDaily()" style="flex:1 !important;justify-content:center !important;background:#10b981 !important;color:white !important;border-color:#10b981 !important;padding:12px 16px !important;font-size:14px !important;">&#x2600;&#xFE0F; Take All Daily Meds</button>
           <button class="am-btn" id="hab-undo-btn" onclick="habUndoTakeAll()" style="display:none !important;background:#ef4444 !important;color:white !important;border-color:#ef4444 !important;padding:12px !important;font-size:12px !important;">Undo</button>
         </div>
@@ -1454,36 +1454,36 @@
         </div>
 
         <!-- DAILY Medications -->
-        <div class="hab-section">
-          <div class="hab-section-header">
-            <h3>&#x2600; Daily</h3>
+        <div class="hab-section" style="margin-bottom:10px !important;">
+          <div class="hab-section-header" style="padding:12px 16px !important;">
+            <h3 style="font-size:14px !important;">&#x2600; Daily</h3>
             <span style="font-size:11px !important;color:#94a3b8 !important;">Tap to mark as taken</span>
           </div>
           <div id="hab-daily-list"></div>
         </div>
 
-        <!-- AS NEEDED Medications -->
-        <div class="hab-section">
-          <div class="hab-section-header">
-            <h3>&#x1F48A; As Needed</h3>
-            <span style="font-size:11px !important;color:#94a3b8 !important;">Record each dose</span>
-          </div>
-          <div id="hab-asneeded-list"></div>
-        </div>
-
         <!-- WEEKLY Medications -->
-        <div class="hab-section">
-          <div class="hab-section-header">
-            <h3>&#x1F4C5; Weekly</h3>
+        <div class="hab-section" style="margin-bottom:10px !important;">
+          <div class="hab-section-header" style="padding:12px 16px !important;">
+            <h3 style="font-size:14px !important;">&#x1F4C5; Weekly</h3>
             <span style="font-size:11px !important;color:#94a3b8 !important;">Mon&ndash;Sun</span>
           </div>
           <div id="hab-weekly-list"></div>
         </div>
 
+        <!-- AS NEEDED Medications -->
+        <div class="hab-section" style="margin-bottom:10px !important;">
+          <div class="hab-section-header" style="padding:12px 16px !important;">
+            <h3 style="font-size:14px !important;">&#x1F48A; As Needed</h3>
+            <span style="font-size:11px !important;color:#94a3b8 !important;">Record each dose</span>
+          </div>
+          <div id="hab-asneeded-list"></div>
+        </div>
+
         <!-- Medication Log -->
-        <div class="hab-section" id="hab-history-section">
-          <div class="hab-section-header">
-            <h3>&#x1F4DC; Medication Log</h3>
+        <div class="hab-section" id="hab-history-section" style="margin-bottom:10px !important;">
+          <div class="hab-section-header" style="padding:12px 16px !important;">
+            <h3 style="font-size:14px !important;">&#x1F4DC; Medication Log</h3>
             <span style="font-size:11px !important;color:#94a3b8 !important;">Last 30 days</span>
           </div>
           <div style="padding:12px !important;" id="hab-history-container">
