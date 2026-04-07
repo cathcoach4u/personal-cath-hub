@@ -614,63 +614,67 @@
         <div style="font-size:32px !important;font-weight:700 !important;color:#1e293b !important;letter-spacing:3px !important;">Calm</div>
       </div>
 
-      <!-- Daily Habits Box -->
-      <div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:12px !important;padding:16px !important;margin-bottom:12px !important;">
-        <div style="font-size:13px !important;font-weight:700 !important;color:#1e293b !important;margin-bottom:12px !important;">&#x2600;&#xFE0F; Daily Habits</div>
+      <!-- Two-column: Daily Habits + Strengths -->
+      <div style="display:grid !important;grid-template-columns:1fr 1fr !important;gap:10px !important;margin-bottom:12px !important;">
 
-        <!-- Fortnightly Week Indicator -->
-        <div style="display:flex !important;align-items:center !important;justify-content:space-between !important;margin-bottom:10px !important;">
-          <span id="dash-fortnight-pill" style="display:inline-block !important;padding:6px 16px !important;border-radius:99px !important;font-size:13px !important;font-weight:700 !important;background:#f0fdf4 !important;color:#166534 !important;border:1px solid #bbf7d0 !important;"></span>
-          <button onclick="dashSwapWeek()" style="background:none !important;border:none !important;font-size:12px !important;color:#3b82f6 !important;cursor:pointer !important;font-weight:500 !important;text-decoration:underline !important;font-family:inherit !important;">Wrong week? Swap</button>
-        </div>
-        <div id="dash-fortnight-cards" style="display:flex !important;flex-direction:column !important;gap:8px !important;margin-bottom:12px !important;"></div>
+        <!-- Daily Habits Box (compact) -->
+        <div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:12px !important;padding:12px !important;">
+          <div style="font-size:12px !important;font-weight:700 !important;color:#1e293b !important;margin-bottom:8px !important;">&#x2600;&#xFE0F; Daily Habits</div>
 
-        <!-- Morning Meds Reminder -->
-        <div id="dash-meds-btn" onclick="chNav('habits');setTimeout(function(){zbTab('meds')},100)" style="display:flex !important;align-items:center !important;gap:10px !important;padding:12px 16px !important;background:#f0fdf4 !important;border:1px solid #bbf7d0 !important;border-radius:10px !important;margin-bottom:10px !important;cursor:pointer !important;">
-          <span style="font-size:20px !important;">&#x1F48A;</span>
-          <div style="flex:1 !important;">
-            <div style="font-size:14px !important;font-weight:600 !important;color:#166534 !important;">Take Morning Meds</div>
-            <div style="font-size:11px !important;color:#15803d !important;">Tap to log in My Habits</div>
+          <!-- Fortnightly Week Indicator -->
+          <div style="display:flex !important;align-items:center !important;justify-content:space-between !important;margin-bottom:6px !important;">
+            <span id="dash-fortnight-pill" style="display:inline-block !important;padding:4px 10px !important;border-radius:99px !important;font-size:11px !important;font-weight:700 !important;background:#f0fdf4 !important;color:#166534 !important;border:1px solid #bbf7d0 !important;"></span>
+            <button onclick="dashSwapWeek()" style="background:none !important;border:none !important;font-size:10px !important;color:#3b82f6 !important;cursor:pointer !important;font-weight:500 !important;text-decoration:underline !important;font-family:inherit !important;">Swap</button>
           </div>
-          <span style="font-size:14px !important;color:#86efac !important;">&#x276F;</span>
+          <div id="dash-fortnight-cards" style="display:flex !important;flex-direction:column !important;gap:6px !important;margin-bottom:8px !important;"></div>
+
+          <!-- Morning Meds Reminder -->
+          <div id="dash-meds-btn" onclick="chNav('habits');setTimeout(function(){zbTab('meds')},100)" style="display:flex !important;align-items:center !important;gap:8px !important;padding:8px 10px !important;background:#f0fdf4 !important;border:1px solid #bbf7d0 !important;border-radius:8px !important;margin-bottom:8px !important;cursor:pointer !important;">
+            <span style="font-size:16px !important;">&#x1F48A;</span>
+            <div style="flex:1 !important;">
+              <div style="font-size:12px !important;font-weight:600 !important;color:#166534 !important;">Take Morning Meds</div>
+              <div style="font-size:10px !important;color:#15803d !important;">Tap to log</div>
+            </div>
+            <span style="font-size:12px !important;color:#86efac !important;">&#x276F;</span>
+          </div>
+
+          <!-- Water Tracker -->
+          <div>
+            <div style="display:flex !important;align-items:center !important;justify-content:space-between !important;margin-bottom:6px !important;">
+              <div style="font-size:11px !important;font-weight:600 !important;color:#1e293b !important;">&#x1F4A7; Water</div>
+              <span style="font-size:10px !important;color:#64748b !important;" id="dash-water-label">0 / 8</span>
+            </div>
+            <div style="display:flex !important;gap:3px !important;align-items:center !important;">
+              <div id="dash-water-glasses" style="display:flex !important;gap:3px !important;flex:1 !important;flex-wrap:wrap !important;"></div>
+              <button onclick="dashAddWater()" style="padding:5px 8px !important;background:#3b82f6 !important;color:white !important;border:none !important;border-radius:6px !important;font-size:14px !important;cursor:pointer !important;line-height:1 !important;">+</button>
+              <button onclick="dashRemoveWater()" style="padding:5px 6px !important;background:#e2e8f0 !important;color:#64748b !important;border:none !important;border-radius:6px !important;font-size:14px !important;cursor:pointer !important;line-height:1 !important;">&minus;</button>
+            </div>
+            <div style="height:4px !important;background:#e2e8f0 !important;border-radius:2px !important;margin-top:6px !important;overflow:hidden !important;">
+              <div id="dash-water-bar" style="height:100% !important;background:#3b82f6 !important;border-radius:2px !important;transition:width 0.3s !important;width:0% !important;"></div>
+            </div>
+          </div>
         </div>
 
-        <!-- Water Tracker -->
-        <div style="margin-bottom:0 !important;">
-          <div style="display:flex !important;align-items:center !important;justify-content:space-between !important;margin-bottom:8px !important;">
-            <div style="font-size:13px !important;font-weight:600 !important;color:#1e293b !important;">&#x1F4A7; Water Tracker</div>
-            <span style="font-size:12px !important;color:#64748b !important;" id="dash-water-label">0 / 8 glasses</span>
+        <!-- Gallup CliftonStrengths -->
+        <div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:12px !important;padding:12px !important;">
+          <div style="font-size:12px !important;font-weight:700 !important;color:#1e293b !important;margin-bottom:8px !important;">&#x1F4AA; My Strengths</div>
+          <div style="display:flex !important;flex-wrap:wrap !important;gap:4px !important;">
+            <span style="font-size:10px !important;font-weight:600 !important;padding:3px 8px !important;border-radius:99px !important;background:#ede9fe !important;color:#6d28d9 !important;">Connectedness</span>
+            <span style="font-size:10px !important;font-weight:600 !important;padding:3px 8px !important;border-radius:99px !important;background:#ede9fe !important;color:#6d28d9 !important;">Includer</span>
+            <span style="font-size:10px !important;font-weight:600 !important;padding:3px 8px !important;border-radius:99px !important;background:#dbeafe !important;color:#1d4ed8 !important;">Ideation</span>
+            <span style="font-size:10px !important;font-weight:600 !important;padding:3px 8px !important;border-radius:99px !important;background:#dbeafe !important;color:#1d4ed8 !important;">Activator</span>
+            <span style="font-size:10px !important;font-weight:600 !important;padding:3px 8px !important;border-radius:99px !important;background:#fce7f3 !important;color:#be185d !important;">Restorative</span>
+            <span style="font-size:10px !important;font-weight:600 !important;padding:3px 8px !important;border-radius:99px !important;background:#ede9fe !important;color:#6d28d9 !important;">Relator</span>
+            <span style="font-size:10px !important;font-weight:600 !important;padding:3px 8px !important;border-radius:99px !important;background:#dbeafe !important;color:#1d4ed8 !important;">Arranger</span>
+            <span style="font-size:10px !important;font-weight:600 !important;padding:3px 8px !important;border-radius:99px !important;background:#dbeafe !important;color:#1d4ed8 !important;">Input</span>
+            <span style="font-size:10px !important;font-weight:600 !important;padding:3px 8px !important;border-radius:99px !important;background:#ede9fe !important;color:#6d28d9 !important;">Positivity</span>
+            <span style="font-size:10px !important;font-weight:600 !important;padding:3px 8px !important;border-radius:99px !important;background:#ede9fe !important;color:#6d28d9 !important;">Empathy</span>
           </div>
-          <div style="display:flex !important;gap:4px !important;align-items:center !important;">
-            <div id="dash-water-glasses" style="display:flex !important;gap:4px !important;flex:1 !important;flex-wrap:wrap !important;"></div>
-            <button onclick="dashAddWater()" style="padding:8px 12px !important;background:#3b82f6 !important;color:white !important;border:none !important;border-radius:8px !important;font-size:18px !important;cursor:pointer !important;line-height:1 !important;">+</button>
-            <button onclick="dashRemoveWater()" style="padding:8px 10px !important;background:#e2e8f0 !important;color:#64748b !important;border:none !important;border-radius:8px !important;font-size:18px !important;cursor:pointer !important;line-height:1 !important;">&minus;</button>
-          </div>
-          <div style="height:6px !important;background:#e2e8f0 !important;border-radius:3px !important;margin-top:8px !important;overflow:hidden !important;">
-            <div id="dash-water-bar" style="height:100% !important;background:#3b82f6 !important;border-radius:3px !important;transition:width 0.3s !important;width:0% !important;"></div>
+          <div style="margin-top:10px !important;">
+            <button class="am-btn" onclick="dashQuickNav({value:'filing'})" style="width:100% !important;padding:8px 10px !important;font-size:11px !important;text-align:center !important;background:#f8fafc !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;color:#1e293b !important;">&#x1F4C1; Filing System</button>
           </div>
         </div>
-      </div>
 
-      <!-- Gallup CliftonStrengths -->
-      <div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:12px !important;padding:14px 16px !important;margin-bottom:12px !important;">
-        <div style="font-size:13px !important;font-weight:700 !important;color:#1e293b !important;margin-bottom:10px !important;">&#x1F4AA; My Strengths</div>
-        <div style="display:flex !important;flex-wrap:wrap !important;gap:6px !important;">
-          <span style="font-size:11px !important;font-weight:600 !important;padding:4px 10px !important;border-radius:99px !important;background:#ede9fe !important;color:#6d28d9 !important;">Connectedness</span>
-          <span style="font-size:11px !important;font-weight:600 !important;padding:4px 10px !important;border-radius:99px !important;background:#ede9fe !important;color:#6d28d9 !important;">Includer</span>
-          <span style="font-size:11px !important;font-weight:600 !important;padding:4px 10px !important;border-radius:99px !important;background:#dbeafe !important;color:#1d4ed8 !important;">Ideation</span>
-          <span style="font-size:11px !important;font-weight:600 !important;padding:4px 10px !important;border-radius:99px !important;background:#dbeafe !important;color:#1d4ed8 !important;">Activator</span>
-          <span style="font-size:11px !important;font-weight:600 !important;padding:4px 10px !important;border-radius:99px !important;background:#fce7f3 !important;color:#be185d !important;">Restorative</span>
-          <span style="font-size:11px !important;font-weight:600 !important;padding:4px 10px !important;border-radius:99px !important;background:#ede9fe !important;color:#6d28d9 !important;">Relator</span>
-          <span style="font-size:11px !important;font-weight:600 !important;padding:4px 10px !important;border-radius:99px !important;background:#dbeafe !important;color:#1d4ed8 !important;">Arranger</span>
-          <span style="font-size:11px !important;font-weight:600 !important;padding:4px 10px !important;border-radius:99px !important;background:#dbeafe !important;color:#1d4ed8 !important;">Input</span>
-          <span style="font-size:11px !important;font-weight:600 !important;padding:4px 10px !important;border-radius:99px !important;background:#ede9fe !important;color:#6d28d9 !important;">Positivity</span>
-          <span style="font-size:11px !important;font-weight:600 !important;padding:4px 10px !important;border-radius:99px !important;background:#ede9fe !important;color:#6d28d9 !important;">Empathy</span>
-        </div>
-      </div>
-
-      <div style="display:flex !important;gap:8px !important;margin-bottom:16px !important;flex-wrap:wrap !important;">
-        <button class="am-btn" onclick="dashQuickNav({value:'filing'})" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F4C1; Filing System</button>
       </div>
 
       <!-- Daily Rhythm Checklist -->
