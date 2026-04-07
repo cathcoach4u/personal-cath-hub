@@ -3988,7 +3988,11 @@
     window.habAddNote = async function(logId) {
       var note = prompt('Add a note for this dose:');
       if (note === null) return;
-      await sb.from('habit_logs').update({ note: note.trim() || null }).eq('id', logId);
+      var { error } = await sb.from('habit_logs').update({ note: note.trim() || null }).eq('id', logId);
+      if (error) {
+        alert('Could not save note. The notes feature may need a database update.\n\nError: ' + error.message);
+        return;
+      }
       habRender();
     };
 
@@ -4075,13 +4079,14 @@
           var doseStr = medInfo && medInfo.dose ? medInfo.dose : '';
           h += '<div style="flex:1 !important;"><div class="hab-med-name" style="margin-bottom:0 !important;">'+esc(med.name)+(doseStr ? ' <span style="font-size:10px !important;color:#94a3b8 !important;font-weight:400 !important;">'+esc(doseStr)+'</span>' : '')+'</div>';
           if (done && takenTime) {
-            h += '<div style="font-size:10px !important;color:#10b981 !important;">';
-            h += '<span onclick="habChangeTime(\''+takenLogId+'\')" style="cursor:pointer !important;" title="Tap to change time">Taken at '+esc(takenTime)+' &#x270F;</span>';
-            if (takenNote) {
-              h += ' <span style="color:#64748b !important;">— '+esc(takenNote)+'</span>';
-            }
-            h += ' <span onclick="habAddNote(\''+takenLogId+'\')" style="cursor:pointer !important;color:#3b82f6 !important;font-size:10px !important;" title="Add/edit note">&#x1F4DD;</span>';
+            h += '<div style="font-size:10px !important;color:#10b981 !important;">Taken at '+esc(takenTime);
+            h += ' <span onclick="habChangeTime(\''+takenLogId+'\')" style="cursor:pointer !important;color:#3b82f6 !important;">&#x270F;</span>';
             h += '</div>';
+            if (takenNote) {
+              h += '<div style="font-size:10px !important;color:#64748b !important;font-style:italic !important;">'+esc(takenNote)+' <span onclick="habAddNote(\''+takenLogId+'\')" style="cursor:pointer !important;color:#3b82f6 !important;font-style:normal !important;">edit</span></div>';
+            } else {
+              h += '<div style="font-size:10px !important;"><span onclick="habAddNote(\''+takenLogId+'\')" style="cursor:pointer !important;color:#3b82f6 !important;">+ add note</span></div>';
+            }
           } else if (timeLabel) {
             h += '<div style="font-size:10px !important;color:#94a3b8 !important;">'+timeLabel+'</div>';
           }
@@ -4155,11 +4160,14 @@
               h += '<div style="font-size:11px !important;color:#10b981 !important;">' + todayLogs.length + ' dose' + (todayLogs.length > 1 ? 's' : '') + ' today</div>';
               todayLogs.forEach(function(tl) {
                 var t = tl.created_at ? new Date(tl.created_at).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' }) : 'no time';
-                var noteLabel = tl.note ? ' (' + tl.note + ')' : '';
                 h += '<div style="display:flex !important;align-items:center !important;gap:6px !important;font-size:11px !important;color:#64748b !important;padding:2px 0 !important;">';
                 h += '<span onclick="habChangeTime(\'' + tl.id + '\')" style="cursor:pointer !important;color:#3b82f6 !important;">' + t + ' &#x270F;</span>';
-                if (tl.note) h += '<span style="color:#64748b !important;"> — ' + esc(tl.note) + '</span>';
-                h += '<span onclick="habAddNote(\'' + tl.id + '\')" style="cursor:pointer !important;color:#3b82f6 !important;" title="Add/edit note">&#x1F4DD;</span>';
+                if (tl.note) {
+                  h += '<span style="color:#64748b !important;font-style:italic !important;">' + esc(tl.note) + '</span>';
+                  h += '<span onclick="habAddNote(\'' + tl.id + '\')" style="cursor:pointer !important;color:#3b82f6 !important;">edit</span>';
+                } else {
+                  h += '<span onclick="habAddNote(\'' + tl.id + '\')" style="cursor:pointer !important;color:#3b82f6 !important;">+ note</span>';
+                }
                 h += '<span onclick="habDeleteDose(\'' + tl.id + '\')" style="cursor:pointer !important;color:#ef4444 !important;" title="Remove dose">&#x2715;</span>';
                 h += '</div>';
               });
