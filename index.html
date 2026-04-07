@@ -1455,36 +1455,36 @@
 
         <!-- DAILY Medications -->
         <div class="hab-section" style="margin-bottom:10px !important;">
-          <div class="hab-section-header" style="padding:12px 16px !important;">
+          <div class="hab-section-header" style="padding:12px 16px !important;cursor:pointer !important;" onclick="habToggleSection(this)">
             <h3 style="font-size:14px !important;">&#x2600; Daily</h3>
-            <span style="font-size:11px !important;color:#94a3b8 !important;">Tap to mark as taken</span>
+            <span style="font-size:11px !important;color:#94a3b8 !important;">Tap to mark as taken <span class="hab-chevron" style="margin-left:6px !important;">&#x25B2;</span></span>
           </div>
           <div id="hab-daily-list"></div>
         </div>
 
         <!-- WEEKLY Medications -->
         <div class="hab-section" style="margin-bottom:10px !important;">
-          <div class="hab-section-header" style="padding:12px 16px !important;">
+          <div class="hab-section-header" style="padding:12px 16px !important;cursor:pointer !important;" onclick="habToggleSection(this)">
             <h3 style="font-size:14px !important;">&#x1F4C5; Weekly</h3>
-            <span style="font-size:11px !important;color:#94a3b8 !important;">Mon&ndash;Sun</span>
+            <span style="font-size:11px !important;color:#94a3b8 !important;">Mon&ndash;Sun <span class="hab-chevron" style="margin-left:6px !important;">&#x25B2;</span></span>
           </div>
           <div id="hab-weekly-list"></div>
         </div>
 
         <!-- AS NEEDED Medications -->
         <div class="hab-section" style="margin-bottom:10px !important;">
-          <div class="hab-section-header" style="padding:12px 16px !important;">
+          <div class="hab-section-header" style="padding:12px 16px !important;cursor:pointer !important;" onclick="habToggleSection(this)">
             <h3 style="font-size:14px !important;">&#x1F48A; As Needed</h3>
-            <span style="font-size:11px !important;color:#94a3b8 !important;">Record each dose</span>
+            <span style="font-size:11px !important;color:#94a3b8 !important;">Record each dose <span class="hab-chevron" style="margin-left:6px !important;">&#x25B2;</span></span>
           </div>
           <div id="hab-asneeded-list"></div>
         </div>
 
         <!-- Medication Log -->
         <div class="hab-section" id="hab-history-section" style="margin-bottom:10px !important;">
-          <div class="hab-section-header" style="padding:12px 16px !important;">
+          <div class="hab-section-header" style="padding:12px 16px !important;cursor:pointer !important;" onclick="habToggleSection(this)">
             <h3 style="font-size:14px !important;">&#x1F4DC; Medication Log</h3>
-            <span style="font-size:11px !important;color:#94a3b8 !important;">Last 30 days</span>
+            <span style="font-size:11px !important;color:#94a3b8 !important;">Last 30 days <span class="hab-chevron" style="margin-left:6px !important;">&#x25B2;</span></span>
           </div>
           <div style="padding:12px !important;" id="hab-history-container">
             <div class="hab-empty">Loading...</div>
@@ -3673,6 +3673,20 @@
     window.habDeleteMed = async function(id) {
       await sb.from('habit_meds').delete().eq('id', id);
       habRender();
+    };
+
+    window.habToggleSection = function(headerEl) {
+      var section = headerEl.parentElement;
+      var content = headerEl.nextElementSibling;
+      var chevron = headerEl.querySelector('.hab-chevron');
+      if (!content) return;
+      if (content.style.display === 'none') {
+        content.style.display = '';
+        if (chevron) chevron.innerHTML = '&#x25B2;';
+      } else {
+        content.style.display = 'none';
+        if (chevron) chevron.innerHTML = '&#x25BC;';
+      }
     };
 
     window.habToggleDaily = async function(id) {
