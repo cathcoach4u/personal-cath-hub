@@ -608,13 +608,30 @@
     <div class="screen active" id="ch-home">
       <h2 style="font-size:20px !important;margin-bottom:16px !important;">Dashboard</h2>
 
-      <!-- Word of the Year -->
-      <div style="text-align:center !important;padding:16px !important;margin-bottom:12px !important;background:linear-gradient(135deg, #f0f4f8, #e0e7ff) !important;border-radius:12px !important;border:1px solid #c7d2fe !important;">
-        <div style="font-size:10px !important;font-weight:700 !important;text-transform:uppercase !important;letter-spacing:2px !important;color:#6366f1 !important;margin-bottom:4px !important;">Word of the Year</div>
-        <div style="font-size:32px !important;font-weight:700 !important;color:#1e293b !important;letter-spacing:3px !important;">Calm</div>
+      <!-- Word of the Year + Strengths -->
+      <div style="display:grid !important;grid-template-columns:1fr 1fr !important;gap:10px !important;margin-bottom:12px !important;">
+        <div style="text-align:center !important;padding:12px !important;background:linear-gradient(135deg, #f0f4f8, #e0e7ff) !important;border-radius:12px !important;border:1px solid #c7d2fe !important;display:flex !important;flex-direction:column !important;justify-content:center !important;">
+          <div style="font-size:9px !important;font-weight:700 !important;text-transform:uppercase !important;letter-spacing:2px !important;color:#6366f1 !important;margin-bottom:2px !important;">Word of the Year</div>
+          <div style="font-size:22px !important;font-weight:700 !important;color:#1e293b !important;letter-spacing:3px !important;">Calm</div>
+        </div>
+        <div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:12px !important;padding:10px 12px !important;">
+          <div style="font-size:10px !important;font-weight:700 !important;color:#1e293b !important;margin-bottom:6px !important;">&#x1F4AA; My Strengths</div>
+          <div style="display:flex !important;flex-wrap:wrap !important;gap:3px !important;">
+            <span style="font-size:9px !important;font-weight:600 !important;padding:2px 6px !important;border-radius:99px !important;background:#ede9fe !important;color:#6d28d9 !important;">Connectedness</span>
+            <span style="font-size:9px !important;font-weight:600 !important;padding:2px 6px !important;border-radius:99px !important;background:#ede9fe !important;color:#6d28d9 !important;">Includer</span>
+            <span style="font-size:9px !important;font-weight:600 !important;padding:2px 6px !important;border-radius:99px !important;background:#dbeafe !important;color:#1d4ed8 !important;">Ideation</span>
+            <span style="font-size:9px !important;font-weight:600 !important;padding:2px 6px !important;border-radius:99px !important;background:#dbeafe !important;color:#1d4ed8 !important;">Activator</span>
+            <span style="font-size:9px !important;font-weight:600 !important;padding:2px 6px !important;border-radius:99px !important;background:#fce7f3 !important;color:#be185d !important;">Restorative</span>
+            <span style="font-size:9px !important;font-weight:600 !important;padding:2px 6px !important;border-radius:99px !important;background:#ede9fe !important;color:#6d28d9 !important;">Relator</span>
+            <span style="font-size:9px !important;font-weight:600 !important;padding:2px 6px !important;border-radius:99px !important;background:#dbeafe !important;color:#1d4ed8 !important;">Arranger</span>
+            <span style="font-size:9px !important;font-weight:600 !important;padding:2px 6px !important;border-radius:99px !important;background:#dbeafe !important;color:#1d4ed8 !important;">Input</span>
+            <span style="font-size:9px !important;font-weight:600 !important;padding:2px 6px !important;border-radius:99px !important;background:#ede9fe !important;color:#6d28d9 !important;">Positivity</span>
+            <span style="font-size:9px !important;font-weight:600 !important;padding:2px 6px !important;border-radius:99px !important;background:#ede9fe !important;color:#6d28d9 !important;">Empathy</span>
+          </div>
+        </div>
       </div>
 
-      <!-- Two-column: Daily Habits + Strengths -->
+      <!-- Two-column: Daily Habits + Daily Rhythm -->
       <div style="display:grid !important;grid-template-columns:1fr 1fr !important;gap:10px !important;margin-bottom:12px !important;">
 
         <!-- Daily Habits Box (compact) -->
@@ -666,24 +683,8 @@
 
       </div>
 
-      <!-- Strengths + Filing -->
-      <div style="display:flex !important;gap:10px !important;margin-bottom:12px !important;flex-wrap:wrap !important;">
-        <div style="flex:1 !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:12px !important;padding:12px !important;">
-          <div style="font-size:12px !important;font-weight:700 !important;color:#1e293b !important;margin-bottom:8px !important;">&#x1F4AA; My Strengths</div>
-          <div style="display:flex !important;flex-wrap:wrap !important;gap:4px !important;">
-            <span style="font-size:10px !important;font-weight:600 !important;padding:3px 8px !important;border-radius:99px !important;background:#ede9fe !important;color:#6d28d9 !important;">Connectedness</span>
-            <span style="font-size:10px !important;font-weight:600 !important;padding:3px 8px !important;border-radius:99px !important;background:#ede9fe !important;color:#6d28d9 !important;">Includer</span>
-            <span style="font-size:10px !important;font-weight:600 !important;padding:3px 8px !important;border-radius:99px !important;background:#dbeafe !important;color:#1d4ed8 !important;">Ideation</span>
-            <span style="font-size:10px !important;font-weight:600 !important;padding:3px 8px !important;border-radius:99px !important;background:#dbeafe !important;color:#1d4ed8 !important;">Activator</span>
-            <span style="font-size:10px !important;font-weight:600 !important;padding:3px 8px !important;border-radius:99px !important;background:#fce7f3 !important;color:#be185d !important;">Restorative</span>
-            <span style="font-size:10px !important;font-weight:600 !important;padding:3px 8px !important;border-radius:99px !important;background:#ede9fe !important;color:#6d28d9 !important;">Relator</span>
-            <span style="font-size:10px !important;font-weight:600 !important;padding:3px 8px !important;border-radius:99px !important;background:#dbeafe !important;color:#1d4ed8 !important;">Arranger</span>
-            <span style="font-size:10px !important;font-weight:600 !important;padding:3px 8px !important;border-radius:99px !important;background:#dbeafe !important;color:#1d4ed8 !important;">Input</span>
-            <span style="font-size:10px !important;font-weight:600 !important;padding:3px 8px !important;border-radius:99px !important;background:#ede9fe !important;color:#6d28d9 !important;">Positivity</span>
-            <span style="font-size:10px !important;font-weight:600 !important;padding:3px 8px !important;border-radius:99px !important;background:#ede9fe !important;color:#6d28d9 !important;">Empathy</span>
-          </div>
-        </div>
-        <button class="am-btn" onclick="dashQuickNav({value:'filing'})" style="padding:12px 14px !important;font-size:12px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:12px !important;color:#1e293b !important;align-self:flex-start !important;">&#x1F4C1; Filing</button>
+      <div style="margin-bottom:12px !important;">
+        <button class="am-btn" onclick="dashQuickNav({value:'filing'})" style="padding:10px 14px !important;font-size:12px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F4C1; Filing System</button>
       </div>
 
       <div class="dash-section">
@@ -3281,15 +3282,36 @@
     });
 
     function renderCard(m) {
-      var h = '<div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:14px 16px !important;margin-bottom:8px !important;">';
+      var mid = m.id;
+      var h = '<div id="med-card-' + mid + '" style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:14px 16px !important;margin-bottom:8px !important;">';
+      // View mode
+      h += '<div id="med-view-' + mid + '">';
       h += '<div style="display:flex !important;align-items:center !important;justify-content:space-between !important;margin-bottom:6px !important;">';
       h += '<div style="font-size:15px !important;font-weight:700 !important;color:#1e293b !important;">' + esc(m.name) + '</div>';
-      h += '<span onclick="medDeleteMedication(\'' + m.id + '\')" style="cursor:pointer !important;color:#94a3b8 !important;font-size:16px !important;padding:4px !important;" title="Remove">&#x1F5D1;</span>';
-      h += '</div>';
+      h += '<div style="display:flex !important;gap:8px !important;">';
+      h += '<span onclick="medStartEdit(\'' + mid + '\')" style="cursor:pointer !important;color:#3b82f6 !important;font-size:14px !important;padding:4px !important;" title="Edit">&#x270F;&#xFE0F;</span>';
+      h += '<span onclick="medDeleteMedication(\'' + mid + '\')" style="cursor:pointer !important;color:#94a3b8 !important;font-size:16px !important;padding:4px !important;" title="Remove">&#x1F5D1;</span>';
+      h += '</div></div>';
       if (m.dose) h += '<div style="font-size:13px !important;color:#1e293b !important;margin-bottom:4px !important;"><strong>Dose:</strong> ' + esc(m.dose) + '</div>';
       if (m.schedule) h += '<div style="font-size:13px !important;color:#1e293b !important;margin-bottom:4px !important;"><strong>When:</strong> ' + esc(m.schedule) + '</div>';
       if (m.purpose) h += '<div style="font-size:12px !important;color:#64748b !important;line-height:1.4 !important;">' + esc(m.purpose) + '</div>';
       if (m.conditions) h += '<div style="font-size:12px !important;color:#7c3aed !important;margin-top:4px !important;"><strong>For:</strong> ' + esc(m.conditions) + '</div>';
+      h += '</div>';
+      // Edit mode (hidden)
+      h += '<div id="med-edit-' + mid + '" style="display:none !important;">';
+      h += '<div style="display:flex !important;flex-direction:column !important;gap:8px !important;">';
+      h += '<input type="text" id="med-ed-name-' + mid + '" value="' + esc(m.name).replace(/"/g,'&quot;') + '" placeholder="Name" style="width:100% !important;padding:8px 10px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:14px !important;box-sizing:border-box !important;">';
+      h += '<input type="text" id="med-ed-dose-' + mid + '" value="' + esc(m.dose||'').replace(/"/g,'&quot;') + '" placeholder="Dose" style="width:100% !important;padding:8px 10px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:14px !important;box-sizing:border-box !important;">';
+      h += '<select id="med-ed-sched-' + mid + '" style="width:100% !important;padding:8px 10px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:14px !important;">';
+      ['As needed','1 tablet daily','Once weekly','Apply as directed'].forEach(function(opt) {
+        h += '<option value="' + opt + '"' + (m.schedule === opt ? ' selected' : '') + '>' + opt + '</option>';
+      });
+      h += '</select>';
+      h += '<input type="text" id="med-ed-purp-' + mid + '" value="' + esc(m.purpose||'').replace(/"/g,'&quot;') + '" placeholder="Purpose" style="width:100% !important;padding:8px 10px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:14px !important;box-sizing:border-box !important;">';
+      h += '<div style="display:flex !important;gap:8px !important;">';
+      h += '<button onclick="medSaveEdit(\'' + mid + '\')" style="flex:1 !important;padding:10px !important;background:#10b981 !important;color:white !important;border:none !important;border-radius:8px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;">Save</button>';
+      h += '<button onclick="medCancelEdit(\'' + mid + '\')" style="padding:10px 16px !important;background:#e2e8f0 !important;color:#64748b !important;border:none !important;border-radius:8px !important;font-size:13px !important;cursor:pointer !important;">Cancel</button>';
+      h += '</div></div></div>';
       h += '</div>';
       return h;
     }
@@ -3336,6 +3358,26 @@
   window.medDeleteMedication = async function(id) {
     if (!confirm('Remove this medication from your plan?')) return;
     await sb.from('medications').delete().eq('id', id);
+    loadMedicationPlan();
+  };
+
+  window.medStartEdit = function(id) {
+    document.getElementById('med-view-' + id).style.display = 'none';
+    document.getElementById('med-edit-' + id).style.setProperty('display', 'block', 'important');
+  };
+
+  window.medCancelEdit = function(id) {
+    document.getElementById('med-edit-' + id).style.setProperty('display', 'none', 'important');
+    document.getElementById('med-view-' + id).style.display = '';
+  };
+
+  window.medSaveEdit = async function(id) {
+    var name = document.getElementById('med-ed-name-' + id).value.trim();
+    var dose = document.getElementById('med-ed-dose-' + id).value.trim();
+    var schedule = document.getElementById('med-ed-sched-' + id).value;
+    var purpose = document.getElementById('med-ed-purp-' + id).value.trim();
+    if (!name) { alert('Name is required.'); return; }
+    await sb.from('medications').update({ name: name, dose: dose, schedule: schedule, purpose: purpose }).eq('id', id);
     loadMedicationPlan();
   };
 
