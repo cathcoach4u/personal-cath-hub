@@ -622,11 +622,11 @@
       </div>
 
       <!-- Morning Meds Reminder -->
-      <div id="dash-meds-btn" onclick="dashTakeMorningMeds()" style="display:flex !important;align-items:center !important;gap:10px !important;padding:12px 16px !important;background:#f0fdf4 !important;border:1px solid #bbf7d0 !important;border-radius:10px !important;margin-bottom:12px !important;cursor:pointer !important;">
+      <div id="dash-meds-btn" onclick="chNav('habits');setTimeout(function(){zbTab('meds')},100)" style="display:flex !important;align-items:center !important;gap:10px !important;padding:12px 16px !important;background:#f0fdf4 !important;border:1px solid #bbf7d0 !important;border-radius:10px !important;margin-bottom:12px !important;cursor:pointer !important;">
         <span style="font-size:20px !important;">&#x1F48A;</span>
         <div style="flex:1 !important;">
           <div style="font-size:14px !important;font-weight:600 !important;color:#166534 !important;">Take Morning Meds</div>
-          <div style="font-size:11px !important;color:#15803d !important;">Tap to log today's medication</div>
+          <div style="font-size:11px !important;color:#15803d !important;">Tap to log in My Habits</div>
         </div>
         <span style="font-size:14px !important;color:#86efac !important;">&#x276F;</span>
       </div>
@@ -653,16 +653,6 @@
         <button class="am-btn" onclick="dashQuickNav({value:'receipt'})" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F9FE; Upload Receipt</button>
         -->
         <button class="am-btn" onclick="dashQuickNav({value:'filing'})" style="flex:1 !important;padding:12px 10px !important;font-size:13px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;">&#x1F4C1; Filing System</button>
-      </div>
-
-      <!-- Medication Reminder Banner -->
-      <div id="dash-med-reminder" style="display:none !important;background:#fef2f2 !important;border:1px solid #fecaca !important;border-radius:10px !important;padding:12px 16px !important;margin-bottom:12px !important;font-size:13px !important;color:#991b1b !important;display:none !important;">
-        <div style="display:flex !important;align-items:center !important;gap:8px !important;">
-          <span style="font-size:18px !important;">&#x1F48A;</span>
-          <span style="flex:1 !important;" id="dash-med-reminder-text">Morning meds not yet taken today</span>
-          <button onclick="dashTakeMorningMeds()" style="padding:6px 12px !important;font-size:12px !important;background:#10b981 !important;color:white !important;border:none !important;border-radius:6px !important;cursor:pointer !important;">Take Now</button>
-          <button onclick="document.getElementById('dash-med-reminder').style.setProperty('display','none','important')" style="background:none !important;border:none !important;color:#991b1b !important;font-size:16px !important;cursor:pointer !important;padding:0 4px !important;">&times;</button>
-        </div>
       </div>
 
       <!-- Water Tracker -->
@@ -734,15 +724,7 @@
         </div>
       </div>
 
-      <div class="dash-section">
-        <div style="display:flex !important;justify-content:space-between !important;align-items:center !important;margin-bottom:12px !important;">
-          <h3 style="margin-bottom:0 !important;">&#x1F48A; Medication Today</h3>
-          <span style="font-size:12px !important;color:#3b82f6 !important;cursor:pointer !important;" onclick="chNav('medical');setTimeout(function(){medGo('tracking')},100)">View all &rarr;</span>
-        </div>
-        <div id="dash-med-today">
-          <div style="font-size:13px !important;color:#94a3b8 !important;">Loading...</div>
-        </div>
-      </div>
+      <!-- Medication details moved to My Habits > Medication tab -->
 
     </div>
 
@@ -1002,7 +984,7 @@
           <!-- Medication -->
           <div style="font-size:11px !important;font-weight:700 !important;text-transform:uppercase !important;letter-spacing:0.5px !important;color:#64748b !important;padding:4px 0 0 !important;">Medication</div>
           <button class="am-btn" onclick="medGo('medications')" style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F48A; Medications <span style="margin-left:auto !important;color:#94a3b8 !important;font-size:12px !important;">Current plan &rarr;</span></button>
-          <button class="am-btn" onclick="medGo('tracking')" style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F4CA; Medication Tracking <span style="margin-left:auto !important;color:#94a3b8 !important;font-size:12px !important;" id="hab-meds-badge">0/0 today</span></button>
+          <button class="am-btn" onclick="chNav('habits');setTimeout(function(){zbTab('meds')},100)" style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F4CA; Medication Tracking <span style="margin-left:auto !important;color:#94a3b8 !important;font-size:12px !important;" id="hab-meds-badge">0/0 today</span></button>
 
           <!-- Migraine -->
           <div style="font-size:11px !important;font-weight:700 !important;text-transform:uppercase !important;letter-spacing:0.5px !important;color:#64748b !important;padding:8px 0 0 !important;">Migraine</div>
@@ -1439,12 +1421,31 @@
         </div>
       </div>
 
-      <!-- SUB: Medication Tracking -->
+      <!-- SUB: Medication Tracking (redirects to Habits > Medication tab) -->
       <div class="am-subscreen" id="med-tracking">
         <button class="am-back" onclick="medGo('home')">&#x2190; Back</button>
-        <h3 style="font-size:18px !important;font-weight:700 !important;margin-bottom:4px !important;">&#x1F48A; Medication Tracker</h3>
-        <p style="font-size:12px !important;color:#94a3b8 !important;margin-bottom:16px !important;">Track your daily, weekly, and as-needed medications. Every dose is logged with a timestamp.</p>
+        <div style="padding:40px 20px !important;text-align:center !important;">
+          <p style="font-size:14px !important;color:#64748b !important;margin-bottom:12px !important;">Medication tracking has moved to My Habits.</p>
+          <button class="am-btn" onclick="chNav('habits');setTimeout(function(){zbTab('meds')},100)" style="background:#10b981 !important;color:white !important;border-color:#10b981 !important;padding:12px 20px !important;font-size:14px !important;">Go to My Habits &rarr;</button>
+        </div>
+      </div>
 
+    </div>
+
+    <!-- ═══ HABITS ═══ -->
+    <div class="screen" id="ch-habits">
+      <h2>&#x2B50; My Habits</h2>
+
+      <!-- Habits tab bar -->
+      <div style="display:flex !important;gap:6px !important;margin-bottom:16px !important;flex-wrap:wrap !important;">
+        <button class="am-btn zb-tab active" onclick="zbTab('meds')" id="zb-tab-meds" style="padding:8px 14px !important;font-size:12px !important;background:#3b82f6 !important;color:white !important;border-color:#3b82f6 !important;">&#x1F48A; Medication</button>
+        <button class="am-btn zb-tab" onclick="zbTab('custom')" id="zb-tab-custom" style="padding:8px 14px !important;font-size:12px !important;">My Habits</button>
+        <button class="am-btn zb-tab" onclick="zbTab('rhythms')" id="zb-tab-rhythms" style="padding:8px 14px !important;font-size:12px !important;">Rhythm Cards</button>
+        <button class="am-btn zb-tab" onclick="zbTab('zones')" id="zb-tab-zones" style="padding:8px 14px !important;font-size:12px !important;">Zone Buddy</button>
+      </div>
+
+      <!-- TAB: Medication Tracking -->
+      <div id="zb-panel-meds">
         <!-- Missed yesterday alert -->
         <div id="hab-missed-alert" style="display:none !important;background:#fef2f2 !important;border:1px solid #fecaca !important;border-radius:10px !important;padding:12px 16px !important;margin-bottom:12px !important;font-size:13px !important;color:#991b1b !important;">
           <div style="display:flex !important;align-items:center !important;gap:8px !important;margin-bottom:6px !important;">
@@ -1524,21 +1525,8 @@
         </div>
       </div>
 
-    </div>
-
-    <!-- ═══ HABITS ═══ -->
-    <div class="screen" id="ch-habits">
-      <h2>&#x2B50; My Habits</h2>
-
-      <!-- Habits tab bar -->
-      <div style="display:flex !important;gap:6px !important;margin-bottom:16px !important;flex-wrap:wrap !important;">
-        <button class="am-btn zb-tab active" onclick="zbTab('custom')" id="zb-tab-custom" style="padding:8px 14px !important;font-size:12px !important;background:#3b82f6 !important;color:white !important;border-color:#3b82f6 !important;">My Habits</button>
-        <button class="am-btn zb-tab" onclick="zbTab('rhythms')" id="zb-tab-rhythms" style="padding:8px 14px !important;font-size:12px !important;">Rhythm Cards</button>
-        <button class="am-btn zb-tab" onclick="zbTab('zones')" id="zb-tab-zones" style="padding:8px 14px !important;font-size:12px !important;">Zone Buddy</button>
-      </div>
-
       <!-- TAB: Custom Habits -->
-      <div id="zb-panel-custom">
+      <div id="zb-panel-custom" style="display:none !important;">
         <div id="hab-custom-list" style="margin-bottom:16px !important;"></div>
         <div class="hab-section">
           <div class="med-section-header" style="cursor:pointer !important;" onclick="document.getElementById('hab-custom-form').style.display=document.getElementById('hab-custom-form').style.display==='none'?'block':'none'">
@@ -1954,7 +1942,7 @@
     if(name === 'medical') medGo('home');
     if(name === 'hometab') hmGo('home');
     if(name === 'todo') tdLoad();
-    if(name === 'habits') habRenderCustom();
+    if(name === 'habits') { zbTab('meds'); }
     if(name === 'home') dashLoad();
   };
 
@@ -2015,67 +2003,6 @@
     }
 
     // ARCHIVED: Fiona's List moved to Baker Hub
-
-    // Medication today
-    try {
-      var today = new Date();
-      var todayStr = today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
-      var { data: todayLogs } = await sb.from('habit_logs').select('*').eq('date', todayStr);
-      var { data: allMeds } = await sb.from('habit_meds').select('id, name, freq');
-      var medContainer = document.getElementById('dash-med-today');
-      var medMap = {};
-      (allMeds || []).forEach(function(m){ medMap[m.id] = m; });
-      var dailyMeds = (allMeds || []).filter(function(m){ return m.freq === 'daily'; });
-      var takenIds = {};
-      (todayLogs || []).forEach(function(l){ takenIds[l.med_id] = l; });
-
-      var mh = '';
-      // Build unified list: daily meds + as-needed doses
-      var allEntries = [];
-
-      // Daily meds
-      dailyMeds.forEach(function(m) {
-        var taken = !!takenIds[m.id];
-        var time = taken && takenIds[m.id].created_at ? new Date(takenIds[m.id].created_at).getTime() : null;
-        var timeStr = time ? new Date(time).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' }) : '';
-        allEntries.push({ name: m.name, taken: taken, time: time, timeStr: timeStr, icon: taken ? '&#x2705;' : '&#x2B1C;', dimmed: !taken });
-      });
-
-      // As-needed doses taken today
-      (todayLogs || []).forEach(function(l) {
-        var med = medMap[l.med_id];
-        if (med && med.freq === 'asneeded') {
-          var time = l.created_at ? new Date(l.created_at).getTime() : null;
-          var timeStr = time ? new Date(time).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' }) : '';
-          allEntries.push({ name: med.name, taken: true, time: time, timeStr: timeStr, icon: '&#x2705;', dimmed: false });
-        }
-      });
-
-      // Sort: taken first, then by time
-      allEntries.sort(function(a, b) {
-        if (a.taken && !b.taken) return -1;
-        if (!a.taken && b.taken) return 1;
-        if (a.time && b.time) return a.time - b.time;
-        if (a.time) return -1;
-        if (b.time) return 1;
-        return 0;
-      });
-
-      allEntries.forEach(function(e) {
-        mh += '<div style="display:flex !important;align-items:center !important;gap:8px !important;padding:5px 0 !important;">';
-        mh += '<span style="font-size:14px !important;">' + e.icon + '</span>';
-        mh += '<span style="font-size:13px !important;flex:1 !important;' + (e.dimmed ? 'color:#94a3b8 !important;' : '') + '">' + esc(e.name) + '</span>';
-        if (e.timeStr) mh += '<span style="font-size:11px !important;color:#94a3b8 !important;">' + esc(e.timeStr) + '</span>';
-        mh += '</div>';
-      });
-
-      if (!mh) {
-        mh = '<div style="text-align:center !important;padding:12px !important;color:#94a3b8 !important;font-size:13px !important;">No medications tracked yet</div>';
-      }
-      medContainer.innerHTML = mh;
-    } catch(e) {
-      document.getElementById('dash-med-today').innerHTML = '<div style="text-align:center !important;padding:12px !important;color:#94a3b8 !important;font-size:13px !important;">Could not load medications</div>';
-    }
 
     // Update morning meds quick-access button state
     dashUpdateMedsBtn();
@@ -3191,13 +3118,10 @@
       if (allDone) {
         btn.style.setProperty('background', '#f1f5f9', 'important');
         btn.style.setProperty('border-color', '#e2e8f0', 'important');
-        btn.style.cursor = 'default';
-        btn.onclick = null;
-        btn.innerHTML = '<span style="font-size:20px !important;">\u2705</span><div style="flex:1 !important;"><div style="font-size:14px !important;font-weight:600 !important;color:#64748b !important;">All Meds Taken</div><div style="font-size:11px !important;color:#94a3b8 !important;">Logged for today</div></div>';
+        btn.innerHTML = '<span style="font-size:20px !important;">\u2705</span><div style="flex:1 !important;"><div style="font-size:14px !important;font-weight:600 !important;color:#64748b !important;">All Meds Taken</div><div style="font-size:11px !important;color:#94a3b8 !important;">Logged for today</div></div><span style="font-size:14px !important;color:#94a3b8 !important;">&#x276F;</span>';
       } else {
         btn.style.setProperty('background', '#f0fdf4', 'important');
         btn.style.setProperty('border-color', '#bbf7d0', 'important');
-        btn.disabled = false;
       }
     } catch(e) {}
   };
@@ -3561,10 +3485,8 @@
     };
 
     window.habShowSection = function(section) {
-      // Medication tracking now lives in Medical tab
       if (section === 'meds') {
-        chNav('medical');
-        setTimeout(function(){ medGo('tracking'); }, 100);
+        zbTab('meds');
         return;
       }
     };
@@ -5424,7 +5346,7 @@
 
   // ─── Tab switching ───
   window.zbTab = function(tab) {
-    ['custom','rhythms','zones'].forEach(function(t) {
+    ['meds','custom','rhythms','zones'].forEach(function(t) {
       var panel = document.getElementById('zb-panel-' + t);
       var btn = document.getElementById('zb-tab-' + t);
       if (t === tab) {
@@ -5439,6 +5361,7 @@
         btn.style.borderColor = '#e2e8f0';
       }
     });
+    if (tab === 'meds') { habRender(); habLoadHistory(); }
     if (tab === 'rhythms') zbRhythm('daily');
     if (tab === 'zones') zbRenderZoneGrid();
     if (tab === 'custom') habRenderCustom();
