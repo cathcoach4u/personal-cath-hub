@@ -32,7 +32,7 @@ Cath Hub is a personal health & household management PWA built with vanilla HTML
 
 ## Standalone Pages
 
-- `fiona.html` - Fiona's cleaning/sorting task list
+- ARCHIVED: `fiona.html` - Fiona's cleaning/sorting task list (moved to Baker Hub)
 - `morning.html` - Morning medication auto-recording (Vyvanse, Valtrex, Levothyroxine)
 - `shopping.html` - Quick shopping list with categories and store tagging
 - `todo.html` - Personal to-do list with categories and due dates
