@@ -5721,8 +5721,8 @@
       var week = zbGetFortnightWeek();
       sections = [
         { name: 'Current Week: Week ' + week, icon: '\u{1F504}', items: week === 'A'
-          ? [{ id: 'fn_jojo', label: 'Jo Jo appointment' }]
-          : [{ id: 'fn_daniel', label: 'Daniel \u2014 Chiropractor' }]
+          ? [{ id: 'fn_jojo', label: 'Massage \u2014 Jo Jo' }]
+          : [{ id: 'fn_daniel', label: 'Chiro \u2014 Daniel' }]
         },
         { name: 'Preparation', icon: '\u{1F4DD}', items: [
           { id: 'fn_cal', label: 'Check calendar time' },
@@ -5983,11 +5983,35 @@
 
   var fortnightItems = {
     A: [
-      { icon: '&#x1F469;&#x1F3FB;', title: 'Jo Jo appointment', desc: 'Fortnightly session' }
+      { icon: '&#x1F469;&#x1F3FB;', title: 'Massage \u2014 Jo Jo', desc: 'Fortnightly session', id: 'fn_jojo' }
     ],
     B: [
-      { icon: '&#x1F9B4;', title: 'Daniel chiropractor', desc: 'Fortnightly session' }
+      { icon: '&#x1F9B4;', title: 'Chiro \u2014 Daniel', desc: 'Fortnightly session', id: 'fn_daniel' }
     ]
+  };
+
+  function dashGetFortnightKey() {
+    var now = new Date();
+    var refDate = new Date(2026, 2, 16);
+    var diffDays = Math.floor((now - refDate) / 86400000);
+    var weekNum = Math.floor(diffDays / 7);
+    return 'fn_done_week_' + weekNum;
+  }
+
+  function dashIsFortnightDone(itemId) {
+    try {
+      var data = JSON.parse(localStorage.getItem(dashGetFortnightKey()) || '{}');
+      return !!data[itemId];
+    } catch(e) { return false; }
+  }
+
+  window.dashToggleFortnightDone = function(itemId) {
+    var key = dashGetFortnightKey();
+    var data = {};
+    try { data = JSON.parse(localStorage.getItem(key) || '{}'); } catch(e) {}
+    data[itemId] = !data[itemId];
+    localStorage.setItem(key, JSON.stringify(data));
+    dashRenderFortnight();
   };
 
   function dashRenderFortnight() {
@@ -6010,10 +6034,12 @@
     var items = fortnightItems[week] || [];
     var html = '';
     items.forEach(function(item) {
-      html += '<div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:12px 16px !important;display:flex !important;align-items:center !important;gap:12px !important;">';
-      html += '<span style="font-size:20px !important;">' + item.icon + '</span>';
-      html += '<div><div style="font-size:13px !important;font-weight:600 !important;color:#1e293b !important;">' + item.title + '</div>';
-      html += '<div style="font-size:11px !important;color:#64748b !important;">' + item.desc + '</div></div>';
+      var done = dashIsFortnightDone(item.id);
+      html += '<div onclick="dashToggleFortnightDone(\'' + item.id + '\')" style="display:flex !important;align-items:center !important;gap:8px !important;padding:8px 10px !important;background:' + (done ? '#f0fdf4' : 'white') + ' !important;border:1px solid ' + (done ? '#bbf7d0' : '#e2e8f0') + ' !important;border-radius:8px !important;cursor:pointer !important;">';
+      html += '<span style="font-size:16px !important;">' + (done ? '\u2705' : item.icon) + '</span>';
+      html += '<div style="flex:1 !important;"><div style="font-size:12px !important;font-weight:600 !important;color:' + (done ? '#64748b' : '#1e293b') + ' !important;">' + item.title + '</div>';
+      html += '<div style="font-size:10px !important;color:' + (done ? '#15803d' : '#94a3b8') + ' !important;">' + (done ? 'Done this week' : item.desc) + '</div></div>';
+      if (!done) html += '<span style="font-size:12px !important;color:#94a3b8 !important;">&#x276F;</span>';
       html += '</div>';
     });
     cards.innerHTML = html;
