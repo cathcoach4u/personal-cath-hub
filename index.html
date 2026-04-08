@@ -3720,7 +3720,8 @@
       { name: 'Nexium Antacid', dose: '', hasBrands: true },
       { name: 'Prochlorperazine', dose: '5-10mg up to 3x daily', group: 'Migraine', purpose: 'For dizziness/vertigo. Anti-emetic that blocks dopamine. Take orally or under tongue. Can cause drowsiness.' },
       { name: 'Cizinate', dose: '20/40mg up to 3x daily', group: 'Migraine', purpose: 'For dizziness if Prochlorperazine not enough. Cinnarizine/dimenhydrinate combo. Avoid daily use beyond 4 weeks (risk of Parkinson-like symptoms).' },
-      { name: 'Ondansetron', dose: '8mg wafer up to 3x daily', group: 'Migraine', purpose: 'For nausea. Dissolve wafer on tongue (no water needed). Blocks serotonin to stop nausea signals. Can cause headache or constipation.' }
+      { name: 'Ondansetron', dose: '8mg wafer up to 3x daily', group: 'Migraine', purpose: 'For nausea. Dissolve wafer on tongue (no water needed). Blocks serotonin to stop nausea signals. Can cause headache or constipation.' },
+      { name: 'Betamethasone Valerate Ointment', dose: 'Apply thin layer', group: 'Topical', action: 'applied', purpose: 'Topical corticosteroid for eczema, dermatitis, and skin inflammation. Apply a thin layer to affected area 1\u20132x daily. Do not use on broken skin or face unless directed. Avoid prolonged use. Wash hands after applying.' }
     ];
 
     // Load antacid brands from localStorage (user can add more via UI)
@@ -3748,6 +3749,7 @@
         var { data: existingHabs } = await sb.from('habit_meds').select('id, name, freq');
         var existingNames = (existingHabs || []).map(function(m){ return m.name.toLowerCase(); });
         var dailyMedNames = ['Vyvanse', 'Valtrex', 'Levothyroxine', 'Xobet'];
+        var weeklyMedNames = ['Vitamin D', 'Monjaro'];
         var asNeededNames = AS_NEEDED_MEDS.map(function(m){ return m.name.toLowerCase(); });
         for (var i = 0; i < (allMeds || []).length; i++) {
           var m = allMeds[i];
@@ -3761,6 +3763,7 @@
           }) || (m.schedule && m.schedule.toLowerCase().indexOf('as needed') !== -1);
           if (!alreadyExists && !isAsNeededMed) {
             var isDaily = dailyMedNames.some(function(d) { return m.name.toLowerCase().indexOf(d.toLowerCase()) !== -1; });
+            var isWeekly = weeklyMedNames.some(function(w) { return m.name.toLowerCase().indexOf(w.toLowerCase()) !== -1; }) || (m.schedule && m.schedule.toLowerCase().indexOf('weekly') !== -1);
             var freq = isDaily ? 'daily' : 'weekly';
             await sb.from('habit_meds').insert({ id: Date.now() + i, name: m.name, freq: freq });
           }
@@ -3780,6 +3783,18 @@
             }
           } else {
             await sb.from('habit_meds').insert({ id: Date.now() + 100 + j, name: AS_NEEDED_MEDS[j].name, freq: 'asneeded' });
+          }
+        }
+        // Fix weekly meds that got wrong freq
+        var { data: refreshed2 } = await sb.from('habit_meds').select('id, name, freq');
+        var refreshedList2 = (refreshed2 || []);
+        for (var w = 0; w < weeklyMedNames.length; w++) {
+          var wName = weeklyMedNames[w].toLowerCase();
+          var wEntry = refreshedList2.find(function(r) {
+            return r.name.toLowerCase().indexOf(wName) !== -1 || wName.indexOf(r.name.toLowerCase()) !== -1;
+          });
+          if (wEntry && wEntry.freq !== 'weekly') {
+            await sb.from('habit_meds').update({ freq: 'weekly' }).eq('id', wEntry.id);
           }
         }
         // Clean up ALL duplicate habit_meds (same name appearing more than once)
@@ -4156,14 +4171,16 @@
               todayLogs = tl || [];
             } catch(e) {}
             h += '<div class="hab-med-row" style="flex-wrap:wrap !important;">';
-            h += '<button class="am-btn" onclick="habShowRecordOptions(' + med.id + ',' + hasBrands + ')" style="background:#3b82f6 !important;color:white !important;border-color:#3b82f6 !important;padding:6px 12px !important;font-size:12px !important;">Record dose</button>';
+            var actionLabel = asInfo && asInfo.action === 'applied' ? 'Record application' : 'Record dose';
+            h += '<button class="am-btn" onclick="habShowRecordOptions(' + med.id + ',' + hasBrands + ')" style="background:#3b82f6 !important;color:white !important;border-color:#3b82f6 !important;padding:6px 12px !important;font-size:12px !important;">' + actionLabel + '</button>';
             var purposeText = asInfo && asInfo.purpose ? asInfo.purpose : '';
             h += '<div style="flex:1 !important;"><div class="hab-med-name" style="margin-bottom:0 !important;">' + esc(med.name) + esc(doseLabel) + '</div>';
             if (purposeText) {
               h += '<div style="font-size:11px !important;color:#94a3b8 !important;line-height:1.4 !important;margin:2px 0 4px !important;">' + esc(purposeText) + '</div>';
             }
             if (todayLogs.length > 0) {
-              h += '<div style="font-size:11px !important;color:#10b981 !important;">' + todayLogs.length + ' dose' + (todayLogs.length > 1 ? 's' : '') + ' today</div>';
+              var doseWord = asInfo && asInfo.action === 'applied' ? 'application' : 'dose';
+              h += '<div style="font-size:11px !important;color:#10b981 !important;">' + todayLogs.length + ' ' + doseWord + (todayLogs.length > 1 ? 's' : '') + ' today</div>';
               todayLogs.forEach(function(tl) {
                 var t = tl.created_at ? new Date(tl.created_at).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' }) : 'no time';
                 h += '<div style="display:flex !important;align-items:center !important;gap:6px !important;font-size:11px !important;color:#64748b !important;padding:2px 0 !important;">';
@@ -4494,7 +4511,7 @@
       var catSelect = document.getElementById('td-cat-select');
       var dateInput = document.getElementById('td-date-input');
       var category = catSelect.value;
-      var row = { task: task, done: false, category: category, created_at: new Date().toISOString() };
+      var row = { id: Date.now(), task: task, done: false, category: category, created_at: new Date().toISOString() };
       if (dateInput.value) row.due_date = dateInput.value;
       var { error } = await sb.from('personal_todos').insert(row);
       if (error) { alert('Could not add task: ' + error.message); return; }
@@ -4554,7 +4571,7 @@
     var afMessages = [];
     var afOpen = false;
     var _afToday = new Date(); var _afTodayStr = _afToday.getFullYear()+'-'+String(_afToday.getMonth()+1).padStart(2,'0')+'-'+String(_afToday.getDate()).padStart(2,'0');
-    var afSystemPrompt = "Today's date is " + _afTodayStr + " (DD/MM/YYYY: " + _afTodayStr.split('-').reverse().join('/') + "). Cath's timezone is Australia/Sydney (AEST/AEDT). Always show times in Sydney time.\n\nYou are Cath's warm and practical personal AI assistant built into Cath Hub. Cath is an Australian woman who runs a coaching business called Coach4U. She uses Cath Hub to manage her personal life \u2014 workouts, medical appointments, habits, and to-do lists. Be friendly, concise, and helpful. Use Australian English. Currency is AUD ($). Dates in DD/MM/YYYY format. Don't be overly formal.\n\nIMPORTANT: Shopping and AisleMate features have moved to Baker Hub. If Cath asks about shopping, tell her to use Baker Hub instead. Do NOT use shopping-related tools (search_items, add_to_shopping_list, view_shopping_list, etc.).\n\nTO-DO LIST:\nYou can add, complete, and remove tasks from Cath's personal to-do list. Use the todo tools when asked.\n\nIMPORTANT: Fiona's cleaning list has moved to Baker Hub. If Cath asks about Fiona's list, tell her to use Baker Hub instead. Do NOT use fiona tools.\n\nMEDICATIONS & MEDICAL:\nYou can view and manage medications, medical sessions (for the Mental Health Plan tracker), and habit/medication logs. Use these tools when Cath asks about her meds, appointments, or health tracking.\n\nCath's daily meds: Vyvanse, Valtrex, Levothyroxine. As-needed: Nurofen, Panadol, Nexium Antacid, Prochlorperazine, Cizinate, Ondansetron.\nWhen Cath asks to log meds for a past date, ALWAYS use the backfill_meds tool (not db_write). It handles med IDs and duplicate checking automatically.\n\nMEMORIES:\nYou can save and recall facts about Cath using save_memory, forget_memory, and list_memories.\n\nGENERAL DATABASE:\nYou have a general-purpose query tool (db_query) that can select from ANY table, and a general-purpose write tool (db_write) that can insert, update, or delete from ANY table. Use these for anything the specific tools don't cover.\n\nTables: personal_todos, medications, habit_meds, habit_logs, medical_sessions, ai_memory.";
+    var afSystemPrompt = "Today's date is " + _afTodayStr + " (DD/MM/YYYY: " + _afTodayStr.split('-').reverse().join('/') + "). Cath's timezone is Australia/Sydney (AEST/AEDT). Always show times in Sydney time.\n\nYou are Cath's warm and practical personal AI assistant built into Cath Hub. Cath is an Australian woman who runs a coaching business called Coach4U. She uses Cath Hub to manage her personal life \u2014 workouts, medical appointments, habits, and to-do lists. Be friendly, concise, and helpful. Use Australian English. Currency is AUD ($). Dates in DD/MM/YYYY format. Don't be overly formal.\n\nIMPORTANT: Shopping and AisleMate features have moved to Baker Hub. If Cath asks about shopping, tell her to use Baker Hub instead. Do NOT use shopping-related tools (search_items, add_to_shopping_list, view_shopping_list, etc.).\n\nTO-DO LIST:\nYou can add, complete, and remove tasks from Cath's personal to-do list. Use the todo tools when asked.\n\nIMPORTANT: Fiona's cleaning list has moved to Baker Hub. If Cath asks about Fiona's list, tell her to use Baker Hub instead. Do NOT use fiona tools.\n\nMEDICATIONS & MEDICAL:\nYou can view and manage medications, medical sessions (for the Mental Health Plan tracker), and habit/medication logs. Use these tools when Cath asks about her meds, appointments, or health tracking.\n\nCath's daily meds: Vyvanse, Valtrex, Levothyroxine, Xobet Cream (evening apply).\nWeekly meds: Vitamin D, Monjaro.\nAs-needed: Nurofen, Panadol, Nexium Antacid, Prochlorperazine, Cizinate, Ondansetron, Betamethasone Valerate Ointment (topical - say 'applied' not 'taken').\n\nWhen Cath adds a new medication, ask her about it: what it's for, the dose, how often she takes it, and any special instructions. If she doesn't know the purpose, offer to explain what the medication is commonly used for based on your knowledge.\n\nWhen Cath asks to log meds for a past date, ALWAYS use the backfill_meds tool (not db_write). It handles med IDs and duplicate checking automatically.\n\nMEMORIES:\nYou can save and recall facts about Cath using save_memory, forget_memory, and list_memories.\n\nGENERAL DATABASE:\nYou have a general-purpose query tool (db_query) that can select from ANY table, and a general-purpose write tool (db_write) that can insert, update, or delete from ANY table. Use these for anything the specific tools don't cover.\n\nTables: personal_todos, medications, habit_meds, habit_logs, medical_sessions, ai_memory.";
 
     var afTools = [
       {
@@ -5150,7 +5167,7 @@
         return JSON.stringify(data || []);
       }
       if (toolName === 'add_todo') {
-        var { data, error } = await sb.from('personal_todos').insert({ task: toolInput.task, done: false, category: toolInput.category || 'General', created_at: new Date().toISOString() }).select();
+        var { data, error } = await sb.from('personal_todos').insert({ id: Date.now(), task: toolInput.task, done: false, category: toolInput.category || 'General', created_at: new Date().toISOString() }).select();
         if (error) return JSON.stringify({ error: 'Failed to add todo: ' + error.message });
         return JSON.stringify({ added: toolInput.task, id: data && data[0] ? data[0].id : null });
       }

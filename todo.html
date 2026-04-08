@@ -106,7 +106,7 @@
     if (autoAdd) {
       var autoCat = params.get('cat') || 'General';
       var autoDate = params.get('date') || null;
-      var autoRow = { task: autoAdd, done: false, category: autoCat, created_at: new Date().toISOString() };
+      var autoRow = { id: Date.now(), task: autoAdd, done: false, category: autoCat, created_at: new Date().toISOString() };
       if (autoDate) autoRow.due_date = autoDate;
       await sb.from('personal_todos').insert(autoRow);
       var banner = document.getElementById('auto-banner');
@@ -190,7 +190,7 @@
     var catSelect = document.getElementById('cat-select');
     var dateInput = document.getElementById('date-input');
     var category = catSelect.value;
-    var row = { task: task, done: false, category: category, created_at: new Date().toISOString() };
+    var row = { id: Date.now(), task: task, done: false, category: category, created_at: new Date().toISOString() };
     if (dateInput.value) row.due_date = dateInput.value;
     var { error } = await sb.from('personal_todos').insert(row);
     if (error) { alert('Could not add task: ' + error.message); return; }
