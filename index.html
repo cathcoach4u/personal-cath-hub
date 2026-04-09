@@ -3199,6 +3199,7 @@
   };
 
   var DAILY_MED_NAMES = ['Vyvanse', 'Valtrex', 'Levothyroxine', 'Xobet', 'ointment'];
+  var WEEKLY_MED_NAMES = ['Vitamin D'];
   var AS_NEEDED_NAMES = ['Nurofen', 'Panadol', 'Nexium', 'Prochlorperazine', 'Cizinate', 'Ondansetron'];
 
   // Migraine med names for grouping
@@ -3238,7 +3239,7 @@
       var isDaily = DAILY_MED_NAMES.some(function(d){ return m.name.toLowerCase().indexOf(d.toLowerCase()) !== -1; });
       var isMigraine = MIGRAINE_NAMES.some(function(d){ return m.name.toLowerCase().indexOf(d.toLowerCase()) !== -1; });
       var isAN = AS_NEEDED_NAMES.some(function(d){ return m.name.toLowerCase().indexOf(d.toLowerCase()) !== -1; }) || (m.schedule && m.schedule.toLowerCase().indexOf('as needed') !== -1);
-      var isWeekly = m.schedule && m.schedule.toLowerCase().indexOf('weekly') !== -1;
+      var isWeekly = (m.schedule && m.schedule.toLowerCase().indexOf('weekly') !== -1) || WEEKLY_MED_NAMES.some(function(d){ return m.name.toLowerCase().indexOf(d.toLowerCase()) !== -1; });
       if (isDaily) daily.push(m);
       else if (isWeekly) weekly.push(m);
       else if (isMigraine) migraine.push(m);
