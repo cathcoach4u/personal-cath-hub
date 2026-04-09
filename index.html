@@ -4029,7 +4029,7 @@
       var asneeded = meds.filter(function(m){ return m.freq==='asneeded'; });
 
       // Move ointments to daily section
-      var ointmentsInWeekly = weekly.filter(function(m){ return m.name.toLowerCase().indexOf('ointment') !== -1 || m.name.toLowerCase().indexOf('cream') !== -1; });
+      var ointmentsInWeekly = weekly.filter(function(m){ return m.name.toLowerCase().indexOf('ointment') !== -1 || m.name.toLowerCase().indexOf('cream') !== -1 || m.name.toLowerCase().indexOf('betamethasone') !== -1; });
       ointmentsInWeekly.forEach(function(ointment) {
         var idx = weekly.indexOf(ointment);
         if (idx > -1) weekly.splice(idx, 1);
