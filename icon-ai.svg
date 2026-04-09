@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <rect width="192" height="192" rx="42" fill="#7c3aed"/>
+  <!-- Bold C using thick circle stroke -->
+  <g fill="none">
+    <circle cx="96" cy="96" r="48" stroke="white" stroke-width="28"/>
+    <rect x="110" y="70" width="30" height="52" fill="#7c3aed"/>
+  </g>
+</svg>
