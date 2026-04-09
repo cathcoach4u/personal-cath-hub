@@ -440,6 +440,11 @@
   @media (max-width: 600px) { #cathHub .dash-grid { grid-template-columns: 1fr !important; } #cathHub .screen#ch-medical > div:first-of-type { grid-template-columns: 1fr !important; } }
   @media (max-width: 768px) {
     #cathHub { flex-direction: column !important; }
+    /* Dashboard mobile responsive */
+    #cathHub #ch-home > div:nth-child(3) { display: flex !important; flex-direction: column !important; gap: 10px !important; }
+    #cathHub #ch-home > div:nth-child(4) { display: grid !important; grid-template-columns: 1fr !important; gap: 10px !important; }
+    #cathHub #ch-home > div:nth-child(5) { display: grid !important; grid-template-columns: 1fr !important; gap: 10px !important; }
+  }
     #cathHub .sidebar { display: none !important; }
     #cathHub .mobile-top-bar { display: flex !important; align-items: center !important; justify-content: space-between !important; background: #0d9488 !important; padding: 16px 20px !important; padding-top: calc(16px + env(safe-area-inset-top)) !important; position: sticky !important; top: 0 !important; z-index: 99 !important; }
     #cathHub .mobile-top-bar h1 { font-size: 18px !important; font-weight: 700 !important; color: white !important; }
