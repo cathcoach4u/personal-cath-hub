@@ -732,7 +732,39 @@
         </div>
       </div>
 
-      <!-- Medication details moved to My Habits > Medication tab -->
+      <div class="dash-section">
+        <div style="display:flex !important;justify-content:space-between !important;align-items:center !important;margin-bottom:12px !important;">
+          <h3 style="margin-bottom:0 !important;">🛡️ Safety Net 2026</h3>
+          <span style="font-size:12px !important;color:#3b82f6 !important;cursor:pointer !important;" onclick="chNav('medical',document.querySelectorAll('#cathHub .nav-item')[3]);setTimeout(function(){medGo('safetynet')},100)">View &rarr;</span>
+        </div>
+        <div style="display:grid !important;grid-template-columns:1fr 1fr !important;gap:10px !important;">
+          <div style="background:#dbeafe !important;border:1px solid #bfdbfe !important;border-radius:10px !important;padding:12px !important;text-align:center !important;">
+            <div style="font-size:16px !important;font-weight:700 !important;color:#1d4ed8 !important;" id="dash-sn-remaining">$1,284.25</div>
+            <div style="font-size:11px !important;color:#64748b !important;margin-top:4px !important;">To Reach Threshold</div>
+          </div>
+          <div style="background:#dbeafe !important;border:1px solid #bfdbfe !important;border-radius:10px !important;padding:12px !important;text-align:center !important;">
+            <div style="font-size:13px !important;font-weight:600 !important;color:#64748b !important;margin-bottom:4px !important;">Current Out-of-Pocket</div>
+            <div style="font-size:16px !important;font-weight:700 !important;color:#f59e0b !important;">$1,414.85</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-section">
+        <div style="display:flex !important;justify-content:space-between !important;align-items:center !important;margin-bottom:12px !important;">
+          <h3 style="margin-bottom:0 !important;">&#x1F4CB; Care Plan (CDM) 2026</h3>
+          <span style="font-size:12px !important;color:#3b82f6 !important;cursor:pointer !important;" onclick="chNav('medical',document.querySelectorAll('#cathHub .nav-item')[3]);setTimeout(function(){medGo('cdm')},100)">View &rarr;</span>
+        </div>
+        <div style="display:grid !important;grid-template-columns:1fr 1fr !important;gap:10px !important;">
+          <div style="background:#f0fdf4 !important;border:1px solid #bbf7d0 !important;border-radius:10px !important;padding:12px !important;text-align:center !important;">
+            <div style="font-size:20px !important;font-weight:700 !important;color:#166534 !important;" id="dash-cdm-claimed">0/5</div>
+            <div style="font-size:11px !important;color:#64748b !important;margin-top:4px !important;">Services Claimed</div>
+          </div>
+          <div style="background:#f0fdf4 !important;border:1px solid #bbf7d0 !important;border-radius:10px !important;padding:12px !important;text-align:center !important;">
+            <div style="font-size:13px !important;font-weight:600 !important;color:#64748b !important;margin-bottom:4px !important;">Total Cost</div>
+            <div style="font-size:16px !important;font-weight:700 !important;color:#166534 !important;" id="dash-cdm-cost">$0.00</div>
+          </div>
+        </div>
+      </div>
 
     </div>
 
@@ -1287,7 +1319,10 @@
         <!-- 2026 Safety Net -->
         <div class="med-section" style="margin-bottom:12px !important;background:#dbeafe !important;border-color:#bfdbfe !important;">
           <div style="padding:16px !important;">
-            <div style="font-size:12px !important;font-weight:700 !important;text-transform:uppercase !important;color:#1d4ed8 !important;margin-bottom:12px !important;">2026 General Threshold</div>
+            <div style="display:flex !important;justify-content:space-between !important;align-items:center !important;margin-bottom:12px !important;">
+              <div style="font-size:12px !important;font-weight:700 !important;text-transform:uppercase !important;color:#1d4ed8 !important;">2026 General Threshold</div>
+              <div style="font-size:11px !important;font-weight:600 !important;color:#64748b !important;">Updated: 9 April 2026</div>
+            </div>
             <div style="background:white !important;border:1px solid #bfdbfe !important;border-radius:8px !important;padding:14px !important;margin-bottom:12px !important;">
               <div style="display:flex !important;justify-content:space-between !important;margin-bottom:12px !important;align-items:center !important;">
                 <div>
