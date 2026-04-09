@@ -440,6 +440,11 @@
   @media (max-width: 600px) { #cathHub .dash-grid { grid-template-columns: 1fr !important; } #cathHub .screen#ch-medical > div:first-of-type { grid-template-columns: 1fr !important; } }
   @media (max-width: 768px) {
     #cathHub { flex-direction: column !important; }
+    /* Dashboard mobile responsive */
+    #cathHub #ch-home > div:nth-child(3) { display: flex !important; flex-direction: column !important; gap: 10px !important; }
+    #cathHub #ch-home > div:nth-child(4) { display: grid !important; grid-template-columns: 1fr !important; gap: 10px !important; }
+    #cathHub #ch-home > div:nth-child(5) { display: grid !important; grid-template-columns: 1fr !important; gap: 10px !important; }
+  }
     #cathHub .sidebar { display: none !important; }
     #cathHub .mobile-top-bar { display: flex !important; align-items: center !important; justify-content: space-between !important; background: #0d9488 !important; padding: 16px 20px !important; padding-top: calc(16px + env(safe-area-inset-top)) !important; position: sticky !important; top: 0 !important; z-index: 99 !important; }
     #cathHub .mobile-top-bar h1 { font-size: 18px !important; font-weight: 700 !important; color: white !important; }
@@ -722,12 +727,12 @@
       <div class="dash-section">
         <div style="display:flex !important;justify-content:space-between !important;align-items:center !important;margin-bottom:12px !important;">
           <h3 style="margin-bottom:0 !important;">&#x1F9E0; Mental Health Summary</h3>
-          <span style="font-size:12px !important;color:#3b82f6 !important;cursor:pointer !important;" onclick="chNav('medical',document.querySelectorAll('#cathHub .nav-item')[3]);setTimeout(function(){medGo('mentalhealth')},100)">View all &rarr;</span>
+          <span style="font-size:12px !important;color:#3b82f6 !important;cursor:pointer !important;" onclick="chNav('medical',document.querySelectorAll('#cathHub .nav-item')[3]);setTimeout(function(){medGo('mhplan')},100)">View plan &rarr;</span>
         </div>
         <div class="dash-mh-summary" id="dash-mh-summary">
-          <div class="dash-mh-stat"><div class="mh-num" id="dash-mh-total">-</div><div class="mh-label">Total Sessions</div></div>
-          <div class="dash-mh-stat"><div class="mh-num" id="dash-mh-last">-</div><div class="mh-label">Last Session</div></div>
-          <div class="dash-mh-stat"><div class="mh-num" id="dash-mh-plans">-</div><div class="mh-label">MHP / NDIS</div></div>
+          <div class="dash-mh-stat"><div class="mh-num" id="dash-mh-remaining" style="color:#16a34a !important;font-size:28px !important;">4</div><div class="mh-label">Sessions Left (2026)</div></div>
+          <div class="dash-mh-stat"><div class="mh-num" id="dash-mh-total">12</div><div class="mh-label">Total Completed</div></div>
+          <div class="dash-mh-stat"><div class="mh-num" id="dash-mh-plans">MHP</div><div class="mh-label">Plan Type</div></div>
         </div>
       </div>
 
@@ -1175,17 +1180,31 @@
       <!-- SUB: Mental Health Plan -->
       <div class="am-subscreen" id="med-mhplan">
         <button class="am-back" onclick="medGo('home')">&#x2190; Back</button>
-        <h3 style="font-size:18px !important;font-weight:700 !important;margin-bottom:16px !important;">&#x1F9E0; Mental Health Plan &ndash; At a Glance</h3>
+        <h3 style="font-size:18px !important;font-weight:700 !important;margin-bottom:16px !important;">&#x1F9E0; Mental Health Plan</h3>
+
+        <!-- What is a Mental Health Plan -->
+        <div class="med-section" style="margin-bottom:12px !important;background:#f0f9ff !important;border-color:#bfdbfe !important;">
+          <div style="padding:14px 16px !important;">
+            <div style="font-size:12px !important;font-weight:700 !important;color:#1e40af !important;margin-bottom:8px !important;">ABOUT YOUR PLAN</div>
+            <div style="font-size:13px !important;color:#1e3a8a !important;line-height:1.8 !important;">
+              Your Medicare Mental Health Plan allows up to <strong>10 individual sessions</strong> and 10 group sessions per calendar year with an eligible mental health professional.
+              <br><br>
+              <strong>How it works:</strong> Your doctor refers you for up to 6 sessions at a time. If you need more, your doctor decides if further sessions are appropriate.
+              <br><br>
+              <strong>Costs:</strong> Health professionals set their own fees. When booking, ask how much you'll pay and how much Medicare will cover. Some bulk bill (you pay $0).
+            </div>
+          </div>
+        </div>
 
         <!-- Current Plan Summary -->
         <div class="med-section" style="margin-bottom:12px !important;">
           <div style="padding:16px !important;">
-            <div style="font-size:12px !important;font-weight:700 !important;text-transform:uppercase !important;color:#7c3aed !important;margin-bottom:10px !important;">Current Plan (2026)</div>
+            <div style="font-size:12px !important;font-weight:700 !important;text-transform:uppercase !important;color:#7c3aed !important;margin-bottom:10px !important;">Your Plan (2026)</div>
             <div style="display:grid !important;grid-template-columns:1fr 1fr !important;gap:8px !important;font-size:13px !important;">
               <div style="color:#64748b !important;">Plan checked</div><div style="font-weight:600 !important;">8 April 2026</div>
               <div style="color:#64748b !important;">GP</div><div style="font-weight:600 !important;">Dr Yasmin Trinidad</div>
               <div style="color:#64748b !important;">Medicare Item</div><div style="font-weight:600 !important;">2715</div>
-              <div style="color:#64748b !important;">Sessions this year</div><div style="font-weight:600 !important;">4</div>
+              <div style="color:#64748b !important;">Sessions allocated</div><div style="font-weight:600 !important;">4 remaining of 10/year</div>
             </div>
           </div>
         </div>
@@ -1208,6 +1227,23 @@
           <div style="text-align:center !important;background:#fef3c7 !important;border:1px solid #fde68a !important;border-radius:10px !important;padding:14px 8px !important;">
             <div style="font-size:24px !important;font-weight:700 !important;color:#92400e !important;">12</div>
             <div style="font-size:11px !important;color:#64748b !important;">Sessions completed (lifetime)</div>
+          </div>
+        </div>
+
+        <!-- Sessions by Year -->
+        <div class="med-section" style="margin-bottom:12px !important;">
+          <div style="padding:14px 16px !important;">
+            <div style="font-size:12px !important;font-weight:700 !important;text-transform:uppercase !important;color:#7c3aed !important;margin-bottom:10px !important;">Sessions by Year</div>
+            <div style="display:grid !important;grid-template-columns:1fr 1fr !important;gap:8px !important;">
+              <div style="background:#f0f4f8 !important;padding:10px 12px !important;border-radius:8px !important;border-left:3px solid #64748b !important;">
+                <div style="font-size:14px !important;font-weight:700 !important;color:#1e293b !important;">2025</div>
+                <div style="font-size:13px !important;color:#64748b !important;margin-top:4px !important;">6 sessions used</div>
+              </div>
+              <div style="background:#f0fdf4 !important;padding:10px 12px !important;border-radius:8px !important;border-left:3px solid #16a34a !important;">
+                <div style="font-size:14px !important;font-weight:700 !important;color:#166534 !important;">2026</div>
+                <div style="font-size:13px !important;color:#15803d !important;margin-top:4px !important;">6 used, 4 remaining</div>
+              </div>
+            </div>
           </div>
         </div>
 
