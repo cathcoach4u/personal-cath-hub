@@ -3247,6 +3247,15 @@
       else other.push(m);
     });
 
+    // Sort daily meds: Xobet before Betamethasone valerate
+    daily.sort(function(a, b) {
+      var aIsXobet = a.name.toLowerCase().indexOf('xobet') !== -1;
+      var bIsValerate = b.name.toLowerCase().indexOf('valerate') !== -1 || b.name.toLowerCase().indexOf('betamethasone') !== -1;
+      if (aIsXobet && bIsValerate) return -1;
+      if (!aIsXobet && !bIsValerate) return 0;
+      return 0;
+    });
+
     function renderCard(m) {
       var mid = m.id;
       var isMigraineMed = MIGRAINE_NAMES.some(function(d){ return m.name.toLowerCase().indexOf(d.toLowerCase()) !== -1; });
