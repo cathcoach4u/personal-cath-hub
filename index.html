@@ -5464,7 +5464,7 @@
     function afRender() {
       var container = document.getElementById('ai-float-msgs');
       if (!afMessages.length) {
-        container.innerHTML = '<div class="ai-float-welcome"><div class="ai-float-welcome-icon">&#x1F916;</div>Hi Cath! I can help manage your shopping list. Try: "Move Nutella to Pantry" or "Assign all yogurt to Sarah"</div>';
+        container.innerHTML = '<div class="ai-float-welcome"><div class="ai-float-welcome-icon">&#x1F916;</div><strong>Hi Cath!</strong> I can help with:<br><br><strong>📋 To-Do List:</strong> "Add birthday planning tasks" or "Mark task complete"<br><strong>💊 Medications:</strong> "Log today\'s meds" or "View medication logs"<br><strong>🏥 Medical:</strong> "Add therapy session" or "List my sessions"<br><strong>🧠 Memory:</strong> "Remember I like coffee on Mondays" or "Recall facts about me"<br><strong>📊 Database:</strong> "Query my data" for custom lookups<br><br>What can I help you with?</div>';
         return;
       }
       var html = '';
