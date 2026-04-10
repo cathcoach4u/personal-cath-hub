@@ -5281,11 +5281,10 @@
         return JSON.stringify(data || []);
       }
       if (toolName === 'add_todo') {
-        var todoData = { task: toolInput.task, done: false, category: toolInput.category || 'General', created_at: new Date().toISOString() };
-        var { error, data } = await sb.from('personal_todos').insert(todoData).select();
+        var row = { id: Date.now(), task: toolInput.task, done: false, category: toolInput.category || 'General', created_at: new Date().toISOString() };
+        var { error } = await sb.from('personal_todos').insert(row);
         if (error) return JSON.stringify({ error: 'Failed to add todo: ' + error.message });
-        var newId = data && data[0] ? data[0].id : null;
-        return JSON.stringify({ added: toolInput.task, category: toolInput.category || 'General', id: newId });
+        return JSON.stringify({ added: toolInput.task, category: toolInput.category || 'General', id: row.id });
       }
       if (toolName === 'complete_todo') {
         var { error } = await sb.from('personal_todos').update({ done: toolInput.done }).eq('id', toolInput.id);
