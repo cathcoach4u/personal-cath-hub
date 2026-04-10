@@ -380,7 +380,22 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
   function render() {
     var container = document.getElementById('messages');
     if (!messages.length) {
-      container.innerHTML = window.AI_WELCOME_MESSAGE || '<div class="welcome"><div class="welcome-icon">&#x1F916;</div><h3>Hi Cath!</h3><p>Ask me anything about your tasks, meds, medical info, or memories.</p></div>';
+      // Fetch welcome message from Supabase
+      if (!window._aiWelcomeCache) {
+        sb.from('ai_config').select('value').eq('key', 'welcome_message').limit(1).then(function(res) {
+          if (res.data && res.data[0]) {
+            window._aiWelcomeCache = res.data[0].value;
+          } else {
+            window._aiWelcomeCache = '<div class="welcome"><div class="welcome-icon">&#x1F916;</div><h3>Hi Cath!</h3><p>Ask me anything about your tasks, meds, medical info, or memories.</p></div>';
+          }
+          container.innerHTML = window._aiWelcomeCache;
+        }).catch(function() {
+          window._aiWelcomeCache = '<div class="welcome"><div class="welcome-icon">&#x1F916;</div><h3>Hi Cath!</h3><p>Ask me anything about your tasks, meds, medical info, or memories.</p></div>';
+          container.innerHTML = window._aiWelcomeCache;
+        });
+      } else {
+        container.innerHTML = window._aiWelcomeCache;
+      }
       return;
     }
     var html = '';

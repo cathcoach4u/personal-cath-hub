@@ -3736,13 +3736,16 @@
     };
 
     window.habToggleDaily = async function(id) {
+      // Changed behavior: Add a new dose instead of toggle
+      // This allows multiple doses per day for the same medication
       var today = todayKey();
-      var { data } = await sb.from('habit_logs').select('*').eq('med_id', id).eq('date', today);
-      if (data && data.length) {
-        await sb.from('habit_logs').delete().eq('med_id', id).eq('date', today);
-      } else {
-        await safeDailyInsert(id, today, new Date().toISOString());
-      }
+      await safeDailyInsert(id, today, new Date().toISOString());
+      habRender();
+    };
+
+    window.habDeleteDose = async function(logId) {
+      if (!confirm('Delete this dose entry?')) return;
+      await sb.from('habit_logs').delete().eq('id', logId);
       habRender();
     };
 
@@ -4155,28 +4158,37 @@
               } catch(e) {}
             }
             h += '<div class="hab-med-row">';
-            h += '<div class="hab-check'+(done?' done':'')+'" onclick="habToggleDaily('+med.id+')"></div>';
+            h += '<div class="hab-check" onclick="habToggleDaily('+med.id+')" style="cursor:pointer !important;"></div>';
             var medInfo = medsLookup[med.name.toLowerCase()];
             var doseStr = medInfo && medInfo.dose ? medInfo.dose : '';
             // Display name without "cream" suffix
             var displayName = med.name.replace(/\s+cream/i, '').replace(/\s+ointment/i, '');
             h += '<div style="flex:1 !important;"><div class="hab-med-name" style="margin-bottom:0 !important;">'+esc(displayName)+(doseStr ? ' <span style="font-size:10px !important;color:#94a3b8 !important;font-weight:400 !important;">'+esc(doseStr)+'</span>' : '')+'</div>';
-            if (done && takenTime) {
-              h += '<div style="font-size:10px !important;color:#10b981 !important;">Taken at '+esc(takenTime);
-              h += ' <span onclick="habChangeTime(\''+takenLogId+'\')" style="cursor:pointer !important;color:#3b82f6 !important;">&#x270F;</span>';
-              h += '</div>';
-              if (takenNote) {
-                h += '<div style="font-size:10px !important;color:#64748b !important;font-style:italic !important;">'+esc(takenNote)+' <span onclick="habAddNote(\''+takenLogId+'\')" style="cursor:pointer !important;color:#3b82f6 !important;font-style:normal !important;">edit</span></div>';
-              } else {
-                h += '<div style="font-size:10px !important;"><span onclick="habAddNote(\''+takenLogId+'\')" style="cursor:pointer !important;color:#3b82f6 !important;">+ add note</span></div>';
-              }
+            // Show ALL doses for this med today
+            if (done) {
+              try {
+                var { data: allDoses } = await sb.from('habit_logs').select('id, created_at, note').eq('med_id', med.id).eq('date', today).order('created_at', { ascending: false });
+                if (allDoses && allDoses.length) {
+                  h += '<div style="margin-top:4px !important;padding:8px !important;background:#f0fdf4 !important;border-radius:6px !important;">';
+                  allDoses.forEach(function(dose) {
+                    var doseTime = dose.created_at ? new Date(dose.created_at).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' }) : '';
+                    h += '<div style="font-size:10px !important;color:#10b981 !important;margin-bottom:4px !important;">';
+                    h += '✓ Logged at ' + esc(doseTime);
+                    if (dose.note) h += ' (' + esc(dose.note) + ')';
+                    h += ' <span onclick="habDeleteDose('+dose.id+')" style="cursor:pointer !important;color:#ef4444 !important;font-weight:600 !important;">✕</span>';
+                    h += ' <span onclick="habChangeTime(\''+dose.id+'\')" style="cursor:pointer !important;color:#3b82f6 !important;">&#x270F;</span>';
+                    h += '</div>';
+                  });
+                  h += '<div style="font-size:10px !important;color:#3b82f6 !important;cursor:pointer !important;padding-top:4px !important;border-top:1px solid #bbf7d0 !important;" onclick="habToggleDaily('+med.id+')">+ Add another dose</div>';
+                  h += '</div>';
+                }
+              } catch(e) {}
             } else if (timeLabel) {
               h += '<div style="font-size:10px !important;color:#94a3b8 !important;">'+timeLabel+'</div>';
             }
             h += '</div>';
             if (s > 1) h += '<div class="hab-streak">&#x1F525; '+s+'d</div>';
             h += '<div class="hab-del" onclick="habDeleteMed('+med.id+')">&#x1F5D1;</div>';
-            h += '</div>';
           }
         }
 
@@ -5478,7 +5490,22 @@
     function afRender() {
       var container = document.getElementById('ai-float-msgs');
       if (!afMessages.length) {
-        container.innerHTML = window.AI_WELCOME_MESSAGE || '<div class="ai-float-welcome"><div class="ai-float-welcome-icon">&#x1F916;</div>Hi Cath! Ask me anything about your tasks, meds, medical info, or memories.</div>';
+        // Fetch welcome message from Supabase
+        if (!window._aiWelcomeCache) {
+          sb.from('ai_config').select('value').eq('key', 'welcome_message').limit(1).then(function(res) {
+            if (res.data && res.data[0]) {
+              window._aiWelcomeCache = res.data[0].value;
+            } else {
+              window._aiWelcomeCache = '<div class="ai-float-welcome"><div class="ai-float-welcome-icon">&#x1F916;</div>Hi Cath! Ask me anything about your tasks, meds, medical info, or memories.</div>';
+            }
+            container.innerHTML = window._aiWelcomeCache;
+          }).catch(function() {
+            window._aiWelcomeCache = '<div class="ai-float-welcome"><div class="ai-float-welcome-icon">&#x1F916;</div>Hi Cath! Ask me anything about your tasks, meds, medical info, or memories.</div>';
+            container.innerHTML = window._aiWelcomeCache;
+          });
+        } else {
+          container.innerHTML = window._aiWelcomeCache;
+        }
         return;
       }
       var html = '';
