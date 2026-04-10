@@ -4293,18 +4293,27 @@
       var dailyDone = daily.filter(function(m){ return logs[m.id]&&logs[m.id][today]; }).length;
       var weeklyDone = 0;
       weekly.forEach(function(m){ wk.forEach(function(dk){ if(logs[m.id]&&logs[m.id][dk]) weeklyDone++; }); });
+
+      // Only calculate streaks and completion for the 3 morning meds
+      var morningMeds = daily.filter(function(m){
+        var name = m.name.toLowerCase();
+        return name.indexOf('cream') === -1 && name.indexOf('ointment') === -1 && !(name.indexOf('betamethasone') !== -1 && name.indexOf('valerate') !== -1);
+      });
+      var morningDone = 0;
+      morningMeds.forEach(function(m){ if(logs[m.id]&&logs[m.id][today]) morningDone++; });
+
       var best = 0;
-      for (var i = 0; i < daily.length; i++) {
-        var s = await streakFor(daily[i].id, logs);
+      for (var i = 0; i < morningMeds.length; i++) {
+        var s = await streakFor(morningMeds[i].id, logs);
         if (s > best) best = s;
       }
 
-      document.getElementById('hab-daily-done').textContent = dailyDone+'/'+daily.length;
+      document.getElementById('hab-daily-done').textContent = morningDone+'/'+morningMeds.length;
       document.getElementById('hab-weekly-done').textContent = weeklyDone;
       document.getElementById('hab-streak').textContent = best;
-      // Update badge on home button
+      // Update badge on home button - only show morning meds
       var badge = document.getElementById('hab-meds-badge');
-      if (badge) badge.textContent = dailyDone + '/' + daily.length + ' today';
+      if (badge) badge.textContent = morningDone + '/' + morningMeds.length + ' morning meds';
 
       // Update Take All button state (only checks actual meds)
       var takeBtn = document.getElementById('hab-take-all-btn');
