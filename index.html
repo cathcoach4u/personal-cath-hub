@@ -1762,18 +1762,19 @@
       <div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:20px !important;">
         <div style="font-size:13px !important;font-weight:700 !important;margin-bottom:10px !important;">Supabase Tables</div>
         <div style="font-size:12px !important;color:#64748b !important;line-height:1.8 !important;">
-          &bull; <strong style="color:#1e293b !important;">shopping_items</strong> &mdash; name, category, store, checked<br>
-          &bull; <strong style="color:#1e293b !important;">personal_todos</strong> &mdash; task, done, category, due_date<br>
-          &bull; <strong style="color:#1e293b !important;">fiona_tasks</strong> &mdash; task, done<br>
+          &bull; <strong style="color:#1e293b !important;">shopping_items</strong> &mdash; name, category, store, checked, created_at<br>
+          &bull; <strong style="color:#1e293b !important;">personal_todos</strong> &mdash; task, done, category, due_date, created_at<br>
+          &bull; <strong style="color:#1e293b !important;">fiona_tasks</strong> &mdash; task, done, created_at<br>
           &bull; <strong style="color:#1e293b !important;">habit_meds</strong> &mdash; name, freq (daily/asneeded)<br>
-          &bull; <strong style="color:#1e293b !important;">habit_logs</strong> &mdash; med_id, date<br>
+          &bull; <strong style="color:#1e293b !important;">habit_logs</strong> &mdash; med_id, date, created_at<br>
           &bull; <strong style="color:#1e293b !important;">medications</strong> &mdash; name, dose, schedule, purpose<br>
           &bull; <strong style="color:#1e293b !important;">medical_sessions</strong> &mdash; date, duration, plan, practitioner<br>
           &bull; <strong style="color:#1e293b !important;">master_items</strong> &mdash; name, category, store, family_member, last_price<br>
-          &bull; <strong style="color:#1e293b !important;">receipts</strong> &mdash; store, receipt_date, total<br>
+          &bull; <strong style="color:#1e293b !important;">receipts</strong> &mdash; store, receipt_date, total, uploaded_at<br>
           &bull; <strong style="color:#1e293b !important;">receipt_items</strong> &mdash; item_name, price, receipt_id<br>
           &bull; <strong style="color:#1e293b !important;">meal_plans</strong> &mdash; day_index, meal data<br>
-          &bull; <strong style="color:#1e293b !important;">ai_memory</strong> &mdash; fact, created_at
+          &bull; <strong style="color:#1e293b !important;">ai_memory</strong> &mdash; fact, created_at<br>
+          &bull; <strong style="color:#1e293b !important;">Storage</strong> &mdash; receipts bucket for receipt images/PDFs
         </div>
       </div>
     </div>
