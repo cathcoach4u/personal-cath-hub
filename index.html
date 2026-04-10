@@ -4105,9 +4105,15 @@
         dl.innerHTML = '<div class="hab-empty">No daily medications yet. Tap + Add to get started.</div>';
       } else {
         var h = '';
-        // Separate creams/ointments from other daily meds
-        var creamsOintments = daily.filter(function(m){ return m.name.toLowerCase().indexOf('cream') !== -1 || m.name.toLowerCase().indexOf('ointment') !== -1; });
-        var morningMeds = daily.filter(function(m){ return m.name.toLowerCase().indexOf('cream') === -1 && m.name.toLowerCase().indexOf('ointment') === -1; });
+        // Separate creams/ointments from other daily meds (includes Betamethasone Valerate)
+        var creamsOintments = daily.filter(function(m){
+          var name = m.name.toLowerCase();
+          return name.indexOf('cream') !== -1 || name.indexOf('ointment') !== -1 || (name.indexOf('betamethasone') !== -1 && name.indexOf('valerate') !== -1);
+        });
+        var morningMeds = daily.filter(function(m){
+          var name = m.name.toLowerCase();
+          return name.indexOf('cream') === -1 && name.indexOf('ointment') === -1 && !(name.indexOf('betamethasone') !== -1 && name.indexOf('valerate') !== -1);
+        });
         // Sort evening meds: Xobet first, then Betamethasone Valerate
         creamsOintments.sort(function(a, b) {
           var aName = a.name.toLowerCase();
