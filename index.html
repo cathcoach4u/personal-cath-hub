@@ -826,7 +826,7 @@
             <div style="font-size:11px !important;font-weight:700 !important;text-transform:uppercase !important;letter-spacing:0.5px !important;color:#64748b !important;margin-bottom:10px !important;">Medication</div>
             <div style="display:flex !important;flex-direction:column !important;gap:8px !important;">
               <button class="am-btn" onclick="medGo('medications')" style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:#f8fafc !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F48A; Medications <span style="margin-left:auto !important;color:#94a3b8 !important;font-size:12px !important;">Current plan &rarr;</span></button>
-              <button class="am-btn" onclick="chNav('habits');setTimeout(function(){zbTab('meds')},100)" style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:#f8fafc !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F4CA; Medication Tracking <span style="margin-left:auto !important;color:#94a3b8 !important;font-size:12px !important;" id="hab-meds-badge">0/0 today</span></button>
+              <button class="am-btn" onclick="dashLogMorningMeds()" style="width:100% !important;padding:14px 16px !important;font-size:15px !important;text-align:left !important;background:#f8fafc !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;color:#1e293b !important;display:flex !important;align-items:center !important;gap:10px !important;">&#x1F4CA; Medication Tracking <span style="margin-left:auto !important;color:#94a3b8 !important;font-size:12px !important;" id="hab-meds-badge">0/0 today</span></button>
             </div>
           </div>
 
@@ -3005,6 +3005,45 @@
       btn.disabled = false;
     }
     _medRecordingLock = false;
+  };
+
+  window.dashLogMorningMeds = async function() {
+    // Quick-log all 3 morning meds from dashboard
+    var timeInput = prompt('What time did you take your meds?\n(e.g. 8:30am, 9:15am)');
+    if (!timeInput) return;
+
+    var parsed = parseFlexibleDateTime(timeInput);
+    if (!parsed) {
+      alert('Could not understand that time. Try: 8:30am or 9:15am');
+      return;
+    }
+
+    // Get the 3 morning meds: Vyvanse, Valtrex, Levothyroxine
+    var { data: meds } = await sb.from('habit_meds').select('id').in('name', ['Vyvanse', 'Valtrex', 'Levothyroxine']);
+    if (!meds || meds.length === 0) {
+      alert('Could not find morning medications');
+      return;
+    }
+
+    // Log each med with the provided time
+    var today = parsed.date;
+    var logged = 0;
+    for (var i = 0; i < meds.length; i++) {
+      var { error } = await sb.from('habit_logs').insert({
+        med_id: meds[i].id,
+        date: today,
+        created_at: parsed.iso
+      });
+      if (!error) logged++;
+    }
+
+    if (logged === meds.length) {
+      alert('✓ All 3 morning meds logged at ' + new Date(parsed.iso).toLocaleTimeString('en-AU', {hour:'2-digit',minute:'2-digit'}));
+      dashLoad();
+      habRender();
+    } else {
+      alert('Logged ' + logged + ' of 3 meds. Check your medication list.');
+    }
   };
 
   window.dashBackfillMeds = async function() {
