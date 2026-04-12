@@ -2039,7 +2039,7 @@
     if (mainEl) mainEl.scrollTop = 0;
     window.scrollTo(0, 0);
     // ARCHIVED: if(name === 'aislemate') amGo('home');
-    if(name === 'medical') medGo('home');
+    if(name === 'medical') { medGo('home'); if(window.habRender) habRender(); }
     if(name === 'hometab') hmGo('home');
     if(name === 'todo') tdLoad();
     if(name === 'habits') { zbTab('meds'); }
