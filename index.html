@@ -4603,7 +4603,7 @@
     }
 
     // #4: Group history by date with card layout
-    async function habLoadHistory() {
+    window.habLoadHistory = async function() {
       try {
         var thirtyAgo = new Date();
         thirtyAgo.setDate(thirtyAgo.getDate() - 30);
@@ -4662,7 +4662,7 @@
       } catch(e) {
         document.getElementById('hab-history-container').innerHTML = '<div class="hab-empty">Could not load history.</div>';
       }
-    }
+    };
 
     // Auto-populate then render
     habAutoPopulate().then(function(){ habRender(); });
