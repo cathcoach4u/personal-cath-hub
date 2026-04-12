@@ -4272,9 +4272,9 @@
       var missedAlert = document.getElementById('hab-missed-alert');
       var yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
       var yk = yesterday.getFullYear()+'-'+String(yesterday.getMonth()+1).padStart(2,'0')+'-'+String(yesterday.getDate()).padStart(2,'0');
-      var missedYesterday = dailyMeds.filter(function(m){ return !(logs[m.id] && logs[m.id][yk]); });
+      var missedYesterday = daily.filter(function(m){ return !(logs[m.id] && logs[m.id][yk]); });
       var dismissKey = 'cathHub_missedDismissed_' + yk;
-      if (missedYesterday.length > 0 && dailyMeds.length > 0 && !localStorage.getItem(dismissKey)) {
+      if (missedYesterday.length > 0 && daily.length > 0 && !localStorage.getItem(dismissKey)) {
         var missedNames = missedYesterday.map(function(m){ return m.name; }).join(', ');
         missedAlert.style.display = 'block';
         document.getElementById('hab-missed-text').innerHTML = '&#x26A0;&#xFE0F; <strong>Missed yesterday:</strong> ' + esc(missedNames);
