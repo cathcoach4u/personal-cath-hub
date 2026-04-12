@@ -14,7 +14,8 @@
   h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
   .sub { font-size: 13px; color: #94a3b8; margin-bottom: 24px; }
 
-  .status { padding: 16px; border-radius: 12px; margin-bottom: 20px; }
+  .status { padding: 16px; border-radius: 12px; margin-bottom: 20px; display: none; }
+  .status.show { display: block; }
   .status.recording { background: #fefce8; border: 1px solid #fde68a; }
   .status.done { background: #f0fdf4; border: 1px solid #bbf7d0; }
   .status.error { background: #fef2f2; border: 1px solid #fecaca; }
@@ -23,7 +24,7 @@
   .status.done .status-text { color: #16a34a; }
   .status.error .status-text { color: #dc2626; }
 
-  .med-list { text-align: left; margin-bottom: 20px; }
+  .med-list { text-align: left; margin-bottom: 24px; }
   .med-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
   .med-item:last-child { border-bottom: none; }
   .med-check { width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; }
@@ -32,8 +33,11 @@
   .med-name { font-size: 15px; flex: 1; }
   .med-time { font-size: 12px; color: #94a3b8; }
 
+  .btn { padding: 12px 24px; background: #0d9488; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+  .btn:hover { background: #0a7860; }
+  .btn:disabled { background: #cbd5e1; cursor: not-allowed; }
+
   .time-display { font-size: 13px; color: #64748b; margin-top: 8px; }
-  .login-link { display: inline-block; margin-top: 16px; font-size: 13px; color: #3b82f6; text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -43,8 +47,8 @@
   <h1>Morning Meds</h1>
   <div class="sub">Vyvanse, Valtrex &amp; Levothyroxine</div>
 
-  <div class="status recording" id="status">
-    <div class="status-text" id="status-text">Recording...</div>
+  <div class="status" id="status">
+    <div class="status-text" id="status-text"></div>
   </div>
 
   <div class="med-list" id="med-list">
@@ -53,41 +57,37 @@
     <div class="med-item"><div class="med-check pending" id="check-levo"></div><div class="med-name">Levothyroxine</div><div class="med-time" id="time-levo"></div></div>
   </div>
 
+  <button class="btn" id="record-btn" onclick="recordMeds()">Record Meds</button>
+
   <div class="time-display" id="time-display"></div>
 </div>
 
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-(async function(){
-  var sb = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+var sb = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+var MORNING_MEDS = ['vyvanse', 'valtrex', 'levothyroxine'];
+var checkIds = { 'vyvanse': 'check-vyvanse', 'valtrex': 'check-valtrex', 'levothyroxine': 'check-levo' };
+var timeIds = { 'vyvanse': 'time-vyvanse', 'valtrex': 'time-valtrex', 'levothyroxine': 'time-levo' };
 
-  var MORNING_MEDS = ['vyvanse', 'valtrex', 'levothyroxine'];
-  var checkIds = { 'vyvanse': 'check-vyvanse', 'valtrex': 'check-valtrex', 'levothyroxine': 'check-levo' };
-  var timeIds = { 'vyvanse': 'time-vyvanse', 'valtrex': 'time-valtrex', 'levothyroxine': 'time-levo' };
+var statusEl = document.getElementById('status');
+var statusText = document.getElementById('status-text');
+var timeDisplay = document.getElementById('time-display');
+var recordBtn = document.getElementById('record-btn');
 
-  var statusEl = document.getElementById('status');
-  var statusText = document.getElementById('status-text');
-  var timeDisplay = document.getElementById('time-display');
-
-  // Check for existing auth session (shared via localStorage from main app)
-  var { data: sessionData } = await sb.auth.getSession();
-  if (!sessionData || !sessionData.session) {
-    statusEl.className = 'status error';
-    statusText.textContent = 'Not signed in — open Cath Hub first to log in';
-    var link = document.createElement('a');
-    link.className = 'login-link';
-    link.href = './index.html';
-    link.textContent = 'Open Cath Hub to sign in';
-    statusEl.parentNode.appendChild(link);
-    return;
-  }
-
+// On load, check if already recorded today
+(async function checkTodaysRecords() {
   var now = new Date();
   var today = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
-  var timeStr = now.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' });
 
   try {
+    var { data: sessionData } = await sb.auth.getSession();
+    if (!sessionData || !sessionData.session) {
+      // Not logged in yet — show record button
+      recordBtn.textContent = 'Sign In & Record Meds';
+      return;
+    }
+
     // Get morning med IDs
     var { data: meds } = await sb.from('habit_meds').select('id, name').eq('freq', 'daily');
     var morningMeds = (meds || []).filter(function(m) {
@@ -95,8 +95,68 @@
     });
 
     if (!morningMeds.length) {
-      statusEl.className = 'status error';
+      statusEl.className = 'status error show';
       statusText.textContent = 'Could not find morning medications';
+      return;
+    }
+
+    // Check each med — if all recorded, show done state
+    var allRecorded = true;
+    var timeStr = now.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' });
+
+    for (var i = 0; i < morningMeds.length; i++) {
+      var med = morningMeds[i];
+      var medKey = MORNING_MEDS.find(function(mm) { return med.name.toLowerCase().indexOf(mm) !== -1; });
+      var { data: existing } = await sb.from('habit_logs').select('id, created_at').eq('med_id', med.id).eq('date', today);
+
+      if (existing && existing.length > 0) {
+        document.getElementById(checkIds[medKey]).className = 'med-check done';
+        document.getElementById(checkIds[medKey]).textContent = '\u2713';
+        var existingTime = existing[0].created_at ? new Date(existing[0].created_at).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' }) : timeStr;
+        document.getElementById(timeIds[medKey]).textContent = existingTime;
+      } else {
+        allRecorded = false;
+      }
+    }
+
+    if (allRecorded) {
+      statusEl.className = 'status done show';
+      statusText.textContent = 'All meds recorded today ✓';
+      recordBtn.textContent = 'Already Done';
+      recordBtn.disabled = true;
+    }
+  } catch(e) {
+    // Silently fail on load — user can still click Record
+  }
+})();
+
+window.recordMeds = async function() {
+  var now = new Date();
+  var today = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+  var timeStr = now.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' });
+
+  recordBtn.disabled = true;
+  statusEl.className = 'status recording show';
+  statusText.textContent = 'Recording...';
+
+  try {
+    var { data: sessionData } = await sb.auth.getSession();
+    if (!sessionData || !sessionData.session) {
+      // Redirect to main app to log in, then come back
+      window.location.href = './index.html?return=morning';
+      return;
+    }
+
+    // Get morning med IDs
+    var { data: meds } = await sb.from('habit_meds').select('id, name').eq('freq', 'daily');
+    var morningMeds = (meds || []).filter(function(m) {
+      return MORNING_MEDS.some(function(mm) { return m.name.toLowerCase().indexOf(mm) !== -1; });
+    });
+
+    if (!morningMeds.length) {
+      statusEl.className = 'status error show';
+      statusText.textContent = 'Could not find morning medications';
+      recordBtn.disabled = false;
       return;
     }
 
@@ -106,18 +166,15 @@
       var med = morningMeds[i];
       var medKey = MORNING_MEDS.find(function(mm) { return med.name.toLowerCase().indexOf(mm) !== -1; });
 
-      // Check if already taken today
       var { data: existing } = await sb.from('habit_logs').select('id, created_at').eq('med_id', med.id).eq('date', today);
 
       if (existing && existing.length > 0) {
-        // Already recorded
         var existingTime = existing[0].created_at ? new Date(existing[0].created_at).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' }) : timeStr;
         document.getElementById(checkIds[medKey]).className = 'med-check done';
         document.getElementById(checkIds[medKey]).textContent = '\u2713';
         document.getElementById(timeIds[medKey]).textContent = existingTime;
         recorded++;
       } else {
-        // Record it — check for errors
         var { error } = await sb.from('habit_logs').insert({ med_id: med.id, date: today, created_at: now.toISOString() });
         if (error) {
           errors.push(med.name + ': ' + error.message);
@@ -131,19 +188,22 @@
     }
 
     if (errors.length > 0) {
-      statusEl.className = 'status error';
+      statusEl.className = 'status error show';
       statusText.textContent = 'Failed to save: ' + errors.join(', ');
     } else {
-      statusEl.className = 'status done';
-      statusText.textContent = recorded + ' of ' + morningMeds.length + ' recorded';
+      statusEl.className = 'status done show';
+      statusText.textContent = recorded + ' of ' + morningMeds.length + ' recorded ✓';
       timeDisplay.textContent = 'Recorded at ' + timeStr;
+      recordBtn.textContent = 'Done';
+      recordBtn.disabled = true;
     }
 
   } catch(e) {
-    statusEl.className = 'status error';
+    statusEl.className = 'status error show';
     statusText.textContent = 'Error: ' + (e.message || 'Could not record meds');
+    recordBtn.disabled = false;
   }
-})();
+};
 </script>
 </body>
 </html>
