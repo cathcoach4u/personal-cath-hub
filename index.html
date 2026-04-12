@@ -4089,7 +4089,7 @@
       habRender();
     };
 
-    window.habChangeTime = async function(logId) {
+    window.habChangeTime = async function(logId, fromHistory) {
       var input = prompt('Enter time or date & time:\ne.g. 8:30pm, yesterday 9pm, 29/3 8pm');
       if (!input) return;
       var parsed = parseFlexibleDateTime(input);
@@ -4098,7 +4098,17 @@
         return;
       }
       await sb.from('habit_logs').update({ date: parsed.date, created_at: parsed.iso }).eq('id', logId);
-      habRender();
+      if (fromHistory) {
+        habLoadHistory();
+      } else {
+        habRender();
+      }
+    };
+
+    window.habDeleteLog = async function(logId) {
+      if (!confirm('Delete this medication log entry?')) return;
+      await sb.from('habit_logs').delete().eq('id', logId);
+      habLoadHistory();
     };
 
     window.habAddNote = async function(logId) {
@@ -4463,10 +4473,11 @@
             h += '<span style="color:#10b981 !important;font-size:14px !important;">&#x2713;</span>';
             h += '<span style="font-size:13px !important;flex:1 !important;">' + esc(medName) + '</span>';
             if (time) {
-              h += '<span style="font-size:11px !important;color:#3b82f6 !important;cursor:pointer !important;" onclick="habChangeTime(\'' + l.id + '\')" title="Tap to change time">' + esc(time) + ' &#x270F;</span>';
+              h += '<span style="font-size:11px !important;color:#3b82f6 !important;cursor:pointer !important;" onclick="habChangeTime(\'' + l.id + '\', true)" title="Tap to change time">' + esc(time) + ' &#x270F;</span>';
             } else {
-              h += '<span style="font-size:11px !important;color:#94a3b8 !important;cursor:pointer !important;" onclick="habChangeTime(\'' + l.id + '\')" title="Tap to set time">set time &#x270F;</span>';
+              h += '<span style="font-size:11px !important;color:#94a3b8 !important;cursor:pointer !important;" onclick="habChangeTime(\'' + l.id + '\', true)" title="Tap to set time">set time &#x270F;</span>';
             }
+            h += '<span style="color:#ef4444 !important;cursor:pointer !important;font-size:14px !important;" onclick="habDeleteLog(\'' + l.id + '\')" title="Delete entry">&#x1F5D1;</span>';
             // Note display + add/edit
             if (l.note) {
               h += '<div style="width:100% !important;padding-left:22px !important;font-size:11px !important;color:#64748b !important;font-style:italic !important;">' + esc(l.note) + ' <span onclick="habAddNote(\'' + l.id + '\')" style="cursor:pointer !important;color:#3b82f6 !important;font-style:normal !important;">edit</span></div>';
