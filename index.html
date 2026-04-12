@@ -593,6 +593,7 @@
     <button class="mobile-nav-item" data-nav="workout" onclick="chNavMobile('workout',this)"><span class="icon">&#x1F4AA;</span> Workout Log</button>
     <button class="mobile-nav-item" data-nav="medical" onclick="chNavMobile('medical',this)"><span class="icon">&#x1FA7A;</span> Medical</button>
     <button class="mobile-nav-item" data-nav="habits" onclick="chNavMobile('habits',this)"><span class="icon">&#x2B50;</span> My Habits</button>
+    <button class="mobile-nav-item" data-nav="habit-history" onclick="chNavMobile('habit-history',this)"><span class="icon">&#x1F4DC;</span> Habit History</button>
     <button class="mobile-nav-item" data-nav="zones" onclick="chNavMobile('zones',this)"><span class="icon">&#x1F3D7;&#xFE0F;</span> Zone Buddy</button>
     <button class="mobile-nav-item" data-nav="travel" onclick="chNavMobile('travel',this)"><span class="icon">&#x2708;&#xFE0F;</span> Travel</button>
     <button class="mobile-nav-item" data-nav="about" onclick="chNavMobile('about',this)"><span class="icon">&#x2139;&#xFE0F;</span> About</button>
@@ -614,6 +615,7 @@
     <button class="nav-item" onclick="chNav('workout',this)"><span class="icon">&#x1F4AA;</span> Workout Log</button>
     <button class="nav-item" onclick="chNav('medical',this)"><span class="icon">&#x1FA7A;</span> Medical</button>
     <button class="nav-item" onclick="chNav('habits',this)"><span class="icon">&#x2B50;</span> My Habits</button>
+    <button class="nav-item" onclick="chNav('habit-history',this)"><span class="icon">&#x1F4DC;</span> Habit History</button>
     <button class="nav-item" onclick="chNav('zones',this)"><span class="icon">&#x1F3D7;&#xFE0F;</span> Zone Buddy</button>
     <button class="nav-item" onclick="chNav('travel',this)"><span class="icon">&#x2708;&#xFE0F;</span> Travel</button>
     <button class="nav-item" onclick="chNav('about',this)"><span class="icon">&#x2139;&#xFE0F;</span> About</button>
@@ -622,7 +624,7 @@
         <span style="font-size:12px !important;color:rgba(255,255,255,0.5) !important;">&#x1F319;</span>
         <button onclick="toggleDarkMode()" style="padding:4px 10px !important;font-size:10px !important;background:rgba(255,255,255,0.1) !important;color:rgba(255,255,255,0.6) !important;border:1px solid rgba(255,255,255,0.15) !important;border-radius:6px !important;cursor:pointer !important;" id="dark-mode-btn">Dark Mode</button>
       </div>
-      <span>Cath Hub v3.2</span><br><a href="#" onclick="cathLogout();return false" style="color:rgba(255,255,255,0.5) !important;font-size:10px !important;text-decoration:underline !important;">Sign out</a>
+      <span>Cath Hub v3.3</span><br><a href="#" onclick="cathLogout();return false" style="color:rgba(255,255,255,0.5) !important;font-size:10px !important;text-decoration:underline !important;">Sign out</a>
     </div>
   </div>
 
@@ -1562,14 +1564,14 @@
           <div id="hab-asneeded-list"></div>
         </div>
 
-        <!-- Medication Log -->
-        <div class="hab-section" id="hab-history-section" style="margin-bottom:10px !important;">
-          <div class="hab-section-header" style="padding:12px 16px !important;cursor:pointer !important;" onclick="habToggleSection(this)">
-            <h3 style="font-size:14px !important;">&#x1F4DC; Medication Log</h3>
-            <span style="font-size:11px !important;color:#94a3b8 !important;">Last 30 days <span class="hab-chevron" style="margin-left:6px !important;">&#x25B2;</span></span>
-          </div>
-          <div style="padding:12px !important;" id="hab-history-container">
-            <div class="hab-empty">Loading...</div>
+        <!-- View History Link -->
+        <div style="background:#f0fdf4 !important;border:1px solid #bbf7d0 !important;border-radius:12px !important;padding:14px 16px !important;margin-top:12px !important;cursor:pointer !important;" onclick="chNav('habit-history',document.querySelectorAll('#cathHub .nav-item')[7])">
+          <div style="display:flex !important;align-items:center !important;justify-content:space-between !important;">
+            <div>
+              <div style="font-size:14px !important;font-weight:700 !important;color:#166534 !important;">&#x1F4DC; View History</div>
+              <div style="font-size:12px !important;color:#15803d !important;">See medication & habit logs</div>
+            </div>
+            <span style="font-size:18px !important;color:#15803d !important;">&rarr;</span>
           </div>
         </div>
       </div>
@@ -1606,6 +1608,34 @@
         <div id="zb-rhythm-6monthly"></div>
         <!-- Annual Rhythm -->
         <div id="zb-rhythm-annual"></div>
+      </div>
+
+    </div>
+
+    <!-- ═══ HABIT HISTORY ═══ -->
+    <div class="screen" id="ch-habit-history">
+      <h2>&#x1F4DC; Habit History</h2>
+
+      <!-- Medication Log -->
+      <div class="hab-section" id="hab-history-section" style="margin-bottom:10px !important;">
+        <div class="hab-section-header" style="padding:12px 16px !important;cursor:pointer !important;" onclick="habToggleSection(this)">
+          <h3 style="font-size:14px !important;">&#x1F48A; Medication Log</h3>
+          <span style="font-size:11px !important;color:#94a3b8 !important;">Last 30 days <span class="hab-chevron" style="margin-left:6px !important;">&#x25B2;</span></span>
+        </div>
+        <div style="padding:12px !important;" id="hab-history-container">
+          <div class="hab-empty">Loading...</div>
+        </div>
+      </div>
+
+      <!-- Custom Habit Log -->
+      <div class="hab-section" id="hab-custom-history-section" style="margin-bottom:10px !important;">
+        <div class="hab-section-header" style="padding:12px 16px !important;cursor:pointer !important;" onclick="habToggleSection(this)">
+          <h3 style="font-size:14px !important;">&#x2B50; Custom Habits Log</h3>
+          <span style="font-size:11px !important;color:#94a3b8 !important;">Track progress <span class="hab-chevron" style="margin-left:6px !important;">&#x25B2;</span></span>
+        </div>
+        <div style="padding:12px !important;" id="hab-custom-history-container">
+          <div class="hab-empty">No habit history yet</div>
+        </div>
       </div>
 
     </div>
@@ -1952,6 +1982,7 @@
     if(name === 'hometab') hmGo('home');
     if(name === 'todo') tdLoad();
     if(name === 'habits') { zbTab('meds'); }
+    if(name === 'habit-history') { habLoadHistory(); }
     if(name === 'zones') zbRenderZoneGrid();
     if(name === 'home') dashLoad();
   };
