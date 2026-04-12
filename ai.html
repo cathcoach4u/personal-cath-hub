@@ -6,8 +6,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#7c3aed">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'%3E%3Crect width='192' height='192' rx='42' fill='%237c3aed'/%3E%3Ctext x='96' y='130' text-anchor='middle' font-family='Segoe UI,system-ui,-apple-system,sans-serif' font-size='120' font-weight='700' fill='white'%3EC%3C/text%3E%3C/svg%3E">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'%3E%3Crect width='192' height='192' rx='42' fill='%237c3aed'/%3E%3Ctext x='96' y='130' text-anchor='middle' font-family='Segoe UI,system-ui,-apple-system,sans-serif' font-size='120' font-weight='700' fill='white'%3EC%3C/text%3E%3C/svg%3E">
+<link rel="manifest" href="manifest-ai.json">
+<link rel="icon" type="image/svg+xml" href="icon-ai.svg">
+<link rel="apple-touch-icon" href="icon-ai.svg">
 <title>Cath AI</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -59,6 +60,7 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 </style>
 </head>
 <body>
+<script src="ai-config.js"></script>
 
 <div class="header">
   <h1>&#x1F916; Cath AI</h1>
@@ -378,7 +380,19 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
   function render() {
     var container = document.getElementById('messages');
     if (!messages.length) {
-      container.innerHTML = '<div class="welcome"><div class="welcome-icon">&#x1F916;</div><h3>Hi Cath!</h3><p>Ask me anything about your shopping, meds, habits, todos, or meals.</p></div>';
+      // Show capability pills (clickable)
+      var h = '<div style="padding:32px 16px;text-align:center;">';
+      h += '<div style="font-size:14px;font-weight:600;color:#1e293b;margin-bottom:16px;">I can help with:</div>';
+      h += '<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:24px;">';
+      h += '<span onclick="document.getElementById(\'input\').value=\'Add \';" style="padding:8px 14px;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:18px;font-size:12px;color:#0d9488;cursor:pointer;transition:all 0.2s;">📋 To-Do</span>';
+      h += '<span onclick="document.getElementById(\'input\').value=\'Log \';" style="padding:8px 14px;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:18px;font-size:12px;color:#0d9488;cursor:pointer;transition:all 0.2s;">💊 Medications</span>';
+      h += '<span onclick="document.getElementById(\'input\').value=\'Tell me \';" style="padding:8px 14px;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:18px;font-size:12px;color:#0d9488;cursor:pointer;transition:all 0.2s;">🏥 Medical</span>';
+      h += '<span onclick="document.getElementById(\'input\').value=\'Remember \';" style="padding:8px 14px;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:18px;font-size:12px;color:#0d9488;cursor:pointer;transition:all 0.2s;">🧠 Memory</span>';
+      h += '<span onclick="document.getElementById(\'input\').value=\'Query \';" style="padding:8px 14px;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:18px;font-size:12px;color:#0d9488;cursor:pointer;transition:all 0.2s;">📊 Database</span>';
+      h += '</div>';
+      h += '<div style="font-size:12px;color:#94a3b8;">Click a pill or start typing...</div>';
+      h += '</div>';
+      container.innerHTML = h;
       return;
     }
     var html = '';
