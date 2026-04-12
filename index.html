@@ -4264,17 +4264,9 @@
         return 0;
       });
 
-      // #1: Morning reminder banner (inside meds section)
+      // #1: Morning reminder banner (DISABLED)
       var bannerEl = document.getElementById('hab-morning-banner');
-      var hour = new Date().getHours();
-      // Only count actual meds for the "all done" check
-      var dailyMeds = daily.filter(function(m){ return medNames.indexOf(m.name.toLowerCase()) !== -1; });
-      var allMedsDone = dailyMeds.length > 0 && dailyMeds.every(function(m){ return logs[m.id]&&logs[m.id][today]; });
-      if (hour < 12 && !allMedsDone && dailyMeds.length > 0) {
-        bannerEl.innerHTML = '<div class="hab-reminder-banner">&#x2600;&#xFE0F; Have you taken your morning meds?</div>';
-      } else {
-        bannerEl.innerHTML = '';
-      }
+      bannerEl.innerHTML = '';
 
       // Missed yesterday indicator (dismissable per day)
       var missedAlert = document.getElementById('hab-missed-alert');
