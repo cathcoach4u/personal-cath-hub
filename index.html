@@ -2918,19 +2918,52 @@
     }
   };
 
-  window.wlLoadSummary = function() {
-    var today = new Date().toISOString().split('T')[0];
-    var sessions = WL.session.length > 0 ? [{duration: Math.round((new Date() - wlSessionStartTime) / 60000)}] : [];
-    var totalMinutes = sessions.reduce((sum, s) => sum + (s.duration || 0), 0);
-    var exerciseCount = WL.session.length;
-    var setCount = WL.session.reduce((sum, ex) => sum + (ex.sets ? ex.sets.length : 0), 0);
+  window.wlLoadSummary = async function() {
+    try {
+      var today = new Date().toISOString().split('T')[0];
 
-    var html = '';
-    html += '<div class="wl-summary-stat"><div class="wl-summary-stat-value">' + (wlSessionActive ? 1 : 0) + '</div><div class="wl-summary-stat-label">Sessions Active</div></div>';
-    html += '<div class="wl-summary-stat"><div class="wl-summary-stat-value">' + exerciseCount + '</div><div class="wl-summary-stat-label">Exercises</div></div>';
-    html += '<div class="wl-summary-stat"><div class="wl-summary-stat-value">' + setCount + '</div><div class="wl-summary-stat-label">Sets</div></div>';
+      // Get today's saved sessions from Supabase
+      var { data: sessions, error: sessionError } = await sb.from('workout_sessions').select('*').eq('date', today);
+      if (sessionError) throw sessionError;
 
-    document.getElementById('wl-summary-stats').innerHTML = html;
+      // Get exercises and sets for today's sessions
+      var totalMinutes = sessions ? sessions.reduce((sum, s) => sum + (s.duration_minutes || 0), 0) : 0;
+      var sessionCount = sessions ? sessions.length : 0;
+
+      // Count exercises and sets for today
+      var exerciseCount = 0;
+      var setCount = 0;
+
+      if (sessions && sessions.length > 0) {
+        var sessionIds = sessions.map(s => s.id);
+        var { data: exercises, error: exError } = await sb.from('workout_exercises').select('*');
+        if (!exError && exercises) {
+          var todayExercises = exercises.filter(ex => sessionIds.includes(ex.session_id));
+          exerciseCount = todayExercises.length;
+
+          var { data: sets, error: setError } = await sb.from('workout_sets').select('*');
+          if (!setError && sets) {
+            var exIds = todayExercises.map(ex => ex.id);
+            setCount = sets.filter(s => exIds.includes(s.exercise_id)).length;
+          }
+        }
+      }
+
+      // Add current in-memory session if active
+      var currentSessionExercises = WL.session.length;
+      var currentSessionSets = WL.session.reduce((sum, ex) => sum + (ex.sets ? ex.sets.length : 0), 0);
+
+      var html = '';
+      html += '<div class="wl-summary-stat"><div class="wl-summary-stat-value">' + sessionCount + '</div><div class="wl-summary-stat-label">Saved Sessions</div></div>';
+      html += '<div class="wl-summary-stat"><div class="wl-summary-stat-value">' + (exerciseCount + currentSessionExercises) + '</div><div class="wl-summary-stat-label">Exercises</div></div>';
+      html += '<div class="wl-summary-stat"><div class="wl-summary-stat-value">' + (setCount + currentSessionSets) + '</div><div class="wl-summary-stat-label">Sets</div></div>';
+      html += '<div class="wl-summary-stat"><div class="wl-summary-stat-value">' + totalMinutes + '</div><div class="wl-summary-stat-label">Total Minutes</div></div>';
+
+      document.getElementById('wl-summary-stats').innerHTML = html;
+    } catch (error) {
+      console.error('Error loading summary:', error);
+      document.getElementById('wl-summary-stats').innerHTML = '<div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:16px !important;text-align:center !important;color:#94a3b8 !important;font-size:13px !important;">Error loading summary</div>';
+    }
   };
 
   window.wlStartSession = function() {
