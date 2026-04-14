@@ -590,13 +590,13 @@
 </div>
 
 <div id="cathHub">
-  <div class="version-badge">Cath Hub v4.34</div>
+  <div class="version-badge">Cath Hub v4.35</div>
 
   <!-- Mobile top bar -->
   <div class="mobile-top-bar">
     <button class="hamburger-btn" onclick="toggleMobileNav()" aria-label="Menu">&#x2630;</button>
     <h1>&#x1F3E0; Cath Hub</h1>
-    <div style="font-size:10px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:4px 8px !important;border-radius:99px !important;">v4.34</div>
+    <div style="font-size:10px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:4px 8px !important;border-radius:99px !important;">v4.35</div>
   </div>
 
   <!-- Mobile slide-out drawer -->
@@ -638,7 +638,7 @@
     <button class="nav-item" onclick="chNav('about',this)"><span class="icon">&#x2139;&#xFE0F;</span> About</button>
     <div class="sidebar-footer">
       <div style="display:flex !important;align-items:center !important;gap:6px !important;margin-bottom:8px !important;">
-        <div style="font-size:10px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:2px 8px !important;border-radius:99px !important;">v4.34</div>
+        <div style="font-size:10px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:2px 8px !important;border-radius:99px !important;">v4.35</div>
       </div>
       <div style="display:flex !important;align-items:center !important;gap:6px !important;margin-bottom:6px !important;">
         <span style="font-size:12px !important;color:rgba(255,255,255,0.5) !important;">&#x1F319;</span>
@@ -1089,17 +1089,43 @@
         </div>
 
         <!-- Sessions by Year -->
-        <div class="med-section" style="margin-bottom:12px !important;">
-          <div style="padding:14px 16px !important;">
-            <div style="font-size:12px !important;font-weight:700 !important;text-transform:uppercase !important;color:#7c3aed !important;margin-bottom:10px !important;">Sessions by Year</div>
-            <div style="display:grid !important;grid-template-columns:1fr 1fr !important;gap:8px !important;">
-              <div style="background:#f0f4f8 !important;padding:10px 12px !important;border-radius:8px !important;border-left:3px solid #64748b !important;">
-                <div style="font-size:14px !important;font-weight:700 !important;color:#1e293b !important;">2025</div>
-                <div style="font-size:13px !important;color:#64748b !important;margin-top:4px !important;">6 sessions used</div>
-              </div>
-              <div style="background:#f0fdf4 !important;padding:10px 12px !important;border-radius:8px !important;border-left:3px solid #16a34a !important;">
+        <div style="margin-bottom:12px !important;">
+          <!-- 2026 Section -->
+          <div class="med-section" style="margin-bottom:10px !important;cursor:pointer !important;" onclick="medToggleMHYear(this)">
+            <div style="padding:14px 16px !important;display:flex !important;justify-content:space-between !important;align-items:center !important;">
+              <div>
                 <div style="font-size:14px !important;font-weight:700 !important;color:#166534 !important;">2026</div>
-                <div style="font-size:13px !important;color:#15803d !important;margin-top:4px !important;">6 used, 4 remaining</div>
+                <div style="font-size:12px !important;color:#15803d !important;margin-top:4px !important;">6 used, 4 remaining</div>
+              </div>
+              <span style="font-size:16px !important;color:#94a3b8 !important;">▼</span>
+            </div>
+            <div style="display:none !important;padding:0 16px 14px !important;border-top:1px solid #e2e8f0 !important;padding-top:14px !important;">
+              <div style="display:grid !important;grid-template-columns:1fr 1fr !important;gap:8px !important;font-size:13px !important;">
+                <div style="color:#64748b !important;">Plan checked</div><div style="font-weight:600 !important;">8 April 2026</div>
+                <div style="color:#64748b !important;">GP</div><div style="font-weight:600 !important;">Dr Yasmin Trinidad</div>
+                <div style="color:#64748b !important;">Sessions allocated</div><div style="font-weight:600 !important;">10/year</div>
+                <div style="color:#64748b !important;">Sessions used</div><div style="font-weight:600 !important;">6</div>
+                <div style="color:#64748b !important;">Remaining</div><div style="font-weight:600 !important;color:#16a34a !important;">4</div>
+                <div style="color:#64748b !important;">Renewal date</div><div style="font-weight:600 !important;">January 2027</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2025 Section -->
+          <div class="med-section" style="margin-bottom:10px !important;cursor:pointer !important;" onclick="medToggleMHYear(this)">
+            <div style="padding:14px 16px !important;display:flex !important;justify-content:space-between !important;align-items:center !important;">
+              <div>
+                <div style="font-size:14px !important;font-weight:700 !important;color:#64748b !important;">2025</div>
+                <div style="font-size:12px !important;color:#64748b !important;margin-top:4px !important;">6 sessions used</div>
+              </div>
+              <span style="font-size:16px !important;color:#94a3b8 !important;">▼</span>
+            </div>
+            <div style="display:none !important;padding:0 16px 14px !important;border-top:1px solid #e2e8f0 !important;padding-top:14px !important;">
+              <div style="display:grid !important;grid-template-columns:1fr 1fr !important;gap:8px !important;font-size:13px !important;">
+                <div style="color:#64748b !important;">Plan checked</div><div style="font-weight:600 !important;">2025</div>
+                <div style="color:#64748b !important;">Sessions allocated</div><div style="font-weight:600 !important;">10/year</div>
+                <div style="color:#64748b !important;">Sessions used</div><div style="font-weight:600 !important;">6</div>
+                <div style="color:#64748b !important;">Remaining</div><div style="font-weight:600 !important;">4</div>
               </div>
             </div>
           </div>
@@ -1780,7 +1806,7 @@
       <!-- Version -->
       <div style="background:#ecfdf5 !important;border:1px solid #d1fae5 !important;border-radius:10px !important;padding:14px 16px !important;margin-bottom:16px !important;display:flex !important;align-items:center !important;justify-content:space-between !important;">
         <div style="font-size:13px !important;color:#065f46 !important;"><strong>Current version</strong></div>
-        <div style="font-size:12px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:2px 10px !important;border-radius:99px !important;">v4.34</div>
+        <div style="font-size:12px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:2px 10px !important;border-radius:99px !important;">v4.35</div>
       </div>
 
       <!-- Overview -->
@@ -3576,6 +3602,16 @@
     document.getElementById('med-' + sub).classList.add('active');
     if (sub === 'tracking') { habRender(); habLoadHistory(); }
     if (sub === 'medications') { loadMedicationPlan(); }
+  };
+
+  window.medToggleMHYear = function(el) {
+    var detailsDiv = el.nextElementSibling;
+    if (detailsDiv) {
+      var isHidden = detailsDiv.style.display === 'none' || !detailsDiv.style.display;
+      detailsDiv.style.setProperty('display', isHidden ? 'block' : 'none', 'important');
+      var chevron = el.querySelector('span[style*="color:#94a3b8"]');
+      if (chevron) chevron.textContent = isHidden ? '▲' : '▼';
+    }
   };
 
   // ─── MEDICAL (from Supabase) ───
