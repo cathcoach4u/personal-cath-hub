@@ -2948,7 +2948,92 @@
     var duration = Math.round((endTime - wlSessionStartTime) / 60000); // minutes
     document.getElementById('wl-start-btn').style.display = 'flex';
     document.getElementById('wl-finish-btn').style.display = 'none';
-    alert('Workout finished! ✓\nDuration: ' + duration + ' minutes');
+
+    // Save to Supabase if we have exercises
+    if (WL.session && WL.session.length > 0) {
+      wlSaveWorkoutSession(wlSessionStartTime, endTime, duration, WL.session);
+    } else {
+      alert('Workout finished! ✓\nDuration: ' + duration + ' minutes');
+    }
+  };
+
+  window.wlSaveWorkoutSession = async function(startTime, endTime, durationMinutes, exercises) {
+    try {
+      var finBtn = document.getElementById('wl-finish-btn');
+      if (finBtn) {
+        finBtn.disabled = true;
+        finBtn.textContent = 'Saving...';
+      }
+
+      var today = startTime.toISOString().split('T')[0];
+
+      // Insert session
+      var { data: sessionData, error: sessionError } = await sb.from('workout_sessions').insert({
+        date: today,
+        start_time: startTime.toISOString(),
+        end_time: endTime.toISOString(),
+        duration_minutes: durationMinutes,
+        created_at: new Date().toISOString()
+      }).select('id');
+
+      if (sessionError) {
+        throw new Error('Failed to save session: ' + sessionError.message);
+      }
+
+      var sessionId = sessionData && sessionData.length > 0 ? sessionData[0].id : null;
+      if (!sessionId) throw new Error('No session ID returned');
+
+      // Insert exercises and sets
+      for (var i = 0; i < exercises.length; i++) {
+        var ex = exercises[i];
+        var { data: exData, error: exError } = await sb.from('workout_exercises').insert({
+          session_id: sessionId,
+          name: ex.name,
+          type: ex.type,
+          target_label: ex.targetLabel || null,
+          notes: ex.notes || null,
+          created_at: new Date().toISOString()
+        }).select('id');
+
+        if (exError) throw new Error('Failed to save exercise: ' + exError.message);
+
+        var exId = exData && exData.length > 0 ? exData[0].id : null;
+        if (!exId) continue;
+
+        // Insert sets for this exercise
+        for (var j = 0; j < ex.sets.length; j++) {
+          var s = ex.sets[j];
+          var { error: setError } = await sb.from('workout_sets').insert({
+            exercise_id: exId,
+            set_number: j + 1,
+            weight: s.weight || null,
+            reps: s.reps || null,
+            done: s.done ? true : false,
+            created_at: new Date().toISOString()
+          });
+
+          if (setError) console.warn('Failed to save set: ' + setError.message);
+        }
+      }
+
+      if (finBtn) {
+        finBtn.disabled = false;
+        finBtn.textContent = '✓ Finish Session';
+      }
+
+      alert('Workout finished! ✓\nDuration: ' + durationMinutes + ' minutes\nData saved.');
+
+      // Clear session for next workout
+      WL.session = [];
+      wlRender();
+    } catch (error) {
+      console.error('Workout save error:', error);
+      if (finBtn) {
+        finBtn.disabled = false;
+        finBtn.textContent = '✓ Finish Session';
+      }
+      alert('Workout finished! ✓\nDuration: ' + durationMinutes + ' minutes\n\nNote: Could not save to database. Make sure tables exist.');
+    }
   };
 
   window.wlAddExercise = function(name, type) {
@@ -3995,9 +4080,34 @@
       }
     };
 
-    window.hhLoadWorkoutLog = function() {
-      var html = '<div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:16px !important;text-align:center !important;color:#94a3b8 !important;font-size:13px !important;">No workout history yet</div>';
-      document.getElementById('hh-workout-list').innerHTML = html;
+    window.hhLoadWorkoutLog = async function() {
+      try {
+        var { data: sessions, error } = await sb.from('workout_sessions').select('*').order('date', { ascending: false }).limit(30);
+        if (error) {
+          console.error('Error loading workout history:', error);
+          document.getElementById('hh-workout-list').innerHTML = '<div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:16px !important;text-align:center !important;color:#94a3b8 !important;font-size:13px !important;">Error loading workout history</div>';
+          return;
+        }
+
+        var html = '';
+        if (!sessions || sessions.length === 0) {
+          html = '<div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:16px !important;text-align:center !important;color:#94a3b8 !important;font-size:13px !important;">No workout history yet</div>';
+        } else {
+          sessions.forEach(function(session) {
+            var date = new Date(session.date);
+            var dateStr = date.toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short' });
+            html += '<div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:12px 16px !important;margin-bottom:10px !important;">';
+            html += '<div style="font-size:13px !important;color:#64748b !important;margin-bottom:4px !important;">' + dateStr + '</div>';
+            html += '<div style="font-size:14px !important;font-weight:600 !important;color:#1e293b !important;">' + session.duration_minutes + ' min</div>';
+            html += '<div style="font-size:12px !important;color:#94a3b8 !important;margin-top:4px !important;">Completed</div>';
+            html += '</div>';
+          });
+        }
+        document.getElementById('hh-workout-list').innerHTML = html;
+      } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('hh-workout-list').innerHTML = '<div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:16px !important;text-align:center !important;color:#94a3b8 !important;font-size:13px !important;">Error loading history</div>';
+      }
     };
 
     window.habToggleDaily = async function(id) {
