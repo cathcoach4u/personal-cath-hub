@@ -20,10 +20,11 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .header h1 { font-size: 18px; font-weight: 700; }
 .container { max-width: 550px; margin: 0 auto; padding: 16px; }
 
-.date-bar { background: white; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-.date-label { font-size: 16px; font-weight: 700; }
-.date-sub { font-size: 13px; color: #64748b; margin-top: 2px; }
-.ex-count { font-size: 13px; color: #64748b; }
+.date-bar { background: linear-gradient(135deg, #334155 0%, #1e293b 100%); color: white; border-radius: 12px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.date-label { font-size: 15px; font-weight: 700; color: white; }
+.date-sub { font-size: 13px; color: #cbd5e1; margin-top: 2px; }
+.date-version { font-size: 14px; font-weight: 600; color: white; }
+.ex-count { font-size: 13px; color: #cbd5e1; }
 
 .prog-wrap { margin-bottom: 16px; }
 .prog-top { display: flex; justify-content: space-between; font-size: 13px; color: #64748b; margin-bottom: 6px; }
@@ -105,11 +106,8 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 
 <div class="container">
   <div class="date-bar">
-    <div>
-      <div class="date-label" id="date-label">Today's Workout</div>
-      <div class="date-sub" id="date-sub"></div>
-    </div>
-    <div class="ex-count" id="ex-count">0 exercises</div>
+    <div class="date-label" id="date-label"></div>
+    <div class="date-version" id="date-version">v4.26</div>
   </div>
 
   <div class="prog-wrap">
@@ -280,7 +278,7 @@ async function saveWorkoutSession(startTime, endTime, durationMinutes, exercises
   var now = new Date();
   var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  document.getElementById('date-sub').textContent = days[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
+  document.getElementById('date-label').textContent = days[now.getDay()] + ' ' + now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
 
   function makeSet(w, r) { return {weight: w || '', reps: r || '', done: false}; }
 
