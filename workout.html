@@ -121,6 +121,17 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 
 .add-class-btn { width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; margin-bottom: 16px; }
 .add-class-btn:hover { background: #059669; }
+
+.session-timer { font-size: 20px; font-weight: 700; color: #10b981; text-align: center; padding: 12px; background: #f0fdf4; border-radius: 10px; margin-bottom: 12px; font-family: 'Courier New', monospace; }
+
+.edit-time-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border-radius: 16px; padding: 24px; box-shadow: 0 20px 48px rgba(0,0,0,0.2); z-index: 300; max-width: 320px; width: 90%; display: none; }
+.edit-time-modal.open { display: block; }
+.edit-time-modal h3 { font-size: 16px; font-weight: 700; margin-bottom: 16px; color: #1e293b; }
+.edit-time-modal input { width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; margin-bottom: 12px; font-family: inherit; }
+.edit-time-modal button { width: 100%; padding: 10px; background: #10b981; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-family: inherit; margin-bottom: 8px; }
+.edit-time-modal button:hover { background: #059669; }
+.edit-time-modal .cancel-btn { background: #cbd5e1; color: #1e293b; }
+.edit-time-modal .cancel-btn:hover { background: #94a3b8; }
 </style>
 </head>
 <body>
@@ -152,6 +163,8 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
       <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
     </div>
 
+    <div class="session-timer" id="session-timer" style="display:none;">00:00</div>
+
     <div class="session-controls">
       <button class="session-btn" id="start-btn" onclick="startSession()">▶ Start Session</button>
       <button class="session-btn finish" id="finish-btn" onclick="finishSession()" style="display:none;">✓ Finish Session</button>
@@ -178,6 +191,16 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
     <div id="summary-stats"></div>
   </div>
 </div>
+
+<!-- Edit Time Modal -->
+<div class="edit-time-modal" id="edit-time-modal">
+  <h3>Adjust Workout Duration</h3>
+  <input type="number" id="edit-minutes" placeholder="Minutes" min="1" max="480">
+  <button onclick="saveEditedTime()">Save Time</button>
+  <button class="cancel-btn" onclick="closeEditModal()">Cancel</button>
+</div>
+
+<div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); z-index: 250; display: none;" id="edit-overlay" onclick="closeEditModal()"></div>
 
 <div class="overlay" id="overlay" onclick="closePicker()"></div>
 <div class="picker" id="picker">
@@ -320,26 +343,92 @@ window.startSession = function() {
   sessionStartTime = new Date();
   document.getElementById('start-btn').style.display = 'none';
   document.getElementById('finish-btn').style.display = 'flex';
+  document.getElementById('session-timer').style.display = 'block';
+
+  // Start timer
+  updateTimer();
+  window.timerInterval = setInterval(updateTimer, 1000);
+
   alert('Workout session started! 💪');
 };
+
+function updateTimer() {
+  if (!sessionActive || !sessionStartTime) return;
+  var now = new Date();
+  var elapsed = Math.floor((now - sessionStartTime) / 1000);
+  var mins = Math.floor(elapsed / 60);
+  var secs = elapsed % 60;
+  document.getElementById('session-timer').textContent =
+    (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
+}
 
 window.finishSession = function() {
   if (!sessionActive) return;
   sessionActive = false;
+  clearInterval(window.timerInterval);
+
   var endTime = new Date();
   var duration = Math.round((endTime - sessionStartTime) / 60000);
+
+  // Store for potential editing
+  window.lastSessionDuration = duration;
+  window.lastSessionStart = sessionStartTime;
+  window.lastSessionEnd = endTime;
+
   document.getElementById('start-btn').style.display = 'flex';
   document.getElementById('finish-btn').style.display = 'none';
+  document.getElementById('session-timer').style.display = 'none';
 
   // Save to Supabase if we have exercises
   if (WLSession && WLSession.length > 0) {
-    saveWorkoutSession(sessionStartTime, endTime, duration, WLSession);
+    saveWorkoutSession(sessionStartTime, endTime, duration, WLSession, true);
   } else {
     alert('Workout finished! ✓\nDuration: ' + duration + ' minutes');
   }
 };
 
-async function saveWorkoutSession(startTime, endTime, durationMinutes, exercises) {
+window.openEditModal = function() {
+  document.getElementById('edit-minutes').value = window.lastSessionDuration || 0;
+  document.getElementById('edit-time-modal').classList.add('open');
+  document.getElementById('edit-overlay').style.display = 'block';
+};
+
+window.closeEditModal = function() {
+  document.getElementById('edit-time-modal').classList.remove('open');
+  document.getElementById('edit-overlay').style.display = 'none';
+};
+
+window.saveEditedTime = async function() {
+  var newDuration = parseInt(document.getElementById('edit-minutes').value);
+  if (!newDuration || newDuration < 1) {
+    alert('Please enter a valid duration');
+    return;
+  }
+
+  window.lastSessionDuration = newDuration;
+  closeEditModal();
+
+  // Recalculate end time based on new duration
+  var newEnd = new Date(window.lastSessionStart.getTime() + newDuration * 60000);
+
+  // Save with updated duration
+  if (WLSession && WLSession.length > 0) {
+    saveWorkoutSession(window.lastSessionStart, newEnd, newDuration, WLSession, false);
+  } else {
+    alert('Duration updated to ' + newDuration + ' minutes');
+  }
+};
+
+// Reminder: warn if leaving with active session
+window.addEventListener('beforeunload', function(e) {
+  if (sessionActive) {
+    e.preventDefault();
+    e.returnValue = 'You have an active workout session. Finish it before leaving?';
+    return 'You have an active workout session. Finish it before leaving?';
+  }
+});
+
+async function saveWorkoutSession(startTime, endTime, durationMinutes, exercises, showEditOption) {
   try {
     var finBtn = document.getElementById('finish-btn');
     if (finBtn) {
@@ -403,7 +492,19 @@ async function saveWorkoutSession(startTime, endTime, durationMinutes, exercises
       finBtn.textContent = '✓ Finish Session';
     }
 
-    alert('Workout finished! ✓\nDuration: ' + durationMinutes + ' minutes\nData saved.');
+    if (showEditOption) {
+      var msg = 'Workout finished! ✓\nDuration: ' + durationMinutes + ' minutes\nData saved.\n\nTap OK then tap "Edit Time" if you need to adjust.';
+      alert(msg);
+      // Show edit button briefly
+      var editBtn = document.createElement('button');
+      editBtn.textContent = '⏱ Edit Time';
+      editBtn.style.cssText = 'position: fixed; bottom: 20px; right: 20px; padding: 10px 16px; background: #10b981; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; z-index: 100;';
+      editBtn.onclick = function() { openEditModal(); editBtn.remove(); };
+      document.body.appendChild(editBtn);
+      setTimeout(() => editBtn.remove(), 10000);
+    } else {
+      alert('Workout finished! ✓\nDuration: ' + durationMinutes + ' minutes\nData updated.');
+    }
   } catch (error) {
     console.error('Workout save error:', error);
     if (finBtn) {
