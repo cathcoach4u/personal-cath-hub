@@ -11,6 +11,8 @@
 <link rel="icon" type="image/svg+xml" href="workout-icon-192.svg">
 <link rel="apple-touch-icon" href="workout-icon-192.svg">
 <title>Workout Buddy - Cath Hub</title>
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #f0f4f8; color: #1e293b; min-height: 100vh; }
@@ -140,8 +142,10 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 </div>
 
 <script>
+var sb = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
 var sessionActive = false;
 var sessionStartTime = null;
+var WLSession = null; // Will hold reference to WL.session for saving
 
 window.startSession = function() {
   sessionActive = true;
@@ -158,8 +162,89 @@ window.finishSession = function() {
   var duration = Math.round((endTime - sessionStartTime) / 60000);
   document.getElementById('start-btn').style.display = 'flex';
   document.getElementById('finish-btn').style.display = 'none';
-  alert('Workout finished! ✓\nDuration: ' + duration + ' minutes');
+
+  // Save to Supabase if we have exercises
+  if (WLSession && WLSession.length > 0) {
+    saveWorkoutSession(sessionStartTime, endTime, duration, WLSession);
+  } else {
+    alert('Workout finished! ✓\nDuration: ' + duration + ' minutes');
+  }
 };
+
+async function saveWorkoutSession(startTime, endTime, durationMinutes, exercises) {
+  try {
+    var finBtn = document.getElementById('finish-btn');
+    if (finBtn) {
+      finBtn.disabled = true;
+      finBtn.textContent = 'Saving...';
+    }
+
+    var today = startTime.toISOString().split('T')[0];
+
+    // Insert session
+    var { data: sessionData, error: sessionError } = await sb.from('workout_sessions').insert({
+      date: today,
+      start_time: startTime.toISOString(),
+      end_time: endTime.toISOString(),
+      duration_minutes: durationMinutes,
+      created_at: new Date().toISOString()
+    }).select('id');
+
+    if (sessionError) {
+      throw new Error('Failed to save session: ' + sessionError.message);
+    }
+
+    var sessionId = sessionData && sessionData.length > 0 ? sessionData[0].id : null;
+    if (!sessionId) throw new Error('No session ID returned');
+
+    // Insert exercises and sets
+    for (var i = 0; i < exercises.length; i++) {
+      var ex = exercises[i];
+      var { data: exData, error: exError } = await sb.from('workout_exercises').insert({
+        session_id: sessionId,
+        name: ex.name,
+        type: ex.type,
+        target_label: ex.targetLabel || null,
+        notes: ex.notes || null,
+        created_at: new Date().toISOString()
+      }).select('id');
+
+      if (exError) throw new Error('Failed to save exercise: ' + exError.message);
+
+      var exId = exData && exData.length > 0 ? exData[0].id : null;
+      if (!exId) continue;
+
+      // Insert sets for this exercise
+      for (var j = 0; j < ex.sets.length; j++) {
+        var s = ex.sets[j];
+        var { error: setError } = await sb.from('workout_sets').insert({
+          exercise_id: exId,
+          set_number: j + 1,
+          weight: s.weight || null,
+          reps: s.reps || null,
+          done: s.done ? true : false,
+          created_at: new Date().toISOString()
+        });
+
+        if (setError) console.warn('Failed to save set: ' + setError.message);
+      }
+    }
+
+    if (finBtn) {
+      finBtn.disabled = false;
+      finBtn.textContent = '✓ Finish Session';
+    }
+
+    alert('Workout finished! ✓\nDuration: ' + durationMinutes + ' minutes\nData saved.');
+  } catch (error) {
+    console.error('Workout save error:', error);
+    if (finBtn) {
+      finBtn.disabled = false;
+      finBtn.textContent = '✓ Finish Session';
+    }
+    alert('Workout finished! ✓\nDuration: ' + durationMinutes + ' minutes\n\nNote: Could not save to database. Make sure tables exist.');
+  }
+}
 
 (function(){
   function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
@@ -218,7 +303,9 @@ window.finishSession = function() {
     if (!WL.session.length) {
       c.innerHTML = '<div class="empty"><div class="empty-icon">&#x1F3CB;</div><div>Tap <strong>Add Exercise</strong> to start</div></div>';
       document.getElementById('ex-count').textContent = '0 exercises';
-      updateProgress(); return;
+      updateProgress();
+      WLSession = [];
+      return;
     }
     var h = '';
     WL.session.forEach(function(ex, idx) {
@@ -242,6 +329,7 @@ window.finishSession = function() {
     });
     c.innerHTML = h;
     document.getElementById('ex-count').textContent = WL.session.length+' exercise'+(WL.session.length!==1?'s':'');
+    WLSession = JSON.parse(JSON.stringify(WL.session));
     updateProgress();
   }
 
