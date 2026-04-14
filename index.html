@@ -595,7 +595,7 @@
     </div>
     <button class="mobile-nav-item active" data-nav="home" onclick="chNavMobile('home',this)"><span class="icon">&#x1F4CA;</span> Dashboard</button>
     <button class="mobile-nav-item" data-nav="todo" onclick="chNavMobile('todo',this)"><span class="icon">&#x2705;</span> To-Do</button>
-    <button class="mobile-nav-item" data-nav="workout" onclick="chNavMobile('workout',this)"><span class="icon">&#x1F4AA;</span> Workout Log</button>
+    <button class="mobile-nav-item" data-nav="workout" onclick="chNavMobile('workout',this)"><span class="icon">&#x1F4AA;</span> Workout Buddy</button>
     <button class="mobile-nav-item" data-nav="medical" onclick="chNavMobile('medical',this)"><span class="icon">&#x1FA7A;</span> Medical</button>
     <button class="mobile-nav-item" data-nav="habits" onclick="chNavMobile('habits',this)"><span class="icon">&#x2B50;</span> My Habits</button>
     <button class="mobile-nav-item" data-nav="habit-history" onclick="chNavMobile('habit-history',this)"><span class="icon">&#x1F4DC;</span> Habit History</button>
@@ -616,7 +616,7 @@
     <!-- Desktop: button nav -->
     <button class="nav-item active" onclick="chNav('home',this)"><span class="icon">&#x1F4CA;</span> Dashboard</button>
     <button class="nav-item" onclick="chNav('todo',this)"><span class="icon">&#x2705;</span> To-Do</button>
-    <button class="nav-item" onclick="chNav('workout',this)"><span class="icon">&#x1F4AA;</span> Workout Log</button>
+    <button class="nav-item" onclick="chNav('workout',this)"><span class="icon">&#x1F4AA;</span> Workout Buddy</button>
     <button class="nav-item" onclick="chNav('medical',this)"><span class="icon">&#x1FA7A;</span> Medical</button>
     <button class="nav-item" onclick="chNav('habits',this)"><span class="icon">&#x2B50;</span> My Habits</button>
     <button class="nav-item" onclick="chNav('habit-history',this)"><span class="icon">&#x1F4DC;</span> Habit History</button>
@@ -783,7 +783,7 @@
     <!-- ═══ AISLEMATE ═══ -->
     <!-- ═══ WORKOUT LOG ═══ -->
     <div class="screen" id="ch-workout">
-      <h2>&#x1F4AA; Workout Log</h2>
+      <h2>&#x1F4AA; Workout Buddy</h2>
 
       <div class="wl-date-bar">
         <div>
@@ -808,7 +808,7 @@
       <!-- Quick Access Link -->
       <div style="margin-top:16px !important;padding:14px 16px !important;background:#f8fafc !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;">
         <div style="font-size:12px !important;font-weight:600 !important;color:#64748b !important;margin-bottom:6px !important;">&#x1F517; Quick Access Link</div>
-        <div style="font-size:12px !important;color:#94a3b8 !important;margin-bottom:8px !important;">Open workout log without logging in</div>
+        <div style="font-size:12px !important;color:#94a3b8 !important;margin-bottom:8px !important;">Open workout buddy without logging in</div>
         <div style="display:flex !important;gap:8px !important;align-items:center !important;">
           <input type="text" readonly id="wl-quick-link" style="flex:1 !important;padding:8px 10px !important;border:1px solid #e2e8f0 !important;border-radius:6px !important;font-size:11px !important;color:#475569 !important;background:white !important;">
           <button class="am-btn" onclick="(function(){var i=document.getElementById('wl-quick-link');i.select();document.execCommand('copy');alert('Link copied!')})()" style="padding:8px 12px !important;font-size:12px !important;white-space:nowrap !important;">Copy</button>
