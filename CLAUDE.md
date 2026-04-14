@@ -134,7 +134,7 @@ Three separate, independent Claude services. Any can be swapped for alternatives
 
 ## version numbering
 
-- Current: **v4.26** (green badge in sidebar footer and About page)
+- Current: **v4.27** (green badge in sidebar footer and About page)
 - Bumped on every code change (minor version increment)
 - Service worker cache key matches version (e.g., `cache-v4-12`)
 
@@ -171,6 +171,17 @@ Make Claude Code work harder:
 - **No Supabase dashboard access.** Cannot browse tables or run queries live. Must be given table schema or query results.
 - **Service worker cache must be bumped.** Browser cache won't clear automatically. Always increment version in cache key.
 - **GitHub Pages deploy lag.** Push to main → 1–2 minutes until changes are live.
+
+## start-of-session checklist
+
+When reconnecting (each new session):
+
+- [ ] Read this CLAUDE.md file to refresh all procedures
+- [ ] Check current version number before any version bumps
+- [ ] Read relevant memory sections (e.g., "version numbering") before acting on those tasks
+- [ ] Review end-of-session checklist to understand what was last done
+
+**Critical:** Do NOT assume memory from previous sessions. Always read CLAUDE.md first.
 
 ## end-of-session checklist
 
