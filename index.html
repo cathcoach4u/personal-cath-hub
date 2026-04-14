@@ -179,8 +179,14 @@
   #cathHub .wl-notes-strip { padding: 0 20px 14px !important; font-size: 12px !important; color: #94a3b8 !important; font-style: italic !important; border-top: 1px solid #f8fafc !important; padding-top: 10px !important; }
 
   /* Add Exercise button */
-  #cathHub .wl-add-btn { width: 100% !important; padding: 14px !important; background: #0d9488 !important; color: white !important; border-radius: 12px !important; font-size: 14px !important; font-weight: 700 !important; cursor: pointer !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 8px !important; margin-bottom: 32px !important; }
-  #cathHub .wl-add-btn:hover { background: #0f766e !important; }
+  #cathHub .wl-add-btn { width: 100% !important; padding: 14px !important; background: #10b981 !important; color: white !important; border-radius: 12px !important; font-size: 14px !important; font-weight: 700 !important; cursor: pointer !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 8px !important; margin-bottom: 16px !important; }
+  #cathHub .wl-add-btn:hover { background: #059669 !important; }
+
+  /* Session buttons */
+  #cathHub .wl-session-btn { flex: 1 !important; padding: 12px !important; background: #10b981 !important; color: white !important; border: none !important; border-radius: 10px !important; font-size: 13px !important; font-weight: 700 !important; cursor: pointer !important; }
+  #cathHub .wl-session-btn:hover { background: #059669 !important; }
+  #cathHub .wl-session-btn.finish { background: #f97316 !important; }
+  #cathHub .wl-session-btn.finish:hover { background: #ea580c !important; }
 
   /* Exercise Picker (bottom sheet) */
   #cathHub .wl-overlay { position: fixed !important; inset: 0 !important; background: rgba(0,0,0,0.35) !important; z-index: 200 !important; display: none !important; }
@@ -799,6 +805,12 @@
           <strong id="wl-prog-label">0 / 0</strong>
         </div>
         <div class="wl-prog-bar"><div class="wl-prog-fill" id="wl-prog-fill" style="width:0%"></div></div>
+      </div>
+
+      <!-- Session Control -->
+      <div style="display:flex !important;gap:8px !important;margin-bottom:16px !important;">
+        <button class="wl-session-btn" id="wl-start-btn" onclick="wlStartSession()">▶ Start Session</button>
+        <button class="wl-session-btn finish" id="wl-finish-btn" onclick="wlFinishSession()" style="display:none !important;">✓ Finish Session</button>
       </div>
 
       <div id="wl-session-list"></div>
@@ -2869,6 +2881,27 @@
   function wlMakeSet(weight, reps) {
     return {weight: weight || '', reps: reps || '', done: false};
   }
+
+  var wlSessionActive = false;
+  var wlSessionStartTime = null;
+
+  window.wlStartSession = function() {
+    wlSessionActive = true;
+    wlSessionStartTime = new Date();
+    document.getElementById('wl-start-btn').style.display = 'none';
+    document.getElementById('wl-finish-btn').style.display = 'flex';
+    alert('Workout session started! 💪');
+  };
+
+  window.wlFinishSession = function() {
+    if (!wlSessionActive) return;
+    wlSessionActive = false;
+    var endTime = new Date();
+    var duration = Math.round((endTime - wlSessionStartTime) / 60000); // minutes
+    document.getElementById('wl-start-btn').style.display = 'flex';
+    document.getElementById('wl-finish-btn').style.display = 'none';
+    alert('Workout finished! ✓\nDuration: ' + duration + ' minutes');
+  };
 
   window.wlAddExercise = function(name, type) {
     if (WL.addedNames().indexOf(name) !== -1) { wlClosePicker(); return; }
