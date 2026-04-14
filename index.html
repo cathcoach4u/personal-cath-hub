@@ -823,9 +823,10 @@
         </div>
 
         <!-- Session Control -->
-        <div style="display:flex !important;gap:8px !important;margin-bottom:16px !important;">
+        <div style="display:flex !important;gap:8px !important;margin-bottom:16px !important;flex-wrap:wrap !important;">
           <button class="wl-session-btn" id="wl-start-btn" onclick="wlStartSession()">▶ Start Session</button>
           <button class="wl-session-btn finish" id="wl-finish-btn" onclick="wlFinishSession()" style="display:none !important;">✓ Finish Session</button>
+          <button class="wl-session-btn" id="wl-save-btn" onclick="wlSaveSession()" style="display:none !important;background:#10b981 !important;">💾 Save Session</button>
         </div>
 
         <div id="wl-session-list"></div>
@@ -2897,6 +2898,8 @@
 
   var wlSessionActive = false;
   var wlSessionStartTime = null;
+  var wlSessionEndTime = null;
+  var wlSessionDuration = null;
 
   window.wlSwitchPill = function(pill) {
     var wp = document.getElementById('wl-workout-panel');
@@ -2978,15 +2981,105 @@
     if (!wlSessionActive) return;
     wlSessionActive = false;
     var endTime = new Date();
-    var duration = Math.round((endTime - wlSessionStartTime) / 60000); // minutes
+    var duration = Math.round((endTime - wlSessionStartTime) / 60000);
+
     document.getElementById('wl-start-btn').style.display = 'flex';
     document.getElementById('wl-finish-btn').style.display = 'none';
+    document.getElementById('wl-save-btn').style.display = 'flex';
 
-    // Save to Supabase if we have exercises
-    if (WL.session && WL.session.length > 0) {
-      wlSaveWorkoutSession(wlSessionStartTime, endTime, duration, WL.session);
-    } else {
-      alert('Workout finished! ✓\nDuration: ' + duration + ' minutes');
+    // Store for saving
+    wlSessionEndTime = endTime;
+    wlSessionDuration = duration;
+
+    alert('Session stopped! ✓\nDuration: ' + duration + ' minutes\n\nClick "Save Session" to record this workout.');
+  };
+
+  window.wlSaveSession = async function() {
+    if (!WL.session || WL.session.length === 0) {
+      alert('No exercises to save. Add exercises before saving.');
+      return;
+    }
+
+    var startTime = wlSessionStartTime;
+    var endTime = wlSessionEndTime;
+    var durationMinutes = wlSessionDuration;
+    var exercises = WL.session;
+
+    try {
+      var saveBtn = document.getElementById('wl-save-btn');
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving...';
+
+      var today = startTime.toISOString().split('T')[0];
+
+      // Insert session
+      var { data: sessionData, error: sessionError } = await sb.from('workout_sessions').insert({
+        date: today,
+        start_time: startTime.toISOString(),
+        end_time: endTime.toISOString(),
+        duration_minutes: durationMinutes,
+        created_at: new Date().toISOString()
+      }).select('id');
+
+      if (sessionError) {
+        throw new Error('Failed to save session: ' + sessionError.message);
+      }
+
+      var sessionId = sessionData && sessionData.length > 0 ? sessionData[0].id : null;
+      if (!sessionId) throw new Error('No session ID returned');
+
+      // Insert exercises and sets
+      for (var i = 0; i < exercises.length; i++) {
+        var ex = exercises[i];
+        var { data: exData, error: exError } = await sb.from('workout_exercises').insert({
+          session_id: sessionId,
+          name: ex.name,
+          type: ex.type,
+          target_label: ex.targetLabel || null,
+          notes: ex.notes || null,
+          created_at: new Date().toISOString()
+        }).select('id');
+
+        if (exError) throw new Error('Failed to save exercise: ' + exError.message);
+
+        var exId = exData && exData.length > 0 ? exData[0].id : null;
+        if (!exId) continue;
+
+        // Insert sets for this exercise
+        for (var j = 0; j < ex.sets.length; j++) {
+          var s = ex.sets[j];
+          var { error: setError } = await sb.from('workout_sets').insert({
+            exercise_id: exId,
+            set_number: j + 1,
+            weight: s.weight || null,
+            reps: s.reps || null,
+            done: s.done ? true : false,
+            created_at: new Date().toISOString()
+          });
+
+          if (setError) console.warn('Failed to save set: ' + setError.message);
+        }
+      }
+
+      saveBtn.disabled = false;
+      saveBtn.textContent = '💾 Save Session';
+
+      alert('✓ Session saved!\nDuration: ' + durationMinutes + ' minutes\n' + exercises.length + ' exercises recorded.');
+
+      // Clear session and reset UI
+      WL.session = [];
+      wlRender();
+      document.getElementById('wl-save-btn').style.display = 'none';
+      document.getElementById('wl-start-btn').style.display = 'flex';
+
+      // Refresh summary
+      wlLoadSummary();
+    } catch (error) {
+      console.error('Workout save error:', error);
+      var saveBtn = document.getElementById('wl-save-btn');
+      saveBtn.disabled = false;
+      saveBtn.textContent = '💾 Save Session';
+      alert('✗ Error saving session:\n' + error.message + '\n\nPlease try again or check your connection.');
     }
   };
 
