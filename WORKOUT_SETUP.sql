@@ -3,7 +3,7 @@
 
 -- 1. Create workout_sessions table
 CREATE TABLE IF NOT EXISTS workout_sessions (
-  id BIGSERIAL PRIMARY KEY,
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   date DATE NOT NULL,
   start_time TIMESTAMP WITH TIME ZONE NOT NULL,
   end_time TIMESTAMP WITH TIME ZONE NOT NULL,
@@ -14,8 +14,8 @@ CREATE TABLE IF NOT EXISTS workout_sessions (
 
 -- 2. Create workout_exercises table
 CREATE TABLE IF NOT EXISTS workout_exercises (
-  id BIGSERIAL PRIMARY KEY,
-  session_id BIGINT NOT NULL,
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  session_id UUID NOT NULL,
   name TEXT NOT NULL,
   type TEXT NOT NULL,
   target_label TEXT,
@@ -26,8 +26,8 @@ CREATE TABLE IF NOT EXISTS workout_exercises (
 
 -- 3. Create workout_sets table
 CREATE TABLE IF NOT EXISTS workout_sets (
-  id BIGSERIAL PRIMARY KEY,
-  exercise_id BIGINT NOT NULL,
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  exercise_id UUID NOT NULL,
   set_number INTEGER NOT NULL,
   weight NUMERIC(10, 2),
   reps TEXT,
@@ -62,7 +62,7 @@ CREATE POLICY "Allow public select on workout_sets"
 
 -- 4. Create gym_classes table
 CREATE TABLE IF NOT EXISTS gym_classes (
-  id BIGSERIAL PRIMARY KEY,
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   date DATE NOT NULL,
   duration_minutes INTEGER,
