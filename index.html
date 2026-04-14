@@ -4096,10 +4096,13 @@
           sessions.forEach(function(session) {
             var date = new Date(session.date);
             var dateStr = date.toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short' });
-            html += '<div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:12px 16px !important;margin-bottom:10px !important;">';
-            html += '<div style="font-size:13px !important;color:#64748b !important;margin-bottom:4px !important;">' + dateStr + '</div>';
-            html += '<div style="font-size:14px !important;font-weight:600 !important;color:#1e293b !important;">' + session.duration_minutes + ' min</div>';
-            html += '<div style="font-size:12px !important;color:#94a3b8 !important;margin-top:4px !important;">Completed</div>';
+            html += '<div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;overflow:hidden !important;margin-bottom:10px !important;">';
+            html += '<div style="padding:12px 16px !important;cursor:pointer !important;display:flex !important;justify-content:space-between !important;align-items:center !important;" onclick="hhToggleWorkoutDetails(this)">';
+            html += '<div><div style="font-size:13px !important;color:#64748b !important;margin-bottom:4px !important;">' + dateStr + '</div>';
+            html += '<div style="font-size:14px !important;font-weight:600 !important;color:#1e293b !important;">' + session.duration_minutes + ' min</div></div>';
+            html += '<span style="font-size:16px !important;color:#94a3b8 !important;">▼</span>';
+            html += '</div>';
+            html += '<div style="display:none !important;background:#f8fafc !important;border-top:1px solid #e2e8f0 !important;padding:12px 16px !important;font-size:12px !important;color:#94a3b8 !important;" data-session-id="' + session.id + '"><div style="text-align:center !important;">Loading exercises...</div></div>';
             html += '</div>';
           });
         }
@@ -4107,6 +4110,51 @@
       } catch (error) {
         console.error('Error:', error);
         document.getElementById('hh-workout-list').innerHTML = '<div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:16px !important;text-align:center !important;color:#94a3b8 !important;font-size:13px !important;">Error loading history</div>';
+      }
+    };
+
+    window.hhToggleWorkoutDetails = function(headerEl) {
+      var detailsDiv = headerEl.nextElementSibling;
+      var sessionId = detailsDiv.getAttribute('data-session-id');
+
+      if (detailsDiv.style.display === 'none') {
+        detailsDiv.style.display = 'block';
+        headerEl.querySelector('span').textContent = '▲';
+
+        // Load exercises if not already loaded
+        if (detailsDiv.querySelector('[data-loaded]') === null) {
+          hhLoadSessionExercises(sessionId, detailsDiv);
+        }
+      } else {
+        detailsDiv.style.display = 'none';
+        headerEl.querySelector('span').textContent = '▼';
+      }
+    };
+
+    window.hhLoadSessionExercises = async function(sessionId, detailsDiv) {
+      try {
+        var { data: exercises, error } = await sb.from('workout_exercises').select('*').eq('session_id', sessionId);
+        if (error) throw error;
+
+        var html = '<div data-loaded="true">';
+        if (!exercises || exercises.length === 0) {
+          html += '<div style="color:#94a3b8 !important;">No exercises recorded</div>';
+        } else {
+          exercises.forEach(function(ex) {
+            html += '<div style="margin-bottom:10px !important;padding:8px !important;background:white !important;border-radius:6px !important;">';
+            html += '<div style="font-weight:600 !important;color:#1e293b !important;font-size:13px !important;margin-bottom:4px !important;">' + ex.name + '</div>';
+            html += '<div style="font-size:11px !important;color:#94a3b8 !important;margin-bottom:4px !important;">' + ex.type + (ex.target_label ? ' • ' + ex.target_label : '') + '</div>';
+            if (ex.notes) {
+              html += '<div style="font-size:11px !important;color:#64748b !important;font-style:italic !important;margin-bottom:4px !important;">💬 ' + ex.notes + '</div>';
+            }
+            html += '</div>';
+          });
+        }
+        html += '</div>';
+        detailsDiv.innerHTML = html;
+      } catch (error) {
+        console.error('Error loading exercises:', error);
+        detailsDiv.innerHTML = '<div data-loaded="true" style="color:#ef4444 !important;">Error loading exercises</div>';
       }
     };
 
