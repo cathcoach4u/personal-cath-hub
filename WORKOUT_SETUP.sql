@@ -60,7 +60,30 @@ CREATE POLICY "Allow public select on workout_exercises"
 CREATE POLICY "Allow public select on workout_sets"
   ON workout_sets FOR SELECT USING (true);
 
+-- 4. Create gym_classes table
+CREATE TABLE IF NOT EXISTS gym_classes (
+  id BIGSERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  date DATE NOT NULL,
+  duration_minutes INTEGER,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Enable Row Level Security for gym_classes
+ALTER TABLE gym_classes ENABLE ROW LEVEL SECURITY;
+
+-- Create policies for gym_classes
+CREATE POLICY "Allow public insert on gym_classes"
+  ON gym_classes FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Allow public select on gym_classes"
+  ON gym_classes FOR SELECT USING (true);
+
+CREATE POLICY "Allow public delete on gym_classes"
+  ON gym_classes FOR DELETE USING (true);
+
 -- Create indexes for better query performance
 CREATE INDEX idx_workout_sessions_date ON workout_sessions(date DESC);
 CREATE INDEX idx_workout_exercises_session ON workout_exercises(session_id);
 CREATE INDEX idx_workout_sets_exercise ON workout_sets(exercise_id);
+CREATE INDEX idx_gym_classes_date ON gym_classes(date DESC);
