@@ -24,7 +24,11 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .date-label { font-size: 15px; font-weight: 700; color: white; }
 .date-sub { font-size: 13px; color: #cbd5e1; margin-top: 2px; }
 .date-version { font-size: 14px; font-weight: 600; color: white; }
-.ex-count { font-size: 13px; color: #cbd5e1; }
+
+.pill-nav { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.pill-btn { padding: 10px 16px; background: #e2e8f0; color: #64748b; border: none; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+.pill-btn:hover { background: #cbd5e1; }
+.pill-btn.active { background: #10b981; color: white; }
 
 .prog-wrap { margin-bottom: 16px; }
 .prog-top { display: flex; justify-content: space-between; font-size: 13px; color: #64748b; margin-bottom: 6px; }
@@ -96,54 +100,34 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .picker-item.added .picker-plus { background: #e2e8f0; color: #94a3b8; font-size: 14px; }
 .picker-empty { padding: 32px 20px; text-align: center; color: #94a3b8; font-size: 14px; }
 
-.tabs { display: flex; gap: 0; margin-bottom: 16px; border-bottom: 1px solid #e2e8f0; }
-.tab-btn { flex: 1; padding: 12px; background: none; border: none; font-size: 13px; font-weight: 600; color: #94a3b8; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
-.tab-btn.active { color: #10b981; border-bottom-color: #10b981; }
-.tab-btn:hover { color: #1e293b; }
-
 .tab-content { display: none; }
 .tab-content.active { display: block; }
-
-.history-item { background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; margin-bottom: 10px; }
-.history-date { font-size: 13px; color: #64748b; margin-bottom: 4px; }
-.history-stats { font-size: 14px; font-weight: 600; color: #1e293b; }
-.history-detail { font-size: 12px; color: #94a3b8; margin-top: 4px; }
-
-.gym-class-item { background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-.gym-class-name { font-size: 14px; font-weight: 600; color: #1e293b; }
-.gym-class-time { font-size: 12px; color: #94a3b8; }
-.gym-class-remove { color: #cbd5e1; cursor: pointer; font-size: 16px; padding: 4px 8px; }
-.gym-class-remove:hover { color: #ef4444; }
 
 .summary-stat { background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; margin-bottom: 12px; text-align: center; }
 .summary-stat-value { font-size: 24px; font-weight: 700; color: #10b981; }
 .summary-stat-label { font-size: 12px; color: #94a3b8; margin-top: 4px; }
-
-.add-class-btn { width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; margin-bottom: 16px; }
-.add-class-btn:hover { background: #059669; }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <span style="font-size: 22px;">&#x1F4AA;</span>
+  <span style="font-size: 22px;">💪</span>
   <h1>Workout Buddy</h1>
 </div>
 
 <div class="container">
   <div class="date-bar">
     <div class="date-label" id="date-label"></div>
-    <div class="date-version" id="date-version">v4.26</div>
+    <div class="date-version" id="date-version">v4.28</div>
   </div>
 
-  <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('sessions')">Sessions</button>
-    <button class="tab-btn" onclick="switchTab('classes')">Gym Classes</button>
-    <button class="tab-btn" onclick="switchTab('summary')">Summary</button>
+  <div class="pill-nav">
+    <button class="pill-btn active" onclick="switchPill('workout')">Today's Workout</button>
+    <button class="pill-btn" onclick="switchPill('summary')">Summary</button>
   </div>
 
-  <!-- Sessions Tab -->
-  <div id="sessions-tab" class="tab-content active">
+  <!-- Today's Workout Pill -->
+  <div id="workout-pill" class="tab-content active">
     <div class="prog-wrap">
       <div class="prog-top">
         <span>Sets completed</span>
@@ -159,22 +143,11 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 
     <div id="session-list"></div>
 
-    <button class="add-btn" onclick="openPicker()">&#x2795; Add Exercise</button>
-
-    <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
-      <h3 style="font-size: 14px; font-weight: 700; margin-bottom: 12px; color: #1e293b;">Workout History</h3>
-      <div id="history-list"></div>
-    </div>
+    <button class="add-btn" onclick="openPicker()">➕ Add Exercise</button>
   </div>
 
-  <!-- Gym Classes Tab -->
-  <div id="classes-tab" class="tab-content">
-    <button class="add-class-btn" onclick="openClassPicker()">➕ Add Class</button>
-    <div id="classes-list"></div>
-  </div>
-
-  <!-- Summary Tab -->
-  <div id="summary-tab" class="tab-content">
+  <!-- Summary Pill -->
+  <div id="summary-pill" class="tab-content">
     <div id="summary-stats"></div>
   </div>
 </div>
@@ -190,118 +163,58 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
   <div id="picker-body"></div>
 </div>
 
-<div class="overlay" id="class-overlay" onclick="closeClassPicker()"></div>
-<div class="picker" id="class-picker">
-  <div class="picker-drag"></div>
-  <div class="picker-top">
-    <h3>Add Gym Class</h3>
-  </div>
-  <div style="padding: 16px 20px;">
-    <input type="text" id="class-name" placeholder="Class name (e.g., Pilates)" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; margin-bottom: 10px; font-family: inherit;">
-    <input type="date" id="class-date" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; margin-bottom: 10px; font-family: inherit;">
-    <input type="number" id="class-duration" placeholder="Duration (minutes)" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; margin-bottom: 10px; font-family: inherit;" min="1" max="180">
-    <button onclick="addGymClass()" style="width: 100%; padding: 10px; background: #10b981; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;">Add Class</button>
-  </div>
-</div>
-
 <script>
 var sb = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
 var sessionActive = false;
 var sessionStartTime = null;
-var WLSession = null; // Will hold reference to WL.session for saving
-var gymClasses = []; // Store gym classes
+var WLSession = null;
 
-window.switchTab = function(tab) {
-  // Hide all tabs
-  document.getElementById('sessions-tab').classList.remove('active');
-  document.getElementById('classes-tab').classList.remove('active');
-  document.getElementById('summary-tab').classList.remove('active');
+window.switchPill = function(pill) {
+  document.getElementById('workout-pill').classList.remove('active');
+  document.getElementById('summary-pill').classList.remove('active');
 
-  // Remove active from all buttons
-  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.pill-btn').forEach(btn => btn.classList.remove('active'));
 
-  // Show selected tab and highlight button
-  document.getElementById(tab + '-tab').classList.add('active');
-  event.target.classList.add('active');
-
-  // Load data when tab opens
-  if (tab === 'sessions') loadWorkoutHistory();
-  if (tab === 'classes') loadGymClasses();
-  if (tab === 'summary') loadSummary();
+  if (pill === 'workout') {
+    document.getElementById('workout-pill').classList.add('active');
+    document.querySelectorAll('.pill-btn')[0].classList.add('active');
+  } else {
+    document.getElementById('summary-pill').classList.add('active');
+    document.querySelectorAll('.pill-btn')[1].classList.add('active');
+    loadSummary();
+  }
 };
-
-async function loadWorkoutHistory() {
-  try {
-    var { data, error } = await sb.from('workout_sessions').select('*').order('date', { ascending: false }).limit(10);
-    if (error) throw error;
-
-    var html = '';
-    if (!data || data.length === 0) {
-      html = '<div style="text-align: center; color: #94a3b8; padding: 20px;">No workouts yet</div>';
-    } else {
-      data.forEach(function(session) {
-        var date = new Date(session.date);
-        var dateStr = date.toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short' });
-        html += '<div class="history-item">';
-        html += '<div class="history-date">' + dateStr + '</div>';
-        html += '<div class="history-stats">' + session.duration_minutes + ' min</div>';
-        html += '<div class="history-detail">Completed</div>';
-        html += '</div>';
-      });
-    }
-    document.getElementById('history-list').innerHTML = html;
-  } catch (error) {
-    console.error('Error loading history:', error);
-    document.getElementById('history-list').innerHTML = '<div style="color: #ef4444;">Error loading history</div>';
-  }
-}
-
-async function loadGymClasses() {
-  try {
-    var { data, error } = await sb.from('gym_classes').select('*').order('date', { ascending: false }).limit(20);
-    if (error) {
-      // Table might not exist yet
-      document.getElementById('classes-list').innerHTML = '<div style="text-align: center; color: #94a3b8; padding: 20px;">Create the gym_classes table to get started</div>';
-      return;
-    }
-
-    var html = '';
-    if (!data || data.length === 0) {
-      html = '<div style="text-align: center; color: #94a3b8; padding: 20px;">No classes added yet</div>';
-    } else {
-      data.forEach(function(cls) {
-        var date = new Date(cls.date);
-        var dateStr = date.toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short' });
-        html += '<div class="gym-class-item">';
-        html += '<div><div class="gym-class-name">' + (cls.name || 'Class') + '</div>';
-        html += '<div class="gym-class-time">' + dateStr + ' · ' + (cls.duration_minutes || '?') + ' min</div></div>';
-        html += '<button class="gym-class-remove" onclick="removeGymClass(' + cls.id + ')">✕</button>';
-        html += '</div>';
-      });
-    }
-    document.getElementById('classes-list').innerHTML = html;
-  } catch (error) {
-    console.error('Error loading classes:', error);
-  }
-}
 
 async function loadSummary() {
   try {
-    var { data: sessions, error: sessionError } = await sb.from('workout_sessions').select('*');
+    var today = new Date().toISOString().split('T')[0];
+    var { data: sessions, error: sessionError } = await sb.from('workout_sessions').select('*').eq('date', today);
     if (sessionError) throw sessionError;
 
-    var totalSessions = sessions ? sessions.length : 0;
     var totalMinutes = sessions ? sessions.reduce((sum, s) => sum + (s.duration_minutes || 0), 0) : 0;
-    var avgMinutes = totalSessions > 0 ? Math.round(totalMinutes / totalSessions) : 0;
 
-    var { data: classes, error: classError } = await sb.from('gym_classes').select('*');
-    var totalClasses = classes ? classes.length : 0;
+    var { data: exercises, error: exError } = await sb.from('workout_exercises').select('*');
+    if (exError) throw exError;
+
+    var exerciseCount = 0;
+    var setCount = 0;
+    if (exercises && sessions && sessions.length > 0) {
+      var sessionIds = sessions.map(s => s.id);
+      var todayExercises = exercises.filter(ex => sessionIds.includes(ex.session_id));
+      exerciseCount = todayExercises.length;
+
+      var { data: sets, error: setError } = await sb.from('workout_sets').select('*');
+      if (!setError && sets) {
+        var exIds = todayExercises.map(ex => ex.id);
+        setCount = sets.filter(s => exIds.includes(s.exercise_id)).length;
+      }
+    }
 
     var html = '';
-    html += '<div class="summary-stat"><div class="summary-stat-value">' + totalSessions + '</div><div class="summary-stat-label">Workouts</div></div>';
+    html += '<div class="summary-stat"><div class="summary-stat-value">' + (sessions ? sessions.length : 0) + '</div><div class="summary-stat-label">Sessions Today</div></div>';
     html += '<div class="summary-stat"><div class="summary-stat-value">' + totalMinutes + '</div><div class="summary-stat-label">Total Minutes</div></div>';
-    html += '<div class="summary-stat"><div class="summary-stat-value">' + avgMinutes + '</div><div class="summary-stat-label">Avg Duration</div></div>';
-    html += '<div class="summary-stat"><div class="summary-stat-value">' + totalClasses + '</div><div class="summary-stat-label">Classes</div></div>';
+    html += '<div class="summary-stat"><div class="summary-stat-value">' + exerciseCount + '</div><div class="summary-stat-label">Exercises</div></div>';
+    html += '<div class="summary-stat"><div class="summary-stat-value">' + setCount + '</div><div class="summary-stat-label">Sets</div></div>';
 
     document.getElementById('summary-stats').innerHTML = html;
   } catch (error) {
@@ -309,21 +222,15 @@ async function loadSummary() {
   }
 }
 
-window.removeGymClass = function(id) {
-  if (confirm('Remove this class?')) {
-    sb.from('gym_classes').delete().eq('id', id).then(() => loadGymClasses());
-  }
-};
-
-window.startSession = function() {
+function startSession() {
   sessionActive = true;
   sessionStartTime = new Date();
   document.getElementById('start-btn').style.display = 'none';
   document.getElementById('finish-btn').style.display = 'flex';
   alert('Workout session started! 💪');
-};
+}
 
-window.finishSession = function() {
+function finishSession() {
   if (!sessionActive) return;
   sessionActive = false;
   var endTime = new Date();
@@ -331,13 +238,12 @@ window.finishSession = function() {
   document.getElementById('start-btn').style.display = 'flex';
   document.getElementById('finish-btn').style.display = 'none';
 
-  // Save to Supabase if we have exercises
   if (WLSession && WLSession.length > 0) {
     saveWorkoutSession(sessionStartTime, endTime, duration, WLSession);
   } else {
     alert('Workout finished! ✓\nDuration: ' + duration + ' minutes');
   }
-};
+}
 
 async function saveWorkoutSession(startTime, endTime, durationMinutes, exercises) {
   try {
@@ -349,7 +255,6 @@ async function saveWorkoutSession(startTime, endTime, durationMinutes, exercises
 
     var today = startTime.toISOString().split('T')[0];
 
-    // Insert session
     var { data: sessionData, error: sessionError } = await sb.from('workout_sessions').insert({
       date: today,
       start_time: startTime.toISOString(),
@@ -365,7 +270,6 @@ async function saveWorkoutSession(startTime, endTime, durationMinutes, exercises
     var sessionId = sessionData && sessionData.length > 0 ? sessionData[0].id : null;
     if (!sessionId) throw new Error('No session ID returned');
 
-    // Insert exercises and sets
     for (var i = 0; i < exercises.length; i++) {
       var ex = exercises[i];
       var { data: exData, error: exError } = await sb.from('workout_exercises').insert({
@@ -382,7 +286,6 @@ async function saveWorkoutSession(startTime, endTime, durationMinutes, exercises
       var exId = exData && exData.length > 0 ? exData[0].id : null;
       if (!exId) continue;
 
-      // Insert sets for this exercise
       for (var j = 0; j < ex.sets.length; j++) {
         var s = ex.sets[j];
         var { error: setError } = await sb.from('workout_sets').insert({
@@ -420,21 +323,21 @@ async function saveWorkoutSession(startTime, endTime, durationMinutes, exercises
   var WL = {
     library: {
       cardio: [
-        {name:'SkiErg',       sets:3, target:'250', unit:'m',        weight:null,  notes:'Continuous pull \u00b7 full range'},
-        {name:'Air Bike',     sets:3, target:'60',  unit:'sec',      weight:null,  notes:'Push & pull \u00b7 max effort'},
-        {name:'Rower',        sets:3, target:'200', unit:'m',        weight:null,  notes:'Strong leg drive \u00b7 smooth stroke'},
-        {name:'Ball Slams',   sets:3, target:'12',  unit:'reps',     weight:'12',  notes:'12kg ball \u00b7 slam with force'},
-        {name:'Battle Ropes', sets:1, target:'50',  unit:'reps',     weight:null,  notes:'Both ropes \u00b7 full body up & down'},
-        {name:'Lunges',       sets:1, target:'8\u20132', unit:'each leg', weight:'7', notes:'Dumbbells 6\u20137kg \u00b7 controlled step'}
+        {name:'SkiErg',       sets:3, target:'250', unit:'m',        weight:null,  notes:'Continuous pull · full range'},
+        {name:'Air Bike',     sets:3, target:'60',  unit:'sec',      weight:null,  notes:'Push & pull · max effort'},
+        {name:'Rower',        sets:3, target:'200', unit:'m',        weight:null,  notes:'Strong leg drive · smooth stroke'},
+        {name:'Ball Slams',   sets:3, target:'12',  unit:'reps',     weight:'12',  notes:'12kg ball · slam with force'},
+        {name:'Battle Ropes', sets:1, target:'50',  unit:'reps',     weight:null,  notes:'Both ropes · full body up & down'},
+        {name:'Lunges',       sets:1, target:'8–2', unit:'each leg', weight:'7', notes:'Dumbbells 6–7kg · controlled step'}
       ],
       weights: [
         {name:'Squat and Row',       sets:3, target:'8',  unit:'reps', weight:null,  notes:'Lower into squat row as you rise. Squeeze shoulder blades together at top.'},
         {name:'Bench Push-Ups',      sets:3, target:'10', unit:'reps', weight:null,  notes:'Hands on bench feet on floor. Keep hips down body in straight line.'},
-        {name:'Hip Thruster',        sets:3, target:'10', unit:'reps', weight:'20',  notes:'Glute drive machine \u00b7 10kg each end. Drive through heels.'},
-        {name:'Leg Press',           sets:3, target:'12', unit:'reps', weight:'100', notes:'50kg each end. Back flat against pad feet shoulder-width. Lower until knees at 90\u00b0.'},
+        {name:'Hip Thruster',        sets:3, target:'10', unit:'reps', weight:'20',  notes:'Glute drive machine · 10kg each end. Drive through heels.'},
+        {name:'Leg Press',           sets:3, target:'12', unit:'reps', weight:'100', notes:'50kg each end. Back flat against pad feet shoulder-width. Lower until knees at 90°.'},
         {name:'Smith Machine Bench', sets:3, target:'8',  unit:'reps', weight:'26',  notes:'7kg each end + 12kg bar. Grip slightly wider than shoulders. Lower to mid-chest.'},
         {name:'Lunge',               sets:3, target:'20', unit:'reps', weight:'16',  notes:'8kg dumbbell each hand. Step forward into lunge lower back knee to floor. Alternate legs.'},
-        {name:'Pull Down',           sets:3, target:'8',  unit:'reps', weight:'30',  notes:'Hammer strength \u00b7 15kg each side. Pull down smoothly to upper chest.'},
+        {name:'Pull Down',           sets:3, target:'8',  unit:'reps', weight:'30',  notes:'Hammer strength · 15kg each side. Pull down smoothly to upper chest.'},
         {name:'Side Planks',         sets:3, target:'45', unit:'sec',  weight:null,  notes:'45 seconds each side. Elbow under shoulder body in straight line.'}
       ]
     },
@@ -444,7 +347,6 @@ async function saveWorkoutSession(startTime, endTime, durationMinutes, exercises
     added: function() { return WL.session.map(function(s){ return s.name; }); }
   };
 
-  // Set date
   var now = new Date();
   var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -457,7 +359,7 @@ async function saveWorkoutSession(startTime, endTime, durationMinutes, exercises
     var ex = WL.getExByName(name);
     var sets = [];
     for (var i = 0; i < (ex ? ex.sets : 3); i++) sets.push(makeSet(ex ? (ex.weight||'') : '', ex ? ex.target : ''));
-    WL.session.push({ name: name, type: type || WL.getType(name), targetLabel: ex ? (ex.sets+' \u00d7 '+ex.target+' '+ex.unit+(ex.weight?' \u00b7 '+ex.weight+'kg':'')) : '', notes: ex ? ex.notes : '', sets: sets });
+    WL.session.push({ name: name, type: type || WL.getType(name), targetLabel: ex ? (ex.sets+' × '+ex.target+' '+ex.unit+(ex.weight?' · '+ex.weight+'kg':'')) : '', notes: ex ? ex.notes : '', sets: sets });
     render(); closePicker();
   };
 
@@ -469,8 +371,7 @@ async function saveWorkoutSession(startTime, endTime, durationMinutes, exercises
   function render() {
     var c = document.getElementById('session-list');
     if (!WL.session.length) {
-      c.innerHTML = '<div class="empty"><div class="empty-icon">&#x1F3CB;</div><div>Tap <strong>Add Exercise</strong> to start</div></div>';
-      document.getElementById('ex-count').textContent = '0 exercises';
+      c.innerHTML = '<div class="empty"><div class="empty-icon">🏋</div><div>Tap <strong>Add Exercise</strong> to start</div></div>';
       updateProgress();
       WLSession = [];
       return;
@@ -480,25 +381,24 @@ async function saveWorkoutSession(startTime, endTime, durationMinutes, exercises
       var allDone = ex.sets.length > 0 && ex.sets.every(function(s){ return s.done; });
       h += '<div class="ex-card'+(allDone?' all-done':'')+'">';
       h += '<div class="ex-top"><div class="ex-info"><div class="ex-name">'+esc(ex.name)+'</div><div class="ex-meta">';
-      h += '<span class="type-badge '+ex.type+'">'+(ex.type==='cardio'?'\u{1F525} Cardio':ex.type==='weights'?'\u{1F3CB} Weights':'\u270F Custom')+'</span>';
+      h += '<span class="type-badge '+ex.type+'">'+(ex.type==='cardio'?'🔥 Cardio':ex.type==='weights'?'🏋 Weights':'✏ Custom')+'</span>';
       if (ex.targetLabel) h += '<span class="ex-target">Target: '+esc(ex.targetLabel)+'</span>';
-      h += '</div></div><button class="ex-remove" onclick="removeEx('+idx+')">\u2715</button></div>';
+      h += '</div></div><button class="ex-remove" onclick="removeEx('+idx+')">✕</button></div>';
       h += '<div class="sets-wrap"><div class="sets-head"><span>Set</span><span>Weight (kg)</span><span>Reps / Amt</span><span></span></div>';
       ex.sets.forEach(function(s, si) {
         h += '<div class="set-row'+(s.done?' done':'')+'">';
         h += '<div class="set-num">'+(si+1)+'</div>';
-        h += '<input class="set-input" type="text" inputmode="decimal" value="'+esc(s.weight)+'" placeholder="\u2014" onchange="setField('+idx+','+si+',\'weight\',this.value)">';
-        h += '<input class="set-input" type="text" inputmode="decimal" value="'+esc(s.reps)+'" placeholder="\u2014" onchange="setField('+idx+','+si+',\'reps\',this.value)">';
+        h += '<input class="set-input" type="text" inputmode="decimal" value="'+esc(s.weight)+'" placeholder="–" onchange="setField('+idx+','+si+',\'weight\',this.value)">';
+        h += '<input class="set-input" type="text" inputmode="decimal" value="'+esc(s.reps)+'" placeholder="–" onchange="setField('+idx+','+si+',\'reps\',this.value)">';
         h += '<div class="set-tick'+(s.done?' done':'')+'" onclick="tickSet('+idx+','+si+')"></div></div>';
       });
       h += '<button class="add-set-btn" onclick="addSet('+idx+')">+ Add Set</button></div>';
-      if (ex.notes) h += '<div class="notes-strip">\u{1F4AC} '+esc(ex.notes)+'</div>';
+      if (ex.notes) h += '<div class="notes-strip">💬 '+esc(ex.notes)+'</div>';
       h += '</div>';
     });
     c.innerHTML = h;
-    document.getElementById('ex-count').textContent = WL.session.length+' exercise'+(WL.session.length!==1?'s':'');
-    WLSession = JSON.parse(JSON.stringify(WL.session));
     updateProgress();
+    WLSession = JSON.parse(JSON.stringify(WL.session));
   }
 
   function updateProgress() {
@@ -524,19 +424,19 @@ async function saveWorkoutSession(startTime, endTime, durationMinutes, exercises
   window.filterPicker = function(q) {
     q = (q||'').trim(); var added = WL.added();
     var cr = document.getElementById('custom-row');
-    if (q.length > 0) { cr.classList.add('show'); cr.innerHTML = '\u270F Add \u201c'+esc(q)+'\u201d as custom exercise'; } else { cr.classList.remove('show'); }
+    if (q.length > 0) { cr.classList.add('show'); cr.innerHTML = '✏ Add "'+esc(q)+'" as custom exercise'; } else { cr.classList.remove('show'); }
     var ql = q.toLowerCase(), h = '';
     var fc = WL.library.cardio.filter(function(e){ return !ql||e.name.toLowerCase().indexOf(ql)!==-1; });
     var fw = WL.library.weights.filter(function(e){ return !ql||e.name.toLowerCase().indexOf(ql)!==-1; });
     if (fc.length) {
-      h += '<div class="picker-group">\u{1F525} Cardio</div>';
-      fc.forEach(function(ex) { var a = added.indexOf(ex.name)!==-1; h += '<div class="picker-item'+(a?' added':'')+'" onclick="addExercise(\''+esc(ex.name)+'\',\'cardio\')"><div class="picker-item-name">'+esc(ex.name)+'</div><div class="picker-item-sub">'+ex.sets+' sets \u00b7 '+ex.target+' '+ex.unit+(ex.weight?' \u00b7 '+ex.weight+'kg':'')+'</div><div class="picker-plus">'+(a?'\u2713':'+')+'</div></div>'; });
+      h += '<div class="picker-group">🔥 Cardio</div>';
+      fc.forEach(function(ex) { var a = added.indexOf(ex.name)!==-1; h += '<div class="picker-item'+(a?' added':'')+'" onclick="addExercise(\''+esc(ex.name)+'\',\'cardio\')"><div class="picker-item-name">'+esc(ex.name)+'</div><div class="picker-item-sub">'+ex.sets+' sets · '+ex.target+' '+ex.unit+(ex.weight?' · '+ex.weight+'kg':'')+'</div><div class="picker-plus">'+(a?'✓':'+')+'</div></div>'; });
     }
     if (fw.length) {
-      h += '<div class="picker-group">\u{1F3CB} Weights</div>';
-      fw.forEach(function(ex) { var a = added.indexOf(ex.name)!==-1; h += '<div class="picker-item'+(a?' added':'')+'" onclick="addExercise(\''+esc(ex.name)+'\',\'weights\')"><div class="picker-item-name">'+esc(ex.name)+'</div><div class="picker-item-sub">'+ex.sets+' sets \u00b7 '+ex.target+' '+ex.unit+(ex.weight?' \u00b7 '+ex.weight+'kg':'')+'</div><div class="picker-plus">'+(a?'\u2713':'+')+'</div></div>'; });
+      h += '<div class="picker-group">🏋 Weights</div>';
+      fw.forEach(function(ex) { var a = added.indexOf(ex.name)!==-1; h += '<div class="picker-item'+(a?' added':'')+'" onclick="addExercise(\''+esc(ex.name)+'\',\'weights\')"><div class="picker-item-name">'+esc(ex.name)+'</div><div class="picker-item-sub">'+ex.sets+' sets · '+ex.target+' '+ex.unit+(ex.weight?' · '+ex.weight+'kg':'')+'</div><div class="picker-plus">'+(a?'✓':'+')+'</div></div>'; });
     }
-    if (!fc.length && !fw.length) h = '<div class="picker-empty">No matching exercises'+(q?' \u2014 use the option above to add as custom.':'.')+'</div>';
+    if (!fc.length && !fw.length) h = '<div class="picker-empty">No matching exercises'+(q?' — use the option above to add as custom.':'.')+'</div>';
     document.getElementById('picker-body').innerHTML = h;
   };
 
@@ -545,49 +445,6 @@ async function saveWorkoutSession(startTime, endTime, durationMinutes, exercises
     if (!q) return;
     WL.session.push({ name: q, type: 'custom', targetLabel: '', notes: '', sets: [makeSet('',''), makeSet('',''), makeSet('','')] });
     render(); closePicker();
-  };
-
-  window.openClassPicker = function() {
-    document.getElementById('class-overlay').classList.add('open');
-    document.getElementById('class-picker').classList.add('open');
-    document.getElementById('class-name').value = '';
-    document.getElementById('class-date').valueAsDate = new Date();
-    document.getElementById('class-duration').value = '60';
-    document.getElementById('class-name').focus();
-  };
-
-  window.closeClassPicker = function() {
-    document.getElementById('class-overlay').classList.remove('open');
-    document.getElementById('class-picker').classList.remove('open');
-  };
-
-  window.addGymClass = async function() {
-    var name = document.getElementById('class-name').value.trim();
-    var date = document.getElementById('class-date').value;
-    var duration = parseInt(document.getElementById('class-duration').value) || 60;
-
-    if (!name || !date) {
-      alert('Please fill in class name and date');
-      return;
-    }
-
-    try {
-      var { error } = await sb.from('gym_classes').insert({
-        name: name,
-        date: date,
-        duration_minutes: duration,
-        created_at: new Date().toISOString()
-      });
-
-      if (error) throw error;
-
-      closeClassPicker();
-      loadGymClasses();
-      alert('Class added!');
-    } catch (error) {
-      console.error('Error adding class:', error);
-      alert('Error adding class. Make sure gym_classes table exists.');
-    }
   };
 
   render();
