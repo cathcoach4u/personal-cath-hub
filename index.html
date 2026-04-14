@@ -129,21 +129,7 @@
   #cathHub .user-dot { width: 12px !important; height: 12px !important; border-radius: 50% !important; border: 2px solid #cbd5e1 !important; }
   #cathHub .user-option.selected .user-dot { background: #10b981 !important; border-color: #10b981 !important; }
 
-  /* ───── WORKOUT LOG ───── */
-  #cathHub .wl-date-bar { background: white !important; border: 1px solid #e2e8f0 !important; border-radius: 14px !important; padding: 18px 24px !important; display: flex !important; align-items: center !important; justify-content: space-between !important; margin-bottom: 16px !important; }
-  #cathHub .wl-date-label { font-size: 16px !important; font-weight: 700 !important; }
-  #cathHub .wl-date-sub { font-size: 13px !important; color: #64748b !important; margin-top: 2px !important; }
-  #cathHub .wl-ex-count { font-size: 13px !important; color: #64748b !important; }
-  #cathHub .wl-prog-wrap { margin-bottom: 20px !important; }
-  #cathHub .wl-prog-top { display: flex !important; justify-content: space-between !important; font-size: 13px !important; color: #64748b !important; margin-bottom: 6px !important; }
-  #cathHub .wl-prog-top strong { color: #1e293b !important; }
-  #cathHub .wl-prog-bar { height: 8px !important; background: #e2e8f0 !important; border-radius: 4px !important; overflow: hidden !important; }
-  #cathHub .wl-prog-fill { height: 100% !important; background: #3b82f6 !important; border-radius: 4px !important; transition: width 0.4s !important; }
-  #cathHub .wl-empty { background: white !important; border: 1px solid #e2e8f0 !important; border-radius: 14px !important; padding: 48px 24px !important; text-align: center !important; color: #94a3b8 !important; margin-bottom: 16px !important; }
-  #cathHub .wl-empty-icon { font-size: 40px !important; margin-bottom: 12px !important; }
-  #cathHub .wl-empty-text { font-size: 14px !important; }
-
-  /* Exercise cards */
+/* Exercise cards */
   #cathHub .wl-ex-card { background: white !important; border: 1px solid #e2e8f0 !important; border-radius: 14px !important; margin-bottom: 14px !important; overflow: hidden !important; }
   #cathHub .wl-ex-card.all-done { border-color: #10b981 !important; }
   #cathHub .wl-ex-top { padding: 16px 20px 12px !important; display: flex !important; align-items: flex-start !important; gap: 10px !important; }
@@ -787,45 +773,14 @@
     </div>
 
     <!-- ═══ AISLEMATE ═══ -->
-    <!-- ═══ WORKOUT LOG ═══ -->
+    <!-- ═══ WORKOUT BUDDY ═══ -->
     <div class="screen" id="ch-workout">
       <h2>&#x1F4AA; Workout Buddy</h2>
-
-      <div class="wl-date-bar">
-        <div>
-          <div class="wl-date-label" id="wl-date-label">Today</div>
-          <div class="wl-date-sub" id="wl-date-sub"></div>
-        </div>
-        <div class="wl-ex-count" id="wl-ex-count">0 exercises</div>
-      </div>
-
-      <div class="wl-prog-wrap">
-        <div class="wl-prog-top">
-          <span>Sets completed</span>
-          <strong id="wl-prog-label">0 / 0</strong>
-        </div>
-        <div class="wl-prog-bar"><div class="wl-prog-fill" id="wl-prog-fill" style="width:0%"></div></div>
-      </div>
-
-      <!-- Session Control -->
-      <div style="display:flex !important;gap:8px !important;margin-bottom:16px !important;">
-        <button class="wl-session-btn" id="wl-start-btn" onclick="wlStartSession()">▶ Start Session</button>
-        <button class="wl-session-btn finish" id="wl-finish-btn" onclick="wlFinishSession()" style="display:none !important;">✓ Finish Session</button>
-      </div>
-
-      <div id="wl-session-list"></div>
-
-      <button class="wl-add-btn" onclick="wlOpenPicker()">&#x2795; Add Exercise</button>
-
-      <!-- Quick Access Link -->
-      <div style="margin-top:16px !important;padding:14px 16px !important;background:#f8fafc !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;">
-        <div style="font-size:12px !important;font-weight:600 !important;color:#64748b !important;margin-bottom:6px !important;">&#x1F517; Quick Access Link</div>
-        <div style="font-size:12px !important;color:#94a3b8 !important;margin-bottom:8px !important;">Open workout buddy without logging in</div>
-        <div style="display:flex !important;gap:8px !important;align-items:center !important;">
-          <input type="text" readonly id="wl-quick-link" style="flex:1 !important;padding:8px 10px !important;border:1px solid #e2e8f0 !important;border-radius:6px !important;font-size:11px !important;color:#475569 !important;background:white !important;">
-          <button class="am-btn" onclick="(function(){var i=document.getElementById('wl-quick-link');i.select();document.execCommand('copy');alert('Link copied!')})()" style="padding:8px 12px !important;font-size:12px !important;white-space:nowrap !important;">Copy</button>
-        </div>
-      </div>
+      <a href="./workout.html" style="display:block !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:12px !important;padding:24px 16px !important;text-align:center !important;text-decoration:none !important;">
+        <div style="font-size:48px !important;margin-bottom:12px !important;">🏋️</div>
+        <div style="font-size:16px !important;font-weight:700 !important;color:#1e293b !important;margin-bottom:6px !important;">Open Workout Buddy</div>
+        <div style="font-size:13px !important;color:#94a3b8 !important;">Track exercises, sets, and workout sessions</div>
+      </a>
     </div>
 
     <!-- ═══ MEDICAL ═══ -->
@@ -2123,8 +2078,6 @@
   var baseUrl = window.location.origin + '/personal-cath-hub/';
   var amLink = document.getElementById('am-quick-link');
   if (amLink) amLink.value = baseUrl + 'shopping.html?add=Item+name';
-  var wlLink = document.getElementById('wl-quick-link');
-  if (wlLink) wlLink.value = baseUrl + 'workout.html';
 
   // ─── AISLEMATE (from Supabase) ───
   var CAT_ICONS = {'Fruit & Veg':'&#x1F96C;','Meat':'&#x1F969;','Dairy':'&#x1F95B;','Pantry':'&#x1F96B;','Frozen':'&#x2744;','Drinks':'&#x1F964;','Household':'&#x1F9F9;','Other':'&#x1F4E6;'};
@@ -2830,260 +2783,6 @@
 
   amLoadItems();
   amLoadReceipts();
-
-  // ─── WORKOUT LOG ───
-  var WL = {
-    library: {
-      cardio: [
-        {name:'SkiErg',       sets:3, target:'250', unit:'m',        weight:null,  notes:'Continuous pull \u00b7 full range'},
-        {name:'Air Bike',     sets:3, target:'60',  unit:'sec',      weight:null,  notes:'Push & pull \u00b7 max effort'},
-        {name:'Rower',        sets:3, target:'200', unit:'m',        weight:null,  notes:'Strong leg drive \u00b7 smooth stroke'},
-        {name:'Ball Slams',   sets:3, target:'12',  unit:'reps',     weight:'12',  notes:'12kg ball \u00b7 slam with force'},
-        {name:'Battle Ropes', sets:1, target:'50',  unit:'reps',     weight:null,  notes:'Both ropes \u00b7 full body up & down'},
-        {name:'Lunges',       sets:1, target:'8\u20132', unit:'each leg', weight:'7', notes:'Dumbbells 6\u20137kg \u00b7 controlled step'}
-      ],
-      weights: [
-        {name:'Squat and Row',       sets:3, target:'8',  unit:'reps', weight:null,  notes:'Lower into squat row as you rise. Squeeze shoulder blades together at top.'},
-        {name:'Bench Push-Ups',      sets:3, target:'10', unit:'reps', weight:null,  notes:'Hands on bench feet on floor. Keep hips down body in straight line.'},
-        {name:'Hip Thruster',        sets:3, target:'10', unit:'reps', weight:'20',  notes:'Glute drive machine \u00b7 10kg each end. Drive through heels.'},
-        {name:'Leg Press',           sets:3, target:'12', unit:'reps', weight:'100', notes:'50kg each end. Back flat against pad feet shoulder-width. Lower until knees at 90\u00b0.'},
-        {name:'Smith Machine Bench', sets:3, target:'8',  unit:'reps', weight:'26',  notes:'7kg each end + 12kg bar. Grip slightly wider than shoulders. Lower to mid-chest.'},
-        {name:'Lunge',               sets:3, target:'20', unit:'reps', weight:'16',  notes:'8kg dumbbell each hand. Step forward into lunge lower back knee to floor. Alternate legs.'},
-        {name:'Pull Down',           sets:3, target:'8',  unit:'reps', weight:'30',  notes:'Hammer strength \u00b7 15kg each side. Pull down smoothly to upper chest.'},
-        {name:'Side Planks',         sets:3, target:'45', unit:'sec',  weight:null,  notes:'45 seconds each side. Elbow under shoulder body in straight line.'}
-      ]
-    },
-    session: [],
-
-    getExByName: function(name) {
-      var all = WL.library.cardio.concat(WL.library.weights);
-      return all.find(function(e){ return e.name === name; }) || null;
-    },
-    getTypeByName: function(name) {
-      if (WL.library.cardio.find(function(e){ return e.name === name; })) return 'cardio';
-      if (WL.library.weights.find(function(e){ return e.name === name; })) return 'weights';
-      return 'custom';
-    },
-    addedNames: function() {
-      return WL.session.map(function(s){ return s.name; });
-    }
-  };
-
-  // Set date
-  (function(){
-    var now = new Date();
-    var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-    var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    document.getElementById('wl-date-label').textContent = 'Today\u2019s Workout';
-    document.getElementById('wl-date-sub').textContent = days[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
-  })();
-
-  function wlMakeSet(weight, reps) {
-    return {weight: weight || '', reps: reps || '', done: false};
-  }
-
-  var wlSessionActive = false;
-  var wlSessionStartTime = null;
-
-  window.wlStartSession = function() {
-    wlSessionActive = true;
-    wlSessionStartTime = new Date();
-    document.getElementById('wl-start-btn').style.display = 'none';
-    document.getElementById('wl-finish-btn').style.display = 'flex';
-    alert('Workout session started! 💪');
-  };
-
-  window.wlFinishSession = function() {
-    if (!wlSessionActive) return;
-    wlSessionActive = false;
-    var endTime = new Date();
-    var duration = Math.round((endTime - wlSessionStartTime) / 60000); // minutes
-    document.getElementById('wl-start-btn').style.display = 'flex';
-    document.getElementById('wl-finish-btn').style.display = 'none';
-    alert('Workout finished! ✓\nDuration: ' + duration + ' minutes');
-  };
-
-  window.wlAddExercise = function(name, type) {
-    if (WL.addedNames().indexOf(name) !== -1) { wlClosePicker(); return; }
-    var ex = WL.getExByName(name);
-    var sets = [];
-    var numSets = ex ? ex.sets : 3;
-    for (var i = 0; i < numSets; i++) {
-      sets.push(wlMakeSet(ex ? (ex.weight || '') : '', ex ? ex.target : ''));
-    }
-    WL.session.push({
-      name: name,
-      type: type || WL.getTypeByName(name),
-      targetLabel: ex ? (ex.sets + ' \u00d7 ' + ex.target + ' ' + ex.unit + (ex.weight ? ' \u00b7 ' + ex.weight + 'kg' : '')) : '',
-      notes: ex ? ex.notes : '',
-      sets: sets
-    });
-    wlRender();
-    wlClosePicker();
-  };
-
-  window.wlRemoveEx = function(idx) {
-    WL.session.splice(idx, 1);
-    wlRender();
-  };
-
-  window.wlAddSet = function(idx) {
-    var ex = WL.session[idx];
-    var last = ex.sets[ex.sets.length - 1] || {};
-    ex.sets.push(wlMakeSet(last.weight, last.reps));
-    wlRender();
-  };
-
-  window.wlTickSet = function(exIdx, setIdx) {
-    WL.session[exIdx].sets[setIdx].done = !WL.session[exIdx].sets[setIdx].done;
-    wlRender();
-  };
-
-  window.wlSetField = function(exIdx, setIdx, field, val) {
-    WL.session[exIdx].sets[setIdx][field] = val;
-    wlUpdateProgress();
-  };
-
-  function wlRender() {
-    var container = document.getElementById('wl-session-list');
-    if (!WL.session.length) {
-      container.innerHTML = '<div class="wl-empty"><div class="wl-empty-icon">&#x1F3CB;</div><div class="wl-empty-text">Tap <strong>Add Exercise</strong> to start logging today\u2019s workout</div></div>';
-      document.getElementById('wl-ex-count').textContent = '0 exercises';
-      wlUpdateProgress();
-      return;
-    }
-    var html = '';
-    WL.session.forEach(function(ex, idx) {
-      var allDone = ex.sets.length > 0 && ex.sets.every(function(s){ return s.done; });
-      html += '<div class="wl-ex-card' + (allDone ? ' all-done' : '') + '">';
-
-      // Header
-      html += '<div class="wl-ex-top">';
-      html += '<div class="wl-ex-info">';
-      html += '<div class="wl-ex-name">' + esc(ex.name) + '</div>';
-      html += '<div class="wl-ex-meta">';
-      html += '<span class="wl-type-badge ' + ex.type + '">' + (ex.type === 'cardio' ? '&#x1F525; Cardio' : ex.type === 'weights' ? '&#x1F3CB; Weights' : '&#x270F; Custom') + '</span>';
-      if (ex.targetLabel) html += '<span class="wl-ex-target-text">Target: ' + esc(ex.targetLabel) + '</span>';
-      html += '</div></div>';
-      html += '<button class="wl-ex-remove" onclick="wlRemoveEx(' + idx + ')" title="Remove">&#x2715;</button>';
-      html += '</div>';
-
-      // Sets
-      html += '<div class="wl-sets-wrap">';
-      html += '<div class="wl-sets-head"><span>Set</span><span>Weight&nbsp;(kg)</span><span>Reps&nbsp;/&nbsp;Amt</span><span></span></div>';
-      ex.sets.forEach(function(set, si) {
-        html += '<div class="wl-set-row' + (set.done ? ' done' : '') + '">';
-        html += '<div class="wl-set-num">' + (si + 1) + '</div>';
-        html += '<input class="wl-set-input" type="text" inputmode="decimal" value="' + esc(set.weight) + '" placeholder="\u2014" onchange="wlSetField(' + idx + ',' + si + ',\'weight\',this.value)">';
-        html += '<input class="wl-set-input" type="text" inputmode="decimal" value="' + esc(set.reps) + '" placeholder="\u2014" onchange="wlSetField(' + idx + ',' + si + ',\'reps\',this.value)">';
-        html += '<div class="wl-set-tick' + (set.done ? ' done' : '') + '" onclick="wlTickSet(' + idx + ',' + si + ')"></div>';
-        html += '</div>';
-      });
-      html += '<button class="wl-add-set-btn" onclick="wlAddSet(' + idx + ')">+ Add Set</button>';
-      html += '</div>';
-
-      if (ex.notes) {
-        html += '<div class="wl-notes-strip">&#x1F4AC; ' + esc(ex.notes) + '</div>';
-      }
-      html += '</div>';
-    });
-    container.innerHTML = html;
-    document.getElementById('wl-ex-count').textContent = WL.session.length + ' exercise' + (WL.session.length !== 1 ? 's' : '');
-    wlUpdateProgress();
-  }
-
-  function wlUpdateProgress() {
-    var total = 0, done = 0;
-    WL.session.forEach(function(ex){ ex.sets.forEach(function(s){ total++; if(s.done) done++; }); });
-    var pct = total ? Math.round((done/total)*100) : 0;
-    document.getElementById('wl-prog-fill').style.width = pct + '%';
-    document.getElementById('wl-prog-label').textContent = done + ' / ' + total;
-  }
-
-  function esc(str) {
-    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
-  // Picker
-  window.wlOpenPicker = function() {
-    document.getElementById('wl-overlay').classList.add('open');
-    document.getElementById('wl-picker').classList.add('open');
-    var s = document.getElementById('wl-search');
-    s.value = '';
-    wlFilterPicker('');
-    setTimeout(function(){ s.focus(); }, 300);
-  };
-
-  window.wlClosePicker = function() {
-    document.getElementById('wl-overlay').classList.remove('open');
-    document.getElementById('wl-picker').classList.remove('open');
-  };
-
-  window.wlFilterPicker = function(q) {
-    q = (q || '').trim();
-    var added = WL.addedNames();
-    var customRow = document.getElementById('wl-custom-row');
-
-    // Show custom row if there's a query
-    if (q.length > 0) {
-      customRow.classList.add('show');
-      customRow.innerHTML = '&#x270F; Add &ldquo;' + esc(q) + '&rdquo; as custom exercise';
-    } else {
-      customRow.classList.remove('show');
-    }
-
-    var ql = q.toLowerCase();
-    var html = '';
-
-    var fc = WL.library.cardio.filter(function(e){ return !ql || e.name.toLowerCase().indexOf(ql) !== -1; });
-    var fw = WL.library.weights.filter(function(e){ return !ql || e.name.toLowerCase().indexOf(ql) !== -1; });
-
-    if (fc.length) {
-      html += '<div class="wl-picker-group-label">&#x1F525; Cardio</div>';
-      fc.forEach(function(ex) {
-        var isAdded = added.indexOf(ex.name) !== -1;
-        html += '<div class="wl-picker-item' + (isAdded ? ' already-added' : '') + '" onclick="wlAddExercise(\'' + esc(ex.name) + '\',\'cardio\')">';
-        html += '<div class="wl-picker-item-name">' + esc(ex.name) + '</div>';
-        html += '<div class="wl-picker-item-sub">' + ex.sets + ' sets \u00b7 ' + ex.target + ' ' + ex.unit + (ex.weight ? ' \u00b7 ' + ex.weight + 'kg' : '') + '</div>';
-        html += '<div class="wl-picker-plus">' + (isAdded ? '&#x2713;' : '+') + '</div>';
-        html += '</div>';
-      });
-    }
-
-    if (fw.length) {
-      html += '<div class="wl-picker-group-label">&#x1F3CB; Weights</div>';
-      fw.forEach(function(ex) {
-        var isAdded = added.indexOf(ex.name) !== -1;
-        html += '<div class="wl-picker-item' + (isAdded ? ' already-added' : '') + '" onclick="wlAddExercise(\'' + esc(ex.name) + '\',\'weights\')">';
-        html += '<div class="wl-picker-item-name">' + esc(ex.name) + '</div>';
-        html += '<div class="wl-picker-item-sub">' + ex.sets + ' sets \u00b7 ' + ex.target + ' ' + ex.unit + (ex.weight ? ' \u00b7 ' + ex.weight + 'kg' : '') + '</div>';
-        html += '<div class="wl-picker-plus">' + (isAdded ? '&#x2713;' : '+') + '</div>';
-        html += '</div>';
-      });
-    }
-
-    if (!fc.length && !fw.length) {
-      html = '<div class="wl-picker-empty">No matching exercises' + (q ? ' \u2014 use the option above to add as custom.' : '.') + '</div>';
-    }
-
-    document.getElementById('wl-picker-body').innerHTML = html;
-  };
-
-  window.wlAddCustomFromSearch = function() {
-    var q = document.getElementById('wl-search').value.trim();
-    if (!q) return;
-    WL.session.push({
-      name: q,
-      type: 'custom',
-      targetLabel: '',
-      notes: '',
-      sets: [wlMakeSet('',''), wlMakeSet('',''), wlMakeSet('','')]
-    });
-    wlRender();
-    wlClosePicker();
-  };
-
-  wlRender();
 
   // ─── MEDICAL NAVIGATION ───
   // Shared lock to prevent double-recording from dashboard + habits page
