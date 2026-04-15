@@ -590,13 +590,13 @@
 </div>
 
 <div id="cathHub">
-  <div class="version-badge">Cath Hub v4.35</div>
+  <div class="version-badge">Cath Hub v4.36</div>
 
   <!-- Mobile top bar -->
   <div class="mobile-top-bar">
     <button class="hamburger-btn" onclick="toggleMobileNav()" aria-label="Menu">&#x2630;</button>
     <h1>&#x1F3E0; Cath Hub</h1>
-    <div style="font-size:10px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:4px 8px !important;border-radius:99px !important;">v4.35</div>
+    <div style="font-size:10px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:4px 8px !important;border-radius:99px !important;">v4.36</div>
   </div>
 
   <!-- Mobile slide-out drawer -->
@@ -638,7 +638,7 @@
     <button class="nav-item" onclick="chNav('about',this)"><span class="icon">&#x2139;&#xFE0F;</span> About</button>
     <div class="sidebar-footer">
       <div style="display:flex !important;align-items:center !important;gap:6px !important;margin-bottom:8px !important;">
-        <div style="font-size:10px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:2px 8px !important;border-radius:99px !important;">v4.35</div>
+        <div style="font-size:10px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:2px 8px !important;border-radius:99px !important;">v4.36</div>
       </div>
       <div style="display:flex !important;align-items:center !important;gap:6px !important;margin-bottom:6px !important;">
         <span style="font-size:12px !important;color:rgba(255,255,255,0.5) !important;">&#x1F319;</span>
@@ -1146,29 +1146,66 @@
           </div>
         </div>
 
-        <!-- Session Tracker Table -->
-        <div class="med-section">
-          <div class="med-section-header"><h3 style="font-size:14px !important;">Session Tracker (Medicare Claims)</h3></div>
-          <div style="overflow-x:auto !important;padding:0 !important;">
-            <table class="med-table" style="font-size:12px !important;">
-              <thead>
-                <tr><th>#</th><th>Date</th><th>Provider</th><th>Type</th><th>Item</th><th>Benefit</th></tr>
-              </thead>
-              <tbody>
-                <tr><td>1</td><td>21 Oct 2025</td><td>Tamsen</td><td>Chiropractic</td><td>10964</td><td>$90.55</td></tr>
-                <tr><td>2</td><td>10 Nov 2025</td><td>Tamsen</td><td>Chiropractic</td><td>10964</td><td>$90.55</td></tr>
-                <tr><td>3</td><td>17 Nov 2025</td><td>Tamsen</td><td>Psychology</td><td>10968</td><td>$254.55</td></tr>
-                <tr><td>4</td><td>01 Dec 2025</td><td>Tamsen</td><td>Psychology</td><td>10968</td><td>$254.55</td></tr>
-                <tr><td>5</td><td>15 Dec 2025</td><td>Tamsen</td><td>Psychology</td><td>10968</td><td>$254.55</td></tr>
-                <tr><td>6</td><td>31 Oct 2025</td><td>Amanda</td><td>Psychology</td><td>80110</td><td>$219.30</td></tr>
-                <tr style="background:#fef3c7 !important;"><td>7</td><td>19 Jan 2026</td><td>Tamsen</td><td>Psychology (Video)</td><td>91167</td><td style="color:#92400e !important;font-weight:600 !important;">$145.25</td></tr>
-                <tr style="background:#fef3c7 !important;"><td>8</td><td>02 Feb 2026</td><td>Tamsen</td><td>Psychology (Video)</td><td>91167</td><td style="color:#92400e !important;font-weight:600 !important;">$145.25</td></tr>
-                <tr style="background:#fef3c7 !important;"><td>9</td><td>06 Feb 2026</td><td>Amanda</td><td>Psychology</td><td>80110</td><td style="color:#92400e !important;font-weight:600 !important;">$98.95</td></tr>
-                <tr style="background:#fef3c7 !important;"><td>10</td><td>16 Feb 2026</td><td>Tamsen</td><td>Psychology (Video)</td><td>91167</td><td style="color:#92400e !important;font-weight:600 !important;">$145.25</td></tr>
-                <tr style="color:#16a34a !important;"><td>11</td><td>06 Mar 2026</td><td>Tamsen</td><td>Psychology (Video)</td><td>91167</td><td style="font-weight:600 !important;">$145.25</td></tr>
-                <tr style="color:#16a34a !important;"><td>12</td><td>23 Mar 2026</td><td>Tamsen</td><td>Psychology (Video)</td><td>91167</td><td style="font-weight:600 !important;">$145.25</td></tr>
-              </tbody>
-            </table>
+        <!-- Session Tracker -->
+        <div style="margin-bottom:12px !important;">
+          <div style="display:flex !important;justify-content:space-between !important;align-items:center !important;margin-bottom:12px !important;">
+            <div style="font-size:12px !important;font-weight:700 !important;text-transform:uppercase !important;color:#7c3aed !important;">Session Tracker</div>
+            <button onclick="medOpenAddSession()" style="background:#0d9488 !important;color:white !important;border:none !important;border-radius:6px !important;padding:6px 12px !important;font-size:12px !important;cursor:pointer !important;font-weight:600 !important;">+ Add Session</button>
+          </div>
+
+          <!-- 2026 Sessions -->
+          <div class="med-section" style="margin-bottom:10px !important;cursor:pointer !important;" onclick="medToggleSessionYear(this)">
+            <div style="padding:14px 16px !important;display:flex !important;justify-content:space-between !important;align-items:center !important;">
+              <div>
+                <div style="font-size:14px !important;font-weight:700 !important;color:#166534 !important;">2026 Sessions</div>
+                <div style="font-size:12px !important;color:#15803d !important;margin-top:4px !important;" id="mh-2026-count">6 sessions</div>
+              </div>
+              <span style="font-size:16px !important;color:#94a3b8 !important;">▼</span>
+            </div>
+            <div style="display:none !important;padding:0 16px 14px !important;border-top:1px solid #e2e8f0 !important;padding-top:14px !important;" id="mh-2026-list"></div>
+          </div>
+
+          <!-- 2025 Sessions -->
+          <div class="med-section" style="margin-bottom:10px !important;cursor:pointer !important;" onclick="medToggleSessionYear(this)">
+            <div style="padding:14px 16px !important;display:flex !important;justify-content:space-between !important;align-items:center !important;">
+              <div>
+                <div style="font-size:14px !important;font-weight:700 !important;color:#64748b !important;">2025 Sessions</div>
+                <div style="font-size:12px !important;color:#64748b !important;margin-top:4px !important;" id="mh-2025-count">6 sessions</div>
+              </div>
+              <span style="font-size:16px !important;color:#94a3b8 !important;">▼</span>
+            </div>
+            <div style="display:none !important;padding:0 16px 14px !important;border-top:1px solid #e2e8f0 !important;padding-top:14px !important;" id="mh-2025-list"></div>
+          </div>
+        </div>
+
+        <!-- Add Session Modal -->
+        <div id="med-add-session-modal" style="display:none !important;position:fixed !important;top:0 !important;left:0 !important;right:0 !important;bottom:0 !important;background:rgba(0,0,0,0.5) !important;z-index:9999 !important;padding:20px !important;overflow-y:auto !important;">
+          <div style="background:white !important;border-radius:10px !important;padding:20px !important;max-width:500px !important;margin:40px auto !important;box-shadow:0 4px 12px rgba(0,0,0,0.15) !important;">
+            <div style="font-size:16px !important;font-weight:700 !important;margin-bottom:16px !important;">Add Mental Health Session</div>
+            <div style="margin-bottom:12px !important;">
+              <div style="font-size:12px !important;font-weight:700 !important;color:#64748b !important;margin-bottom:6px !important;">Date</div>
+              <input type="date" id="med-session-date" style="width:100% !important;padding:10px !important;border:1px solid #e2e8f0 !important;border-radius:6px !important;font-size:13px !important;box-sizing:border-box !important;">
+            </div>
+            <div style="margin-bottom:12px !important;">
+              <div style="font-size:12px !important;font-weight:700 !important;color:#64748b !important;margin-bottom:6px !important;">Provider</div>
+              <input type="text" id="med-session-provider" placeholder="e.g., Tamsen, Amanda" style="width:100% !important;padding:10px !important;border:1px solid #e2e8f0 !important;border-radius:6px !important;font-size:13px !important;box-sizing:border-box !important;">
+            </div>
+            <div style="margin-bottom:12px !important;">
+              <div style="font-size:12px !important;font-weight:700 !important;color:#64748b !important;margin-bottom:6px !important;">Type</div>
+              <input type="text" id="med-session-type" placeholder="e.g., Psychology, Chiropractic" style="width:100% !important;padding:10px !important;border:1px solid #e2e8f0 !important;border-radius:6px !important;font-size:13px !important;box-sizing:border-box !important;">
+            </div>
+            <div style="margin-bottom:12px !important;">
+              <div style="font-size:12px !important;font-weight:700 !important;color:#64748b !important;margin-bottom:6px !important;">Medicare Item</div>
+              <input type="text" id="med-session-item" placeholder="e.g., 91167" style="width:100% !important;padding:10px !important;border:1px solid #e2e8f0 !important;border-radius:6px !important;font-size:13px !important;box-sizing:border-box !important;">
+            </div>
+            <div style="margin-bottom:16px !important;">
+              <div style="font-size:12px !important;font-weight:700 !important;color:#64748b !important;margin-bottom:6px !important;">Medicare Benefit</div>
+              <input type="text" id="med-session-benefit" placeholder="e.g., $145.25" style="width:100% !important;padding:10px !important;border:1px solid #e2e8f0 !important;border-radius:6px !important;font-size:13px !important;box-sizing:border-box !important;">
+            </div>
+            <div style="display:flex !important;gap:10px !important;justify-content:flex-end !important;">
+              <button onclick="medCloseAddSession()" style="background:#f1f5f9 !important;color:#1e293b !important;border:1px solid #e2e8f0 !important;padding:10px 16px !important;border-radius:6px !important;cursor:pointer !important;font-weight:600 !important;">Cancel</button>
+              <button onclick="medSaveSession()" style="background:#0d9488 !important;color:white !important;border:none !important;padding:10px 16px !important;border-radius:6px !important;cursor:pointer !important;font-weight:600 !important;">Save Session</button>
+            </div>
           </div>
         </div>
       </div>
@@ -1806,7 +1843,7 @@
       <!-- Version -->
       <div style="background:#ecfdf5 !important;border:1px solid #d1fae5 !important;border-radius:10px !important;padding:14px 16px !important;margin-bottom:16px !important;display:flex !important;align-items:center !important;justify-content:space-between !important;">
         <div style="font-size:13px !important;color:#065f46 !important;"><strong>Current version</strong></div>
-        <div style="font-size:12px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:2px 10px !important;border-radius:99px !important;">v4.35</div>
+        <div style="font-size:12px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:2px 10px !important;border-radius:99px !important;">v4.36</div>
       </div>
 
       <!-- Overview -->
@@ -3611,6 +3648,134 @@
       detailsDiv.style.setProperty('display', isHidden ? 'block' : 'none', 'important');
       var chevron = el.querySelector('span[style*="color:#94a3b8"]');
       if (chevron) chevron.textContent = isHidden ? '▲' : '▼';
+    }
+  };
+
+  window.medToggleSessionYear = function(el) {
+    var detailsDiv = el.nextElementSibling;
+    if (detailsDiv) {
+      var isHidden = detailsDiv.style.display === 'none' || !detailsDiv.style.display;
+      detailsDiv.style.setProperty('display', isHidden ? 'block' : 'none', 'important');
+      var chevron = el.querySelector('span[style*="color:#94a3b8"]');
+      if (chevron) chevron.textContent = isHidden ? '▲' : '▼';
+    }
+  };
+
+  window.medOpenAddSession = function() {
+    var modal = document.getElementById('med-add-session-modal');
+    var today = new Date().toISOString().split('T')[0];
+    document.getElementById('med-session-date').value = today;
+    document.getElementById('med-session-provider').value = '';
+    document.getElementById('med-session-type').value = '';
+    document.getElementById('med-session-item').value = '';
+    document.getElementById('med-session-benefit').value = '';
+    modal.style.setProperty('display', 'block', 'important');
+  };
+
+  window.medCloseAddSession = function() {
+    var modal = document.getElementById('med-add-session-modal');
+    modal.style.setProperty('display', 'none', 'important');
+  };
+
+  window.medSaveSession = async function() {
+    var date = document.getElementById('med-session-date').value;
+    var provider = document.getElementById('med-session-provider').value.trim();
+    var type = document.getElementById('med-session-type').value.trim();
+    var item = document.getElementById('med-session-item').value.trim();
+    var benefit = document.getElementById('med-session-benefit').value.trim();
+    if (!date || !provider || !type || !item || !benefit) {
+      alert('Please fill in all fields');
+      return;
+    }
+    var year = parseInt(date.split('-')[0]);
+    var { error } = await sb.from('mental_health_sessions').insert([{
+      date: date,
+      provider: provider,
+      type: type,
+      medicare_item: item,
+      benefit: benefit,
+      year: year
+    }]);
+    if (error) {
+      alert('Error saving session: ' + error.message);
+      return;
+    }
+    medCloseAddSession();
+    await loadMHPSessions();
+    updateMHPStats();
+  };
+
+  async function loadMHPSessions() {
+    var { data: sessions } = await sb.from('mental_health_sessions').select('*').order('date', { ascending: false });
+    sessions = sessions || [];
+    var sessions2026 = sessions.filter(function(s){ return s.year === 2026; });
+    var sessions2025 = sessions.filter(function(s){ return s.year === 2025; });
+
+    document.getElementById('mh-2026-count').textContent = sessions2026.length + ' session' + (sessions2026.length !== 1 ? 's' : '');
+    document.getElementById('mh-2025-count').textContent = sessions2025.length + ' session' + (sessions2025.length !== 1 ? 's' : '');
+
+    var html2026 = '';
+    sessions2026.forEach(function(s, i) {
+      html2026 += '<div style="padding:10px 0 !important;border-bottom:1px solid #f1f5f9 !important;display:grid !important;grid-template-columns:1fr 1fr !important;gap:6px 12px !important;font-size:12px !important;">';
+      html2026 += '<div style="color:#64748b !important;">Date</div><div style="font-weight:600 !important;">' + s.date + '</div>';
+      html2026 += '<div style="color:#64748b !important;">Provider</div><div style="font-weight:600 !important;">' + s.provider + '</div>';
+      html2026 += '<div style="color:#64748b !important;">Type</div><div style="font-weight:600 !important;">' + s.type + '</div>';
+      html2026 += '<div style="color:#64748b !important;">Item</div><div style="font-weight:600 !important;">' + s.medicare_item + '</div>';
+      html2026 += '<div style="color:#64748b !important;">Benefit</div><div style="font-weight:600 !important;color:#16a34a !important;">' + s.benefit + '</div>';
+      html2026 += '<div style="grid-column:1/-1 !important;"><button onclick="medDeleteSession(' + s.id + ')" style="background:#fee2e2 !important;color:#dc2626 !important;border:none !important;padding:6px 10px !important;border-radius:4px !important;cursor:pointer !important;font-size:11px !important;">Delete</button></div>';
+      html2026 += '</div>';
+    });
+    if (!sessions2026.length) html2026 = '<div style="color:#94a3b8 !important;font-size:12px !important;padding:10px 0 !important;">No sessions yet for 2026</div>';
+    document.getElementById('mh-2026-list').innerHTML = html2026;
+
+    var html2025 = '';
+    sessions2025.forEach(function(s, i) {
+      html2025 += '<div style="padding:10px 0 !important;border-bottom:1px solid #f1f5f9 !important;display:grid !important;grid-template-columns:1fr 1fr !important;gap:6px 12px !important;font-size:12px !important;">';
+      html2025 += '<div style="color:#64748b !important;">Date</div><div style="font-weight:600 !important;">' + s.date + '</div>';
+      html2025 += '<div style="color:#64748b !important;">Provider</div><div style="font-weight:600 !important;">' + s.provider + '</div>';
+      html2025 += '<div style="color:#64748b !important;">Type</div><div style="font-weight:600 !important;">' + s.type + '</div>';
+      html2025 += '<div style="color:#64748b !important;">Item</div><div style="font-weight:600 !important;">' + s.medicare_item + '</div>';
+      html2025 += '<div style="color:#64748b !important;">Benefit</div><div style="font-weight:600 !important;">' + s.benefit + '</div>';
+      html2025 += '<div style="grid-column:1/-1 !important;"><button onclick="medDeleteSession(' + s.id + ')" style="background:#fee2e2 !important;color:#dc2626 !important;border:none !important;padding:6px 10px !important;border-radius:4px !important;cursor:pointer !important;font-size:11px !important;">Delete</button></div>';
+      html2025 += '</div>';
+    });
+    if (!sessions2025.length) html2025 = '<div style="color:#94a3b8 !important;font-size:12px !important;padding:10px 0 !important;">No sessions yet for 2025</div>';
+    document.getElementById('mh-2025-list').innerHTML = html2025;
+  }
+
+  window.medDeleteSession = async function(id) {
+    if (!confirm('Delete this session?')) return;
+    var { error } = await sb.from('mental_health_sessions').delete().eq('id', id);
+    if (error) {
+      alert('Error deleting session: ' + error.message);
+      return;
+    }
+    await loadMHPSessions();
+    updateMHPStats();
+  };
+
+  function updateMHPStats() {
+    var sessionsUsed = (document.getElementById('mh-2026-count').textContent.match(/\d+/) || [0])[0];
+    var remaining = 10 - parseInt(sessionsUsed);
+    var statsDiv = document.querySelector('[style*="grid-template-columns:1fr 1fr"][style*="#dcfce7"]');
+    if (statsDiv) {
+      var remainingEl = statsDiv.querySelector('div:first-child');
+      if (remainingEl && remainingEl.querySelector('div:first-child')) {
+        remainingEl.querySelector('div:first-child').textContent = remaining;
+      }
+    }
+    var sessionsAllocated = document.querySelector('[style*="Sessions allocated"]');
+    if (sessionsAllocated && sessionsAllocated.nextElementSibling) {
+      sessionsAllocated.nextElementSibling.textContent = sessionsUsed + ' used of 10/year, ' + remaining + ' remaining';
+    }
+  }
+
+  // Load sessions when viewing Mental Health Plan
+  window._origMedGo2 = window.medGo;
+  window.medGo = function(sub) {
+    window._origMedGo2(sub);
+    if (sub === 'mhplan') {
+      setTimeout(function() { loadMHPSessions(); }, 100);
     }
   };
 
