@@ -594,7 +594,7 @@
 <div id="cathHub">
   <div style="position:fixed !important;top:16px !important;right:16px !important;display:flex !important;flex-direction:column !important;align-items:flex-end !important;gap:4px !important;z-index:10 !important;">
     <div class="version-badge">Cath Hub v4.56</div>
-    <div id="today-date-badge" style="font-size:11px !important;font-weight:600 !important;color:#1e293b !important;background:#f1f5f9 !important;padding:3px 8px !important;border-radius:6px !important;border:1px solid #cbd5e1 !important;min-height:16px !important;display:flex !important;align-items:center !important;"></div>
+    <div id="today-date-badge" style="font-size:11px !important;font-weight:600 !important;color:#1e293b !important;background:#f1f5f9 !important;padding:3px 8px !important;border-radius:6px !important;border:1px solid #cbd5e1 !important;min-height:16px !important;display:flex !important;align-items:center !important;white-space:nowrap !important;">--/--/----</div>
   </div>
 
   <!-- Mobile top bar -->
@@ -7558,15 +7558,14 @@
     }
   }
   populateDateBadge();
-  // Also set up interval to refresh date at midnight
-  setTimeout(function() {
+  document.addEventListener('visibilitychange', populateDateBadge);
+  // Refresh date at midnight
+  setInterval(function() {
     var now = new Date();
-    var tomorrow = new Date(now);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    tomorrow.setHours(0, 0, 0, 0);
-    var msUntilMidnight = tomorrow.getTime() - now.getTime();
-    setTimeout(populateDateBadge, msUntilMidnight);
-  }, 1000);
+    if (now.getHours() === 0 && now.getMinutes() === 0) {
+      populateDateBadge();
+    }
+  }, 60000);
 
 })();
 </script>
