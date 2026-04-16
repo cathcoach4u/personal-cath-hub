@@ -590,13 +590,13 @@
 </div>
 
 <div id="cathHub">
-  <div class="version-badge">Cath Hub v4.46</div>
+  <div class="version-badge">Cath Hub v4.47</div>
 
   <!-- Mobile top bar -->
   <div class="mobile-top-bar">
     <button class="hamburger-btn" onclick="toggleMobileNav()" aria-label="Menu">&#x2630;</button>
     <h1>&#x1F3E0; Cath Hub</h1>
-    <div style="font-size:10px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:4px 8px !important;border-radius:99px !important;">v4.46</div>
+    <div style="font-size:10px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:4px 8px !important;border-radius:99px !important;">v4.47</div>
   </div>
 
   <!-- Mobile slide-out drawer -->
@@ -638,7 +638,7 @@
     <button class="nav-item" onclick="chNav('about',this)"><span class="icon">&#x2139;&#xFE0F;</span> About</button>
     <div class="sidebar-footer">
       <div style="display:flex !important;align-items:center !important;gap:6px !important;margin-bottom:8px !important;">
-        <div style="font-size:10px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:2px 8px !important;border-radius:99px !important;">v4.46</div>
+        <div style="font-size:10px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:2px 8px !important;border-radius:99px !important;">v4.47</div>
       </div>
       <div style="display:flex !important;align-items:center !important;gap:6px !important;margin-bottom:6px !important;">
         <span style="font-size:12px !important;color:rgba(255,255,255,0.5) !important;">&#x1F319;</span>
@@ -1586,6 +1586,15 @@
           <div id="hab-morning-list" style="display:none !important;"></div>
         </div>
 
+        <!-- DAILY MIDDAY Medications -->
+        <div class="hab-section" style="margin-bottom:10px !important;">
+          <div class="hab-section-header" style="padding:12px 16px !important;cursor:pointer !important;" onclick="habToggleSection(this)">
+            <h3 style="font-size:14px !important;">&#x2600;&#xFE0F; Daily Midday</h3>
+            <span style="font-size:11px !important;color:#94a3b8 !important;">Tap to mark as taken <span class="hab-chevron" style="margin-left:6px !important;">&#x25B2;</span></span>
+          </div>
+          <div id="hab-midday-list" style="display:none !important;"></div>
+        </div>
+
         <!-- DAILY EVENING Medications -->
         <div class="hab-section" style="margin-bottom:10px !important;">
           <div class="hab-section-header" style="padding:12px 16px !important;cursor:pointer !important;" onclick="habToggleSection(this)">
@@ -1791,7 +1800,7 @@
       <!-- Version -->
       <div style="background:#ecfdf5 !important;border:1px solid #d1fae5 !important;border-radius:10px !important;padding:14px 16px !important;margin-bottom:16px !important;display:flex !important;align-items:center !important;justify-content:space-between !important;">
         <div style="font-size:13px !important;color:#065f46 !important;"><strong>Current version</strong></div>
-        <div style="font-size:12px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:2px 10px !important;border-radius:99px !important;">v4.46</div>
+        <div style="font-size:12px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:2px 10px !important;border-radius:99px !important;">v4.47</div>
       </div>
 
       <!-- Overview -->
@@ -4828,16 +4837,20 @@
 
 
 
-      // #3: Daily with AM/PM time labels - SPLIT INTO MORNING AND EVENING
+      // #3: Daily with AM/PM time labels - SPLIT INTO MORNING, MIDDAY, AND EVENING
       // Separate creams/ointments from other daily meds (includes Betamethasone Valerate)
+      var betaMeds = daily.filter(function(m){
+        return m.name.toLowerCase().indexOf('betamethasone') !== -1 && m.name.toLowerCase().indexOf('valerate') !== -1;
+      });
       var creamsOintments = daily.filter(function(m){
         var name = m.name.toLowerCase();
-        return name.indexOf('cream') !== -1 || name.indexOf('ointment') !== -1 || (name.indexOf('betamethasone') !== -1 && name.indexOf('valerate') !== -1);
+        return (name.indexOf('cream') !== -1 || name.indexOf('ointment') !== -1 || (name.indexOf('betamethasone') !== -1 && name.indexOf('valerate') !== -1));
       });
       var morningMeds = daily.filter(function(m){
         var name = m.name.toLowerCase();
-        return name.indexOf('cream') === -1 && name.indexOf('ointment') === -1 && !(name.indexOf('betamethasone') !== -1 && name.indexOf('valerate') !== -1);
+        return name.indexOf('cream') === -1 && name.indexOf('ointment') === -1;
       });
+      var middayMeds = betaMeds;
       // Sort evening meds: Xobet first, then Betamethasone Valerate
       creamsOintments.sort(function(a, b) {
         var aName = a.name.toLowerCase();
@@ -4908,6 +4921,47 @@
             h += '</div>';
           }
         mlEl.innerHTML = h;
+      }
+
+      // ═══ RENDER MIDDAY MEDICATIONS ═══
+      var mdlEl = document.getElementById('hab-midday-list');
+      if (!middayMeds.length) {
+        mdlEl.innerHTML = '<div class="hab-empty">No daily midday medications yet.</div>';
+      } else {
+        var mdh = '';
+        for (var mdi = 0; mdi < middayMeds.length; mdi++) {
+          var mdmed = middayMeds[mdi];
+          var mdDone = !!(logs[mdmed.id] && logs[mdmed.id][today]);
+          mdh += '<div class="hab-med-row">';
+          mdh += '<div class="hab-check" onclick="habToggleDaily('+mdmed.id+')" style="cursor:pointer !important;"></div>';
+          var mdMedInfo = medsLookup[mdmed.name.toLowerCase()];
+          var mdDoseStr = mdMedInfo && mdMedInfo.dose ? mdMedInfo.dose : '';
+          var mdDisplayName = mdmed.name.replace(/\s+cream/i, '').replace(/\s+ointment/i, '');
+          mdh += '<div style="flex:1 !important;"><div class="hab-med-name" style="margin-bottom:0 !important;">'+esc(mdDisplayName)+(mdDoseStr ? ' <span style="font-size:10px !important;color:#94a3b8 !important;font-weight:400 !important;">'+esc(mdDoseStr)+'</span>' : '')+'</div>';
+          if (mdDone) {
+            try {
+              var { data: mdAllDoses } = await sb.from('habit_logs').select('id, created_at, note').eq('med_id', mdmed.id).eq('date', today).order('created_at', { ascending: false });
+              if (mdAllDoses && mdAllDoses.length) {
+                mdh += '<div style="margin-top:4px !important;padding:8px !important;background:#f0fdf4 !important;border-radius:6px !important;">';
+                mdAllDoses.forEach(function(mdose) {
+                  var mdoseTime = mdose.created_at ? new Date(mdose.created_at).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' }) : '';
+                  mdh += '<div style="font-size:10px !important;color:#10b981 !important;margin-bottom:4px !important;">';
+                  mdh += '✓ Logged at ' + esc(mdoseTime);
+                  if (mdose.note) mdh += ' (' + esc(mdose.note) + ')';
+                  mdh += ' <span onclick="habDeleteDose('+mdose.id+')" style="cursor:pointer !important;color:#ef4444 !important;font-weight:600 !important;">✕</span>';
+                  mdh += '</div>';
+                });
+                mdh += '<div style="font-size:10px !important;color:#3b82f6 !important;cursor:pointer !important;padding-top:4px !important;border-top:1px solid #bbf7d0 !important;" onclick="habToggleDaily('+mdmed.id+')">+ Add another dose</div>';
+                mdh += '</div>';
+              }
+            } catch(e) {}
+          } else {
+            mdh += '<div style="font-size:10px !important;color:#94a3b8 !important;">Take at noon</div>';
+          }
+          mdh += '</div>';
+          mdh += '</div>';
+        }
+        mdlEl.innerHTML = mdh;
       }
 
       // ═══ RENDER EVENING MEDICATIONS (Creams/Ointments) ═══
