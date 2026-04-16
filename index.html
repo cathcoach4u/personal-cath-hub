@@ -4466,6 +4466,10 @@
       } else {
         // Not logged — add new entry
         await sb.from('habit_logs').insert({ med_id: id, date: today, created_at: new Date().toISOString() });
+        // Auto-dismiss yesterday's missed alert when marking a med as taken today
+        var yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+        var yk = yesterday.getFullYear()+'-'+String(yesterday.getMonth()+1).padStart(2,'0')+'-'+String(yesterday.getDate()).padStart(2,'0');
+        localStorage.setItem('cathHub_missedDismissed_' + yk, '1');
       }
       habRender();
     };
@@ -4981,13 +4985,12 @@
         elEl.innerHTML = '<div class="hab-empty">No daily evening medications yet. Tap + Add to get started.</div>';
       } else {
         var eh = '';
-        eh += '<div style="background:#fef3c7 !important;border:1px solid #fcd34d !important;border-radius:10px !important;padding:12px !important;display:flex !important;flex-direction:column !important;gap:10px !important;">';
         for (var ei = 0; ei < creamsOintments.length; ei++) {
           var eitem = creamsOintments[ei];
           var eDone = !!(logs[eitem.id] && logs[eitem.id][today]);
           var eS = await streakFor(eitem.id, logs);
-          eh += '<div style="display:flex !important;align-items:center !important;gap:10px !important;padding:8px 10px !important;background:white !important;border-radius:8px !important;border:1px solid #fde68a !important;">';
-          eh += '<div class="hab-check'+(eDone?' done':'')+'" onclick="habToggleDaily('+eitem.id+')" style="flex-shrink:0 !important;"></div>';
+          eh += '<div class="hab-med-row">';
+          eh += '<div class="hab-check'+(eDone?' done':'')+'" onclick="habToggleDaily('+eitem.id+')" style="cursor:pointer !important;"></div>';
           var eMedInfo = medsLookup[eitem.name.toLowerCase()];
           var eDoseStr = eMedInfo && eMedInfo.dose ? eMedInfo.dose : '';
           eh += '<div style="flex:1 !important;"><div class="hab-med-name" style="margin-bottom:0 !important;">'+esc(eitem.name)+(eDoseStr ? ' <span style="font-size:10px !important;color:#94a3b8 !important;font-weight:400 !important;">'+esc(eDoseStr)+'</span>' : '')+'</div>';
@@ -4999,13 +5002,12 @@
             if (eitem.name.toLowerCase().indexOf('betamethasone') !== -1 && eitem.name.toLowerCase().indexOf('valerate') !== -1) {
               eDescText = 'To be applied when Xobet is finished';
             }
-            eh += '<div style="font-size:10px !important;color:#92400e !important;">'+eDescText+'</div>';
+            eh += '<div style="font-size:10px !important;color:#94a3b8 !important;">'+eDescText+'</div>';
           }
           eh += '</div>';
           eh += '<div class="hab-del" onclick="habDeleteMed('+eitem.id+')" style="flex-shrink:0 !important;">&#x1F5D1;</div>';
           eh += '</div>';
         }
-        eh += '</div>';
         elEl.innerHTML = eh;
       }
 
