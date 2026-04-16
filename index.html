@@ -4936,6 +4936,7 @@
             }
             h += '</div>';
             if (s > 1) h += '<div class="hab-streak">&#x1F525; '+s+'d</div>';
+            h += '<div class="hab-del" onclick="habDeleteMed('+med.id+')" style="flex-shrink:0 !important;cursor:pointer !important;">&#x1F5D1;</div>';
             h += '</div>';
           }
         mlEl.innerHTML = h;
@@ -4977,6 +4978,7 @@
             mdh += '<div style="font-size:10px !important;color:#94a3b8 !important;">Take at noon</div>';
           }
           mdh += '</div>';
+          mdh += '<div class="hab-del" onclick="habDeleteMed('+mdmed.id+')" style="flex-shrink:0 !important;cursor:pointer !important;">&#x1F5D1;</div>';
           mdh += '</div>';
         }
         mdlEl.innerHTML = mdh;
@@ -7548,10 +7550,25 @@
   dashRenderWater();
 
   // Populate today's date
-  var today = new Date();
-  var dateStr = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear();
-  var dateBadge = document.getElementById('today-date-badge');
-  if (dateBadge) dateBadge.textContent = dateStr;
+  function populateDateBadge() {
+    var today = new Date();
+    var dateStr = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear();
+    var dateBadge = document.getElementById('today-date-badge');
+    if (dateBadge) {
+      dateBadge.textContent = dateStr;
+      dateBadge.innerHTML = dateStr;
+    }
+  }
+  populateDateBadge();
+  // Also set up interval to refresh date at midnight
+  setTimeout(function() {
+    var now = new Date();
+    var tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+    var msUntilMidnight = tomorrow.getTime() - now.getTime();
+    setTimeout(populateDateBadge, msUntilMidnight);
+  }, 1000);
 
 })();
 </script>
