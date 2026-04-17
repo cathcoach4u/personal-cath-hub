@@ -1538,7 +1538,9 @@
       <!-- Habits tab bar -->
       <div style="display:flex !important;gap:6px !important;margin-bottom:16px !important;flex-wrap:wrap !important;">
         <button class="am-btn zb-tab active" onclick="zbTab('meds')" id="zb-tab-meds" style="padding:8px 14px !important;font-size:12px !important;background:#3b82f6 !important;color:white !important;border-color:#3b82f6 !important;">&#x1F48A; Medication</button>
-        <button class="am-btn zb-tab" onclick="zbTab('daily')" id="zb-tab-daily" style="padding:8px 14px !important;font-size:12px !important;">Daily</button>
+        <button class="am-btn zb-tab" onclick="zbTab('morning')" id="zb-tab-morning" style="padding:8px 14px !important;font-size:12px !important;">Morning</button>
+        <button class="am-btn zb-tab" onclick="zbTab('midday')" id="zb-tab-midday" style="padding:8px 14px !important;font-size:12px !important;">Midday</button>
+        <button class="am-btn zb-tab" onclick="zbTab('evening')" id="zb-tab-evening" style="padding:8px 14px !important;font-size:12px !important;">Evening</button>
         <button class="am-btn zb-tab" onclick="zbTab('weekly')" id="zb-tab-weekly" style="padding:8px 14px !important;font-size:12px !important;">Weekly</button>
         <button class="am-btn zb-tab" onclick="zbTab('fortnightly')" id="zb-tab-fortnightly" style="padding:8px 14px !important;font-size:12px !important;">Fortnightly</button>
         <button class="am-btn zb-tab" onclick="zbTab('6monthly')" id="zb-tab-6monthly" style="padding:8px 14px !important;font-size:12px !important;">6-Monthly</button>
@@ -1675,9 +1677,17 @@
       </div>
 
       <!-- TAB: Rhythm Cards -->
-      <!-- Daily Panel -->
-      <div id="zb-panel-daily" style="display:none !important;">
-        <div id="zb-rhythm-daily"></div>
+      <!-- Morning Panel -->
+      <div id="zb-panel-morning" style="display:none !important;">
+        <div id="hab-morning-list"></div>
+      </div>
+      <!-- Midday Panel -->
+      <div id="zb-panel-midday" style="display:none !important;">
+        <div id="hab-midday-list"></div>
+      </div>
+      <!-- Evening Panel -->
+      <div id="zb-panel-evening" style="display:none !important;">
+        <div id="hab-evening-list"></div>
       </div>
       <!-- Weekly Panel -->
       <div id="zb-panel-weekly" style="display:none !important;">
@@ -6582,7 +6592,7 @@
 
   // ─── Tab switching ───
   window.zbTab = function(tab) {
-    ['meds','daily','weekly','fortnightly','6monthly','annual'].forEach(function(t) {
+    ['meds','morning','midday','evening','weekly','fortnightly','6monthly','annual'].forEach(function(t) {
       var panel = document.getElementById('zb-panel-' + t);
       var btn = document.getElementById('zb-tab-' + t);
       if (t === tab) {
@@ -6598,7 +6608,8 @@
       }
     });
     if (tab === 'meds') { habRender(); habLoadHistory(); }
-    if (['daily','weekly','fortnightly','6monthly','annual'].indexOf(tab) !== -1) {
+    if (['morning','midday','evening'].indexOf(tab) !== -1) { habRender(); }
+    if (['weekly','fortnightly','6monthly','annual'].indexOf(tab) !== -1) {
       zbRenderRhythmCard(tab);
     }
   };
