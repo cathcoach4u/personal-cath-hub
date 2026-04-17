@@ -6835,18 +6835,10 @@
     }
 
     var h = '';
-    // Collapsible header
-    h += '<div class="hab-section" style="margin-bottom:12px !important;">';
-    h += '<div class="hab-section-header" style="padding:12px 16px !important;cursor:pointer !important;" onclick="habToggleSection(this)">';
-    h += '<h3 style="font-size:14px !important;">' + esc(card.title) + '</h3>';
-    h += '<span style="font-size:11px !important;color:#94a3b8 !important;">' + esc(card.subtitle.substring(0, 40)) + '... <span class="hab-chevron" style="margin-left:6px !important;">&#x25B2;</span></span>';
-    h += '</div>';
-
-    // Content (hidden by default, toggled by section header)
-    h += '<div style="display:none !important;">';
+    // Content displayed directly (no collapsible)
 
     // Card info
-    h += '<div style="background:white !important;border-top:1px solid #e2e8f0 !important;border-radius:0 0 12px 12px !important;padding:16px !important;margin-bottom:0 !important;">';
+    h += '<div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:16px !important;margin-bottom:0 !important;">';
     h += '<div style="font-size:12px !important;color:#64748b !important;margin-bottom:8px !important;">' + esc(card.subtitle) + '</div>';
     h += '<div style="font-size:11px !important;color:#10b981 !important;font-weight:600 !important;margin-bottom:12px !important;">Done means: ' + esc(card.done) + '</div>';
 
@@ -6894,9 +6886,6 @@
       });
       h += '</div>';
     });
-
-    h += '</div>'; // end content
-    h += '</div>'; // end section
 
     container.innerHTML = h;
   };
