@@ -8120,10 +8120,11 @@
     try {
       var today = new Date().toISOString().split('T')[0];
       var userId = (await sb.auth.getSession()).data.session.user.id;
-      var { data: todos } = await sb.from('personal_todos').select('task').eq('user_id', userId).eq('done', false).eq('due_date', today).limit(3);
-      var todoHtml = todos && todos.length ? todos.map(function(t) { return '• ' + esc(t.task); }).join('<br>') : 'No tasks due today';
+      var { data: todos } = await sb.from('personal_todos').select('task').eq('user_id', userId).eq('done', false).lte('due_date', today).limit(3);
+      var todoHtml = todos && todos.length ? todos.map(function(t) { return '• ' + esc(t.task); }).join('<br>') : 'No overdue tasks';
       document.getElementById('dash-todo-list').innerHTML = todoHtml;
     } catch(e) {
+      console.log('To-do error:', e);
       document.getElementById('dash-todo-list').innerHTML = 'Error loading';
     }
   };
@@ -8143,9 +8144,11 @@
 
     try {
       var { data: habits } = await sb.from('habit_meds').select('id,name').eq('user_id', userId).order('created_at').limit(3);
+      console.log('Daily meds habits:', habits);
       if (habits && habits.length > 0) {
         var topMeds = habits.map(function(h) { return h.id; });
         var { data: todayLogs } = await sb.from('habit_logs').select('med_id').eq('user_id', userId).eq('date', today);
+        console.log('Today logs:', todayLogs);
         var loggedMedIds = todayLogs ? todayLogs.map(function(l) { return l.med_id; }) : [];
         var count = loggedMedIds.filter(function(id) { return topMeds.indexOf(id) !== -1; }).length;
         document.getElementById('dash-daily-meds').textContent = count + '/' + topMeds.length;
@@ -8153,13 +8156,16 @@
         document.getElementById('dash-daily-meds').textContent = '-';
       }
     } catch(e) {
+      console.log('Daily meds error:', e);
       document.getElementById('dash-daily-meds').textContent = '-';
     }
 
     try {
       var { data: allHabits } = await sb.from('habit_meds').select('id').eq('user_id', userId);
+      console.log('Weekly meds habits:', allHabits);
       if (allHabits && allHabits.length > 0) {
         var { data: weekLogs } = await sb.from('habit_logs').select('med_id,date').eq('user_id', userId).gte('date', weekStart);
+        console.log('Week logs:', weekLogs);
         var uniqueMeds = new Set();
         if (weekLogs) {
           weekLogs.forEach(function(log) { uniqueMeds.add(log.med_id); });
@@ -8171,14 +8177,17 @@
         document.getElementById('dash-weekly-meds').textContent = '-';
       }
     } catch(e) {
+      console.log('Weekly meds error:', e);
       document.getElementById('dash-weekly-meds').textContent = '-';
     }
 
     try {
       var { data: mhSessions } = await sb.from('mental_health_sessions').select('id').eq('user_id', userId).gte('date', today).order('date');
+      console.log('Mental health sessions:', mhSessions);
       var count = mhSessions ? mhSessions.length : 0;
       document.getElementById('dash-mental-sessions').textContent = count + ' planned';
     } catch(e) {
+      console.log('Mental health error:', e);
       document.getElementById('dash-mental-sessions').textContent = '-';
     }
     } catch(e) {
