@@ -1596,7 +1596,7 @@
             <h3 style="font-size:14px !important;">&#x2600;&#xFE0F; Daily Morning</h3>
             <span style="font-size:11px !important;color:#94a3b8 !important;">Tap to mark as taken <span class="hab-chevron" style="margin-left:6px !important;">&#x25B2;</span></span>
           </div>
-          <div id="hab-morning-list" style="display:none !important;"></div>
+          <div id="hab-morning-meds-list" style="display:none !important;"></div>
         </div>
 
         <!-- DAILY MIDDAY Medications -->
@@ -1605,7 +1605,7 @@
             <h3 style="font-size:14px !important;">⏰ Daily Midday</h3>
             <span style="font-size:11px !important;color:#94a3b8 !important;">Tap to mark as taken <span class="hab-chevron" style="margin-left:6px !important;">&#x25B2;</span></span>
           </div>
-          <div id="hab-midday-list" style="display:none !important;"></div>
+          <div id="hab-midday-meds-list" style="display:none !important;"></div>
         </div>
 
         <!-- DAILY EVENING Medications -->
@@ -1614,7 +1614,7 @@
             <h3 style="font-size:14px !important;">&#x1F31C;&#xFE0F; Daily Evening</h3>
             <span style="font-size:11px !important;color:#94a3b8 !important;">Tap to mark as taken <span class="hab-chevron" style="margin-left:6px !important;">&#x25B2;</span></span>
           </div>
-          <div id="hab-evening-list" style="display:none !important;"></div>
+          <div id="hab-evening-meds-list" style="display:none !important;"></div>
         </div>
 
         <!-- WEEKLY Medications -->
@@ -4969,7 +4969,7 @@
       });
 
       // ═══ RENDER MORNING MEDICATIONS ═══
-      var mlEl = document.getElementById('hab-morning-list');
+      var mlEl = document.getElementById('hab-morning-meds-list');
       if (!morningMeds.length) {
         mlEl.innerHTML = '<div class="hab-empty">No daily morning medications yet. Tap + Add to get started.</div>';
       } else {
@@ -5032,7 +5032,7 @@
       }
 
       // ═══ RENDER MIDDAY MEDICATIONS ═══
-      var mdlEl = document.getElementById('hab-midday-list');
+      var mdlEl = document.getElementById('hab-midday-meds-list');
       if (!middayMeds.length) {
         mdlEl.innerHTML = '<div class="hab-empty">No daily midday medications yet.</div>';
       } else {
@@ -5073,7 +5073,7 @@
       }
 
       // ═══ RENDER EVENING MEDICATIONS (Creams/Ointments) ═══
-      var elEl = document.getElementById('hab-evening-list');
+      var elEl = document.getElementById('hab-evening-meds-list');
       if (!creamsOintments.length) {
         elEl.innerHTML = '<div class="hab-empty">No daily evening medications yet. Tap + Add to get started.</div>';
       } else {
@@ -5293,7 +5293,7 @@
             if (chev) chev.innerHTML = '&#x25BC;';
           });
           // Now open only the morning section
-          var morningList = document.getElementById('hab-morning-list');
+          var morningList = document.getElementById('hab-morning-meds-list');
           if (morningList) {
             morningList.style.setProperty('display', 'block', 'important');
             var section = morningList.closest('.hab-section');
