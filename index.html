@@ -4964,6 +4964,15 @@
         var name = m.name.toLowerCase();
         return name.indexOf('cream') !== -1 || name.indexOf('ointment') !== -1;
       });
+      // Clone Betamethasone in evening with unique _evening ID
+      creamsOintments = creamsOintments.map(function(m) {
+        if (m.name.toLowerCase().indexOf('betamethasone') !== -1 && m.name.toLowerCase().indexOf('valerate') !== -1) {
+          var clone = Object.assign({}, m);
+          clone.id = m.id + '_evening';
+          return clone;
+        }
+        return m;
+      });
       var morningMeds = daily.filter(function(m){
         var name = m.name.toLowerCase();
         // Include Betamethasone Valerate in morning, exclude other creams/ointments
