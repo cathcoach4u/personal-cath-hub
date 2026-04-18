@@ -8289,6 +8289,8 @@
     try {
       var { data: allMeds } = await sb.from('habit_meds').select('*');
       var weekly = (allMeds || []).filter(function(m){ return m.freq==='weekly'; });
+      console.log('Weekly meds query result:', allMeds);
+      console.log('Filtered weekly:', weekly);
       var { data: logs } = await sb.from('habit_logs').select('*');
       var logsMap = {};
       (logs || []).forEach(function(l) {
@@ -8296,6 +8298,7 @@
         logsMap[l.med_id][l.date] = true;
       });
       var weeklyCount = getWeeklyMedsCount(weekly, logsMap);
+      console.log('Weekly count result:', weeklyCount);
       var html = '<a href="#" onclick="chNav(\'habits\'); return false;" style="color:#10b981 !important;text-decoration:none !important;cursor:pointer !important;font-size:18px !important;font-weight:bold !important;">' + weeklyCount.done + '/' + weeklyCount.total + '</a><div style="font-size:11px !important;color:#94a3b8 !important;">weekly</div>';
       document.getElementById('dash-weekly-meds').innerHTML = html;
     } catch(e) {
