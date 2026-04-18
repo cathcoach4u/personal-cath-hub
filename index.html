@@ -5103,7 +5103,7 @@
           var eDone = !!(logs[eitem.id] && logs[eitem.id][today]);
           var eS = await streakFor(eitem.id, logs);
           eh += '<div class="hab-med-row">';
-          eh += '<div class="hab-check'+(eDone?' done':'')+'" onclick="habToggleDaily('+eitem.id+')" style="cursor:pointer !important;"></div>';
+          eh += '<div class="hab-check" onclick="habToggleDaily('+eitem.id+')" style="cursor:pointer !important;"></div>';
           var eMedInfo = medsLookup[eitem.name.toLowerCase()];
           var eDoseStr = eMedInfo && eMedInfo.dose ? eMedInfo.dose : '';
           var displayName = eitem.name.replace(/\s+cream/i, '').replace(/\s+ointment/i, '');
