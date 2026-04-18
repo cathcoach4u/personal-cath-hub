@@ -4964,15 +4964,6 @@
         var name = m.name.toLowerCase();
         return name.indexOf('cream') !== -1 || name.indexOf('ointment') !== -1;
       });
-      // Clone Betamethasone in evening with unique _evening ID
-      creamsOintments = creamsOintments.map(function(m) {
-        if (m.name.toLowerCase().indexOf('betamethasone') !== -1 && m.name.toLowerCase().indexOf('valerate') !== -1) {
-          var clone = Object.assign({}, m);
-          clone.id = m.id + '_evening';
-          return clone;
-        }
-        return m;
-      });
       var morningMeds = daily.filter(function(m){
         var name = m.name.toLowerCase();
         // Include Betamethasone Valerate in morning, exclude other creams/ointments
@@ -5106,9 +5097,8 @@
         var eh = '';
         for (var ei = 0; ei < creamsOintments.length; ei++) {
           var eitem = creamsOintments[ei];
-          var baseId = eitem.id.replace('_evening', '');
-          var eDone = !!(logs[baseId] && logs[baseId][today]);
-          var eS = await streakFor(baseId, logs);
+          var eDone = !!(logs[eitem.id] && logs[eitem.id][today]);
+          var eS = await streakFor(eitem.id, logs);
           eh += '<div class="hab-med-row">';
           eh += '<div class="hab-check'+(eDone?' done':'')+'" onclick="habToggleDaily('+eitem.id+')" style="cursor:pointer !important;"></div>';
           var eMedInfo = medsLookup[eitem.name.toLowerCase()];
