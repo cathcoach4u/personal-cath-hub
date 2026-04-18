@@ -4962,7 +4962,7 @@
       });
       var creamsOintments = daily.filter(function(m){
         var name = m.name.toLowerCase();
-        return (name.indexOf('cream') !== -1 || name.indexOf('ointment') !== -1) && (name.indexOf('betamethasone') === -1 || name.indexOf('valerate') === -1);
+        return name.indexOf('cream') !== -1 || name.indexOf('ointment') !== -1;
       });
       var morningMeds = daily.filter(function(m){
         var name = m.name.toLowerCase();
