@@ -593,7 +593,7 @@
 
 <div id="cathHub">
   <div style="position:fixed !important;top:16px !important;right:16px !important;display:flex !important;flex-direction:column !important;align-items:flex-end !important;gap:4px !important;z-index:10 !important;">
-    <div class="version-badge">Cath Hub v4.83</div>
+    <div class="version-badge">Cath Hub v4.84</div>
     <div id="today-date-badge" style="font-size:11px !important;font-weight:600 !important;color:#1e293b !important;background:#f1f5f9 !important;padding:3px 8px !important;border-radius:6px !important;border:1px solid #cbd5e1 !important;min-height:16px !important;display:flex !important;align-items:center !important;white-space:nowrap !important;">--/--/----</div>
   </div>
 
@@ -601,7 +601,7 @@
   <div class="mobile-top-bar">
     <button class="hamburger-btn" onclick="toggleMobileNav()" aria-label="Menu">&#x2630;</button>
     <h1>&#x1F3E0; Cath Hub</h1>
-    <div style="font-size:10px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:4px 8px !important;border-radius:99px !important;">v4.83</div>
+    <div style="font-size:10px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:4px 8px !important;border-radius:99px !important;">v4.84</div>
   </div>
 
   <!-- Mobile slide-out drawer -->
@@ -645,7 +645,7 @@
     <button class="nav-item" onclick="chNav('about',this)"><span class="icon">&#x2139;&#xFE0F;</span> About</button>
     <div class="sidebar-footer">
       <div style="display:flex !important;align-items:center !important;gap:6px !important;margin-bottom:8px !important;">
-        <div style="font-size:10px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:2px 8px !important;border-radius:99px !important;">v4.83</div>
+        <div style="font-size:10px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:2px 8px !important;border-radius:99px !important;">v4.84</div>
       </div>
       <div style="display:flex !important;align-items:center !important;gap:6px !important;margin-bottom:6px !important;">
         <span style="font-size:12px !important;color:rgba(255,255,255,0.5) !important;">&#x1F319;</span>
@@ -1613,7 +1613,28 @@
       </div>
       <!-- Fortnightly Panel -->
       <div id="zb-panel-fortnightly-h2" style="display:none !important;">
-        <div id="zb-rhythm-fortnightly-h2"></div>
+        <div style="margin-bottom:16px !important;">
+          <h3 style="font-size:14px !important;font-weight:700 !important;margin-bottom:12px !important;">Fortnightly Items</h3>
+
+          <!-- Add New Item Form -->
+          <div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:14px !important;margin-bottom:12px !important;">
+            <div style="display:flex !important;flex-direction:column !important;gap:10px !important;">
+              <input type="text" id="fn-item-name" placeholder="Item name" style="width:100% !important;padding:10px 12px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:14px !important;box-sizing:border-box !important;">
+              <button onclick="fnAddItem()" style="width:100% !important;padding:10px !important;background:#3b82f6 !important;color:white !important;border:none !important;border-radius:8px !important;font-size:14px !important;font-weight:600 !important;cursor:pointer !important;">+ Add Item</button>
+            </div>
+          </div>
+
+          <!-- Items Table -->
+          <div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;overflow:hidden !important;">
+            <div style="display:flex !important;flex-direction:column !important;gap:0 !important;" id="fn-items-list"></div>
+          </div>
+        </div>
+
+        <!-- Fortnightly Tracking -->
+        <div>
+          <h3 style="font-size:14px !important;font-weight:700 !important;margin-bottom:12px !important;">This Fortnight</h3>
+          <div id="zb-rhythm-fortnightly-h2"></div>
+        </div>
       </div>
       <!-- 6-Monthly Panel -->
       <div id="zb-panel-6monthly-h2" style="display:none !important;">
@@ -1634,6 +1655,7 @@
       <div style="display:flex !important;gap:8px !important;margin-bottom:16px !important;flex-wrap:wrap !important;">
         <button class="hh-pill active" onclick="hhSwitchPill('medication')" id="hh-pill-medication" style="padding:10px 16px !important;background:#10b981 !important;color:white !important;border:none !important;border-radius:20px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;transition:all 0.2s !important;">Medication Log</button>
         <button class="hh-pill" onclick="hhSwitchPill('workout')" id="hh-pill-workout" style="padding:10px 16px !important;background:#e2e8f0 !important;color:#64748b !important;border:none !important;border-radius:20px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;transition:all 0.2s !important;">Workout Log</button>
+        <button class="hh-pill" onclick="hhSwitchPill('fortnightly')" id="hh-pill-fortnightly" style="padding:10px 16px !important;background:#e2e8f0 !important;color:#64748b !important;border:none !important;border-radius:20px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;transition:all 0.2s !important;">Fortnightly Log</button>
       </div>
 
       <!-- Medication Log Panel -->
@@ -1652,6 +1674,11 @@
       <!-- Workout Log Panel -->
       <div id="hh-workout-panel" class="hh-workout-panel" style="display:none !important;">
         <div id="hh-workout-list"></div>
+      </div>
+
+      <!-- Fortnightly Log Panel -->
+      <div id="hh-fortnightly-panel" style="display:none !important;">
+        <div id="hh-fortnightly-list"></div>
       </div>
 
     </div>
@@ -1747,7 +1774,7 @@
       <!-- Version -->
       <div style="background:#ecfdf5 !important;border:1px solid #d1fae5 !important;border-radius:10px !important;padding:14px 16px !important;margin-bottom:16px !important;display:flex !important;align-items:center !important;justify-content:space-between !important;">
         <div style="font-size:13px !important;color:#065f46 !important;"><strong>Current version</strong></div>
-        <div style="font-size:12px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:2px 10px !important;border-radius:99px !important;">v4.83</div>
+        <div style="font-size:12px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:2px 10px !important;border-radius:99px !important;">v4.84</div>
       </div>
 
       <!-- Overview -->
@@ -4301,20 +4328,32 @@
     window.hhSwitchPill = function(pill) {
       var mp = document.getElementById('hh-medication-panel');
       var wp = document.getElementById('hh-workout-panel');
+      var fp = document.getElementById('hh-fortnightly-panel');
       var pmm = document.getElementById('hh-pill-medication');
       var pmw = document.getElementById('hh-pill-workout');
+      var pmf = document.getElementById('hh-pill-fortnightly');
+
+      // Hide all panels first
+      mp.style.cssText = 'display: none !important;';
+      wp.style.cssText = 'display: none !important;';
+      fp.style.cssText = 'display: none !important;';
+
+      // Reset all pill styles
+      pmm.style.cssText = 'padding:10px 16px !important;background:#e2e8f0 !important;color:#64748b !important;border:none !important;border-radius:20px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;transition:all 0.2s !important;';
+      pmw.style.cssText = 'padding:10px 16px !important;background:#e2e8f0 !important;color:#64748b !important;border:none !important;border-radius:20px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;transition:all 0.2s !important;';
+      pmf.style.cssText = 'padding:10px 16px !important;background:#e2e8f0 !important;color:#64748b !important;border:none !important;border-radius:20px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;transition:all 0.2s !important;';
 
       if (pill === 'medication') {
         mp.style.cssText = 'display: block !important;';
-        wp.style.cssText = 'display: none !important;';
         pmm.style.cssText = 'padding:10px 16px !important;background:#10b981 !important;color:white !important;border:none !important;border-radius:20px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;transition:all 0.2s !important;';
-        pmw.style.cssText = 'padding:10px 16px !important;background:#e2e8f0 !important;color:#64748b !important;border:none !important;border-radius:20px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;transition:all 0.2s !important;';
-      } else {
-        mp.style.cssText = 'display: none !important;';
+      } else if (pill === 'workout') {
         wp.style.cssText = 'display: block !important;';
-        pmm.style.cssText = 'padding:10px 16px !important;background:#e2e8f0 !important;color:#64748b !important;border:none !important;border-radius:20px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;transition:all 0.2s !important;';
         pmw.style.cssText = 'padding:10px 16px !important;background:#10b981 !important;color:white !important;border:none !important;border-radius:20px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;transition:all 0.2s !important;';
         hhLoadWorkoutLog();
+      } else if (pill === 'fortnightly') {
+        fp.style.cssText = 'display: block !important;';
+        pmf.style.cssText = 'padding:10px 16px !important;background:#10b981 !important;color:white !important;border:none !important;border-radius:20px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;transition:all 0.2s !important;';
+        hhLoadFortnightlyLog();
       }
     };
 
@@ -4394,6 +4433,37 @@
         console.error('Error loading exercises:', error);
         detailsDiv.innerHTML = '<div data-loaded="true" style="color:#ef4444 !important;">Error loading exercises</div>';
       }
+    };
+
+    window.hhLoadFortnightlyLog = function() {
+      var items = JSON.parse(localStorage.getItem('fn_items') || '[]');
+      var logs = JSON.parse(localStorage.getItem('fn_logs') || '{}');
+      var html = '';
+
+      if (items.length === 0) {
+        html = '<div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:16px !important;text-align:center !important;color:#94a3b8 !important;font-size:13px !important;">No fortnightly items yet</div>';
+      } else {
+        html = '<div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;overflow:hidden !important;">';
+        items.forEach(function(item) {
+          var itemLogs = logs[item.id] || [];
+          var lastLog = itemLogs.length > 0 ? new Date(itemLogs[itemLogs.length - 1]).toLocaleDateString('en-AU', {weekday:'short', day:'numeric', month:'short'}) : 'Never';
+          html += '<div style="display:flex !important;justify-content:space-between !important;align-items:center !important;padding:12px 16px !important;border-bottom:1px solid #e2e8f0 !important;">';
+          html += '<div style="flex:1 !important;"><div style="font-size:13px !important;font-weight:600 !important;color:#1e293b !important;">' + esc(item.name) + '</div>';
+          html += '<div style="font-size:11px !important;color:#94a3b8 !important;margin-top:4px !important;">Last: ' + lastLog + '</div></div>';
+          html += '<button onclick="hhLogFortnightlyItem(\'' + item.id + '\')" style="background:#10b981 !important;color:white !important;border:none !important;border-radius:6px !important;padding:6px 12px !important;font-size:12px !important;cursor:pointer !important;">Log</button>';
+          html += '</div>';
+        });
+        html += '</div>';
+      }
+      document.getElementById('hh-fortnightly-list').innerHTML = html;
+    };
+
+    window.hhLogFortnightlyItem = function(itemId) {
+      var logs = JSON.parse(localStorage.getItem('fn_logs') || '{}');
+      if (!logs[itemId]) logs[itemId] = [];
+      logs[itemId].push(new Date().toISOString());
+      localStorage.setItem('fn_logs', JSON.stringify(logs));
+      hhLoadFortnightlyLog();
     };
 
     window.habToggleDaily = async function(id) {
@@ -7028,6 +7098,49 @@
       }
     }
   };
+
+  // ─── Fortnightly Item Management ───
+  window.fnAddItem = async function() {
+    var nameInput = document.getElementById('fn-item-name');
+    var name = nameInput.value.trim();
+    if (!name) { alert('Enter item name'); return; }
+
+    var items = JSON.parse(localStorage.getItem('fn_items') || '[]');
+    items.push({ id: 'fn_' + Date.now(), name: name });
+    localStorage.setItem('fn_items', JSON.stringify(items));
+    nameInput.value = '';
+    fnRenderList();
+  };
+
+  window.fnDeleteItem = function(id) {
+    if (!confirm('Delete this item?')) return;
+    var items = JSON.parse(localStorage.getItem('fn_items') || '[]');
+    items = items.filter(function(i) { return i.id !== id; });
+    localStorage.setItem('fn_items', JSON.stringify(items));
+    fnRenderList();
+  };
+
+  window.fnRenderList = function() {
+    var items = JSON.parse(localStorage.getItem('fn_items') || '[]');
+    var list = document.getElementById('fn-items-list');
+    var h = '';
+    if (items.length === 0) {
+      h = '<div style="padding:16px !important;text-align:center !important;color:#94a3b8 !important;">No items yet</div>';
+    } else {
+      items.forEach(function(item) {
+        h += '<div style="display:flex !important;align-items:center !important;justify-content:space-between !important;padding:12px 16px !important;border-bottom:1px solid #e2e8f0 !important;">';
+        h += '<div style="font-size:13px !important;">' + esc(item.name) + '</div>';
+        h += '<button onclick="fnDeleteItem(\'' + item.id + '\')" style="background:#ef4444 !important;color:white !important;border:none !important;border-radius:6px !important;padding:6px 12px !important;font-size:12px !important;cursor:pointer !important;">Delete</button>';
+        h += '</div>';
+      });
+    }
+    list.innerHTML = h;
+  };
+
+  // Initialize fortnightly list on page load
+  window.addEventListener('load', function() {
+    setTimeout(fnRenderList, 100);
+  });
 
   // ─── Render Zone Grid ───
   window.zbRenderZoneGrid = function() {
