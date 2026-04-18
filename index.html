@@ -661,7 +661,7 @@
     <div class="screen active" id="ch-home">
       <h2 style="font-size:20px !important;margin-bottom:16px !important;">Dashboard</h2>
 
-      <!-- Top row: Calm + Strengths + Filing -->
+      <!-- Top row: Calm + Strengths + Filing + Focus Area -->
       <div style="display:flex !important;align-items:stretch !important;gap:10px !important;margin-bottom:12px !important;">
         <!-- Word of the Year -->
         <div style="text-align:center !important;padding:10px 16px !important;background:linear-gradient(135deg, #f0f4f8, #e0e7ff) !important;border-radius:12px !important;border:1px solid #c7d2fe !important;display:flex !important;flex-direction:column !important;justify-content:center !important;min-width:90px !important;">
@@ -686,6 +686,11 @@
         </div>
         <!-- Filing -->
         <button class="am-btn" onclick="dashQuickNav({value:'filing'})" style="padding:10px 14px !important;font-size:12px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:12px !important;color:#1e293b !important;white-space:nowrap !important;align-self:stretch !important;display:flex !important;align-items:center !important;gap:6px !important;">&#x1F4C1; Filing</button>
+        <!-- Focus Area: Fortnightly Prep -->
+        <div id="dash-focus-area" style="background:linear-gradient(135deg, #f3e8ff, #e9d5ff) !important;border:1px solid #d8b4fe !important;border-radius:12px !important;padding:10px 14px !important;display:flex !important;flex-direction:column !important;justify-content:center !important;min-width:120px !important;text-align:center !important;color:#6b21a8 !important;">
+          <div style="font-size:9px !important;font-weight:700 !important;text-transform:uppercase !important;letter-spacing:1px !important;margin-bottom:2px !important;">🎯 This Week</div>
+          <div id="dash-focus-text" style="font-size:13px !important;font-weight:700 !important;">-</div>
+        </div>
       </div>
 
       <!-- Quick Wins: This Week + Streaks -->
@@ -744,14 +749,6 @@
             <div id="dash-month-spend" style="font-size:16px !important;font-weight:700 !important;color:#8b5cf6 !important;">-</div>
             <div style="font-size:10px !important;color:#94a3b8 !important;margin-top:4px !important;">this month</div>
           </div>
-        </div>
-      </div>
-
-      <!-- Focus Area: Fortnightly Prep -->
-      <div class="dash-section">
-        <h3 style="margin-bottom:0 !important;">🎯 Focus Area</h3>
-        <div id="dash-focus-area" style="background:#f3f4f6 !important;border:1px solid #d1d5db !important;border-radius:10px !important;padding:14px !important;margin-top:10px !important;text-align:center !important;">
-          <div style="font-size:13px !important;color:#374151 !important;">Loading focus area...</div>
         </div>
       </div>
 
@@ -8201,15 +8198,13 @@
       var week = zbGetFortnightWeek();
       var userId = (await sb.auth.getSession()).data.session.user.id;
       var { data: items } = await sb.from('fortnightly_items').select('name').eq('user_id', userId).eq('week', week);
-      var html = '<div style="font-size:13px !important;font-weight:700 !important;color:#374151 !important;margin-bottom:8px !important;">Week ' + week + ' Focus:</div>';
+      var text = 'Week ' + week;
       if (items && items.length) {
-        html += items.map(function(i) { return '<div style="font-size:12px !important;color:#1f2937 !important;padding:4px 0 !important;">• ' + esc(i.name) + '</div>'; }).join('');
-      } else {
-        html += '<div style="font-size:12px !important;color:#9ca3af !important;">No focus items for this week</div>';
+        text = 'Week ' + week + ': ' + items[0].name;
       }
-      document.getElementById('dash-focus-area').innerHTML = html;
+      document.getElementById('dash-focus-text').textContent = text;
     } catch(e) {
-      document.getElementById('dash-focus-area').innerHTML = '<div style="color:#ef4444 !important;">Error loading focus area</div>';
+      document.getElementById('dash-focus-text').textContent = 'Week -';
     }
   };
 
