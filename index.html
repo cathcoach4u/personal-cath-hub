@@ -6794,11 +6794,36 @@
       }
     });
     if (tab === 'meds') { habRender(); habLoadHistory(); }
-    if (tab === 'morning') { zbRenderDailySection('morning', variant, 'weekday'); }
-    if (tab === 'midday') { zbRenderDailySection('midday', variant, 'weekday'); }
-    if (tab === 'evening') { zbRenderDailySection('evening', variant, 'weekday'); }
-    if (['weekly','fortnightly','6monthly','annual'].indexOf(tab) !== -1) {
+    if (tab === 'morning') {
+      zbRenderDailySection('morning', variant, 'weekday');
+      dailyRenderItems('wd');
+      dailyRenderItems('we');
+    }
+    if (tab === 'midday') {
+      zbRenderDailySection('midday', variant, 'weekday');
+      dailyRenderItems('midday-wd');
+      dailyRenderItems('midday-we');
+    }
+    if (tab === 'evening') {
+      zbRenderDailySection('evening', variant, 'weekday');
+      dailyRenderItems('evening-wd');
+      dailyRenderItems('evening-we');
+    }
+    if (tab === 'weekly') {
       zbRenderRhythmCard(tab, variant);
+      weeklyRenderItems();
+    }
+    if (tab === 'fortnightly') {
+      zbRenderRhythmCard(tab, variant);
+      fnRenderList();
+    }
+    if (tab === '6monthly') {
+      zbRenderRhythmCard(tab, variant);
+      sixmonthlyRenderItems();
+    }
+    if (tab === 'annual') {
+      zbRenderRhythmCard(tab, variant);
+      annualRenderItems();
     }
   };
 
