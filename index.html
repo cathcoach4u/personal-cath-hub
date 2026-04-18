@@ -4435,43 +4435,57 @@
       }
     };
 
-    window.hhLoadFortnightlyLog = function() {
-      var items = JSON.parse(localStorage.getItem('fn_items') || '[]');
-      var logs = JSON.parse(localStorage.getItem('fn_logs') || '{}');
-      var html = '';
+    window.hhLoadFortnightlyLog = async function() {
+      try {
+        var { data: items, error: itemsError } = await sb.from('fortnightly_items').select('*').order('created_at', { ascending: false });
+        if (itemsError) throw itemsError;
 
-      if (items.length === 0) {
-        html = '<div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:16px !important;text-align:center !important;color:#94a3b8 !important;font-size:13px !important;">No fortnightly items yet</div>';
-      } else {
-        html = '<div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;overflow:hidden !important;">';
-        html += '<table style="width:100% !important;border-collapse:collapse !important;">';
-        html += '<thead style="background:#f8fafc !important;"><tr style="border-bottom:1px solid #e2e8f0 !important;">';
-        html += '<th style="padding:12px 16px !important;text-align:left !important;font-size:11px !important;font-weight:700 !important;color:#64748b !important;text-transform:uppercase !important;">Item</th>';
-        html += '<th style="padding:12px 16px !important;text-align:left !important;font-size:11px !important;font-weight:700 !important;color:#64748b !important;text-transform:uppercase !important;">Last</th>';
-        html += '<th style="padding:12px 16px !important;text-align:right !important;font-size:11px !important;font-weight:700 !important;color:#64748b !important;text-transform:uppercase !important;">Action</th>';
-        html += '</tr></thead>';
-        html += '<tbody>';
-        items.forEach(function(item) {
-          var itemLogs = logs[item.id] || [];
-          var lastLog = itemLogs.length > 0 ? new Date(itemLogs[itemLogs.length - 1]).toLocaleDateString('en-AU', {weekday:'short', day:'numeric', month:'short'}) : 'Never';
-          html += '<tr style="border-bottom:1px solid #e2e8f0 !important;">';
-          html += '<td style="padding:12px 16px !important;font-size:13px !important;font-weight:600 !important;color:#1e293b !important;">' + esc(item.name) + '</td>';
-          html += '<td style="padding:12px 16px !important;font-size:12px !important;color:#94a3b8 !important;">' + lastLog + '</td>';
-          html += '<td style="padding:12px 16px !important;text-align:right !important;"><button onclick="hhLogFortnightlyItem(\'' + item.id + '\')" style="background:#10b981 !important;color:white !important;border:none !important;border-radius:6px !important;padding:6px 12px !important;font-size:12px !important;cursor:pointer !important;">Log</button></td>';
-          html += '</tr>';
-        });
-        html += '</tbody></table>';
-        html += '</div>';
+        var html = '';
+        if (!items || items.length === 0) {
+          html = '<div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:16px !important;text-align:center !important;color:#94a3b8 !important;font-size:13px !important;">No fortnightly items yet</div>';
+        } else {
+          html = '<div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;overflow:hidden !important;">';
+          html += '<table style="width:100% !important;border-collapse:collapse !important;">';
+          html += '<thead style="background:#f8fafc !important;"><tr style="border-bottom:1px solid #e2e8f0 !important;">';
+          html += '<th style="padding:12px 16px !important;text-align:left !important;font-size:11px !important;font-weight:700 !important;color:#64748b !important;text-transform:uppercase !important;">Item</th>';
+          html += '<th style="padding:12px 16px !important;text-align:left !important;font-size:11px !important;font-weight:700 !important;color:#64748b !important;text-transform:uppercase !important;">Last</th>';
+          html += '<th style="padding:12px 16px !important;text-align:right !important;font-size:11px !important;font-weight:700 !important;color:#64748b !important;text-transform:uppercase !important;">Action</th>';
+          html += '</tr></thead>';
+          html += '<tbody>';
+
+          for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+            var { data: logs, error: logsError } = await sb.from('fortnightly_logs').select('logged_date').eq('item_id', item.id).order('logged_date', { ascending: false }).limit(1);
+            if (logsError) throw logsError;
+
+            var lastLog = (logs && logs.length > 0) ? new Date(logs[0].logged_date).toLocaleDateString('en-AU', {weekday:'short', day:'numeric', month:'short'}) : 'Never';
+            html += '<tr style="border-bottom:1px solid #e2e8f0 !important;">';
+            html += '<td style="padding:12px 16px !important;font-size:13px !important;font-weight:600 !important;color:#1e293b !important;">' + esc(item.name) + '</td>';
+            html += '<td style="padding:12px 16px !important;font-size:12px !important;color:#94a3b8 !important;">' + lastLog + '</td>';
+            html += '<td style="padding:12px 16px !important;text-align:right !important;"><button onclick="hhLogFortnightlyItem(\'' + item.id + '\')" style="background:#10b981 !important;color:white !important;border:none !important;border-radius:6px !important;padding:6px 12px !important;font-size:12px !important;cursor:pointer !important;">Log</button></td>';
+            html += '</tr>';
+          }
+          html += '</tbody></table>';
+          html += '</div>';
+        }
+        document.getElementById('hh-fortnightly-list').innerHTML = html;
+      } catch (e) {
+        document.getElementById('hh-fortnightly-list').innerHTML = '<div style="padding:16px !important;color:#ef4444 !important;font-size:12px !important;">Error loading fortnightly log</div>';
       }
-      document.getElementById('hh-fortnightly-list').innerHTML = html;
     };
 
-    window.hhLogFortnightlyItem = function(itemId) {
-      var logs = JSON.parse(localStorage.getItem('fn_logs') || '{}');
-      if (!logs[itemId]) logs[itemId] = [];
-      logs[itemId].push(new Date().toISOString());
-      localStorage.setItem('fn_logs', JSON.stringify(logs));
-      hhLoadFortnightlyLog();
+    window.hhLogFortnightlyItem = async function(itemId) {
+      try {
+        var { data: result, error } = await sb.from('fortnightly_logs').insert({
+          item_id: itemId,
+          user_id: (await sb.auth.getSession()).data.session.user.id,
+          logged_date: new Date().toISOString()
+        });
+        if (error) throw error;
+        hhLoadFortnightlyLog();
+      } catch (e) {
+        alert('Error logging item: ' + e.message);
+      }
     };
 
     window.habToggleDaily = async function(id) {
@@ -7113,48 +7127,62 @@
     var name = nameInput.value.trim();
     if (!name) { alert('Enter item name'); return; }
 
-    var items = JSON.parse(localStorage.getItem('fn_items') || '[]');
-    items.push({ id: 'fn_' + Date.now(), name: name });
-    localStorage.setItem('fn_items', JSON.stringify(items));
-    nameInput.value = '';
-    fnRenderList();
-  };
-
-  window.fnDeleteItem = function(id) {
-    if (!confirm('Delete this item?')) return;
-    var items = JSON.parse(localStorage.getItem('fn_items') || '[]');
-    items = items.filter(function(i) { return i.id !== id; });
-    localStorage.setItem('fn_items', JSON.stringify(items));
-    fnRenderList();
-  };
-
-  window.fnRenderList = function() {
-    var items = JSON.parse(localStorage.getItem('fn_items') || '[]');
-    var list = document.getElementById('fn-items-list');
-    var h = '';
-    if (items.length === 0) {
-      h = '<div style="padding:16px !important;text-align:center !important;color:#94a3b8 !important;font-size:13px !important;">No items yet</div>';
-    } else {
-      h = '<table style="width:100% !important;border-collapse:collapse !important;">';
-      h += '<thead style="background:#f8fafc !important;"><tr style="border-bottom:1px solid #e2e8f0 !important;">';
-      h += '<th style="padding:12px 16px !important;text-align:left !important;font-size:11px !important;font-weight:700 !important;color:#64748b !important;text-transform:uppercase !important;">Item</th>';
-      h += '<th style="padding:12px 16px !important;text-align:right !important;font-size:11px !important;font-weight:700 !important;color:#64748b !important;text-transform:uppercase !important;">Action</th>';
-      h += '</tr></thead>';
-      h += '<tbody>';
-      items.forEach(function(item) {
-        h += '<tr style="border-bottom:1px solid #e2e8f0 !important;">';
-        h += '<td style="padding:12px 16px !important;font-size:13px !important;color:#1e293b !important;">' + esc(item.name) + '</td>';
-        h += '<td style="padding:12px 16px !important;text-align:right !important;"><button onclick="fnDeleteItem(\'' + item.id + '\')" style="background:#ef4444 !important;color:white !important;border:none !important;border-radius:6px !important;padding:6px 12px !important;font-size:12px !important;cursor:pointer !important;">Delete</button></td>';
-        h += '</tr>';
+    try {
+      var { data: result, error } = await sb.from('fortnightly_items').insert({
+        name: name,
+        user_id: (await sb.auth.getSession()).data.session.user.id
       });
-      h += '</tbody></table>';
+      if (error) throw error;
+      nameInput.value = '';
+      fnRenderList();
+    } catch (e) {
+      alert('Error adding item: ' + e.message);
     }
-    list.innerHTML = h;
+  };
+
+  window.fnDeleteItem = async function(id) {
+    if (!confirm('Delete this item?')) return;
+    try {
+      var { error } = await sb.from('fortnightly_items').delete().eq('id', id);
+      if (error) throw error;
+      fnRenderList();
+    } catch (e) {
+      alert('Error deleting item: ' + e.message);
+    }
+  };
+
+  window.fnRenderList = async function() {
+    try {
+      var { data: items, error } = await sb.from('fortnightly_items').select('*').order('created_at', { ascending: false });
+      if (error) throw error;
+      var list = document.getElementById('fn-items-list');
+      var h = '';
+      if (!items || items.length === 0) {
+        h = '<div style="padding:16px !important;text-align:center !important;color:#94a3b8 !important;font-size:13px !important;">No items yet</div>';
+      } else {
+        h = '<table style="width:100% !important;border-collapse:collapse !important;">';
+        h += '<thead style="background:#f8fafc !important;"><tr style="border-bottom:1px solid #e2e8f0 !important;">';
+        h += '<th style="padding:12px 16px !important;text-align:left !important;font-size:11px !important;font-weight:700 !important;color:#64748b !important;text-transform:uppercase !important;">Item</th>';
+        h += '<th style="padding:12px 16px !important;text-align:right !important;font-size:11px !important;font-weight:700 !important;color:#64748b !important;text-transform:uppercase !important;">Action</th>';
+        h += '</tr></thead>';
+        h += '<tbody>';
+        items.forEach(function(item) {
+          h += '<tr style="border-bottom:1px solid #e2e8f0 !important;">';
+          h += '<td style="padding:12px 16px !important;font-size:13px !important;color:#1e293b !important;">' + esc(item.name) + '</td>';
+          h += '<td style="padding:12px 16px !important;text-align:right !important;"><button onclick="fnDeleteItem(\'' + item.id + '\')" style="background:#ef4444 !important;color:white !important;border:none !important;border-radius:6px !important;padding:6px 12px !important;font-size:12px !important;cursor:pointer !important;">Delete</button></td>';
+          h += '</tr>';
+        });
+        h += '</tbody></table>';
+      }
+      list.innerHTML = h;
+    } catch (e) {
+      document.getElementById('fn-items-list').innerHTML = '<div style="padding:16px !important;color:#ef4444 !important;font-size:12px !important;">Error loading items</div>';
+    }
   };
 
   // Initialize fortnightly list on page load
   window.addEventListener('load', function() {
-    setTimeout(fnRenderList, 100);
+    setTimeout(function() { fnRenderList(); }, 100);
   });
 
   // ─── Render Zone Grid ───
