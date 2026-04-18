@@ -1707,6 +1707,10 @@
         <div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:14px !important;margin-bottom:16px !important;">
           <div style="display:flex !important;flex-direction:column !important;gap:10px !important;">
             <input type="text" id="fn-item-name" placeholder="Add item" style="width:100% !important;padding:10px 12px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:14px !important;box-sizing:border-box !important;">
+            <select id="fn-item-week" style="width:100% !important;padding:10px 12px !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;font-size:14px !important;background:white !important;color:#1e293b !important;">
+              <option value="A">Week A</option>
+              <option value="B">Week B</option>
+            </select>
             <button onclick="fnAddItem()" style="width:100% !important;padding:10px !important;background:#3b82f6 !important;color:white !important;border:none !important;border-radius:8px !important;font-size:14px !important;font-weight:600 !important;cursor:pointer !important;">+ Add</button>
           </div>
         </div>
@@ -7279,12 +7283,15 @@
   // ─── Fortnightly Item Management ───
   window.fnAddItem = async function() {
     var nameInput = document.getElementById('fn-item-name');
+    var weekSelect = document.getElementById('fn-item-week');
     var name = nameInput.value.trim();
+    var week = weekSelect.value;
     if (!name) { alert('Enter item name'); return; }
 
     try {
       var { data: result, error } = await sb.from('fortnightly_items').insert({
         name: name,
+        week: week,
         user_id: (await sb.auth.getSession()).data.session.user.id
       });
       if (error) throw error;
@@ -7308,22 +7315,28 @@
 
   window.fnRenderList = async function() {
     try {
-      var { data: items, error } = await sb.from('fortnightly_items').select('*').order('created_at', { ascending: false });
+      var { data: items, error } = await sb.from('fortnightly_items').select('*').order('week, created_at', { ascending: true });
       if (error) throw error;
       var list = document.getElementById('fn-items-list');
       var h = '';
       if (!items || items.length === 0) {
         h = '<div style="padding:16px !important;text-align:center !important;color:#94a3b8 !important;font-size:13px !important;">No items yet</div>';
       } else {
+        var currentWeek = zbGetFortnightWeek();
         h = '<table style="width:100% !important;border-collapse:collapse !important;">';
         h += '<thead style="background:#f8fafc !important;"><tr style="border-bottom:1px solid #e2e8f0 !important;">';
         h += '<th style="padding:12px 16px !important;text-align:left !important;font-size:11px !important;font-weight:700 !important;color:#64748b !important;text-transform:uppercase !important;">Item</th>';
+        h += '<th style="padding:12px 16px !important;text-align:left !important;font-size:11px !important;font-weight:700 !important;color:#64748b !important;text-transform:uppercase !important;">Week</th>';
         h += '<th style="padding:12px 16px !important;text-align:right !important;font-size:11px !important;font-weight:700 !important;color:#64748b !important;text-transform:uppercase !important;">Action</th>';
         h += '</tr></thead>';
         h += '<tbody>';
         items.forEach(function(item) {
-          h += '<tr style="border-bottom:1px solid #e2e8f0 !important;">';
-          h += '<td style="padding:12px 16px !important;font-size:13px !important;color:#1e293b !important;">' + esc(item.name) + '</td>';
+          var isCurrent = (item.week === currentWeek);
+          var bgColor = isCurrent ? '#ecfdf5' : 'transparent';
+          var fontWeight = isCurrent ? '600' : '400';
+          h += '<tr style="border-bottom:1px solid #e2e8f0 !important;background:' + bgColor + ' !important;">';
+          h += '<td style="padding:12px 16px !important;font-size:13px !important;color:#1e293b !important;font-weight:' + fontWeight + ' !important;">' + esc(item.name) + '</td>';
+          h += '<td style="padding:12px 16px !important;font-size:12px !important;color:#64748b !important;font-weight:' + fontWeight + ' !important;">Week ' + item.week + (isCurrent ? ' (now)' : '') + '</td>';
           h += '<td style="padding:12px 16px !important;text-align:right !important;"><button onclick="fnDeleteItem(\'' + item.id + '\')" style="background:#ef4444 !important;color:white !important;border:none !important;border-radius:6px !important;padding:6px 12px !important;font-size:12px !important;cursor:pointer !important;">Delete</button></td>';
           h += '</tr>';
         });
