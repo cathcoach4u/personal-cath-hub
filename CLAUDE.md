@@ -75,18 +75,45 @@ Three separate, independent Claude services. Any can be swapped for alternatives
 
 ## database schema
 
-- `shopping_items` — name, category, store, checked, created_at
-- `personal_todos` — task, done, category, due_date, created_at
+### shopping & household
+- `shopping_items` — name, category, store, checked, created_at, user_id
+- `master_items` — name, category, store, family_member, last_price, user_id
+- `meal_plans` — day_index, meal data, user_id
+- `personal_todos` — task, done, category, due_date, created_at, user_id
 - `fiona_tasks` — task, done, created_at
-- `habit_meds` — id, name, freq ['daily', 'asneeded']
-- `habit_logs` — med_id, date, created_at
-- `medications` — name, dose, schedule, purpose
-- `medical_sessions` — date, duration, plan, practitioner
-- `master_items` — name, category, store, family_member, last_price
-- `receipts` — store, receipt_date, total, uploaded_at
-- `receipt_items` — item_name, price, receipt_id
-- `meal_plans` — day_index, meal data
-- `ai_memory` — fact, created_at (persistent memory)
+
+### medical & health
+- `medications` — name, dose, schedule, purpose, user_id
+- `medical_sessions` — date, duration, plan, practitioner, user_id
+- `mental_health_sessions` — date, mood, notes, user_id
+- `habit_meds` — id, name, freq ['daily', 'asneeded'], user_id
+- `habit_logs` — med_id, date, created_at, user_id
+
+### rhythms (daily, weekly, fortnightly, 6-monthly, annual)
+- `daily_items` — id, name, section ['morning','midday','evening'], day_type ['weekday','weekend'], user_id
+- `daily_logs` — item_id, log_date, user_id
+- `weekly_items` — id, name, user_id
+- `weekly_logs` — item_id, logged_date, user_id
+- `fortnightly_items` — id, name, user_id, created_at
+- `fortnightly_logs` — item_id, logged_date, user_id
+- `sixmonthly_items` — id, name, user_id, created_at
+- `sixmonthly_logs` — item_id, logged_date, user_id
+- `annual_items` — id, name, user_id, created_at
+- `annual_logs` — item_id, logged_date, user_id
+
+### fitness
+- `workout_sessions` — date, duration, type, notes, user_id
+- `workout_exercises` — session_id, name, sets, reps, weight, user_id
+- `workout_sets` — exercise_id, set_num, reps, weight, user_id
+
+### shopping receipts
+- `receipts` — store, receipt_date, total, uploaded_at, user_id
+- `receipt_items` — item_name, price, receipt_id, user_id
+
+### ai & memory
+- `ai_memory` — fact, created_at, user_id (persistent memory for AI chat)
+
+### storage
 - Storage bucket: `receipts` — receipt images/PDFs
 
 ## design system
