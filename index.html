@@ -4444,15 +4444,23 @@
         html = '<div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:16px !important;text-align:center !important;color:#94a3b8 !important;font-size:13px !important;">No fortnightly items yet</div>';
       } else {
         html = '<div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;overflow:hidden !important;">';
+        html += '<table style="width:100% !important;border-collapse:collapse !important;">';
+        html += '<thead style="background:#f8fafc !important;"><tr style="border-bottom:1px solid #e2e8f0 !important;">';
+        html += '<th style="padding:12px 16px !important;text-align:left !important;font-size:11px !important;font-weight:700 !important;color:#64748b !important;text-transform:uppercase !important;">Item</th>';
+        html += '<th style="padding:12px 16px !important;text-align:left !important;font-size:11px !important;font-weight:700 !important;color:#64748b !important;text-transform:uppercase !important;">Last</th>';
+        html += '<th style="padding:12px 16px !important;text-align:right !important;font-size:11px !important;font-weight:700 !important;color:#64748b !important;text-transform:uppercase !important;">Action</th>';
+        html += '</tr></thead>';
+        html += '<tbody>';
         items.forEach(function(item) {
           var itemLogs = logs[item.id] || [];
           var lastLog = itemLogs.length > 0 ? new Date(itemLogs[itemLogs.length - 1]).toLocaleDateString('en-AU', {weekday:'short', day:'numeric', month:'short'}) : 'Never';
-          html += '<div style="display:flex !important;justify-content:space-between !important;align-items:center !important;padding:12px 16px !important;border-bottom:1px solid #e2e8f0 !important;">';
-          html += '<div style="flex:1 !important;"><div style="font-size:13px !important;font-weight:600 !important;color:#1e293b !important;">' + esc(item.name) + '</div>';
-          html += '<div style="font-size:11px !important;color:#94a3b8 !important;margin-top:4px !important;">Last: ' + lastLog + '</div></div>';
-          html += '<button onclick="hhLogFortnightlyItem(\'' + item.id + '\')" style="background:#10b981 !important;color:white !important;border:none !important;border-radius:6px !important;padding:6px 12px !important;font-size:12px !important;cursor:pointer !important;">Log</button>';
-          html += '</div>';
+          html += '<tr style="border-bottom:1px solid #e2e8f0 !important;">';
+          html += '<td style="padding:12px 16px !important;font-size:13px !important;font-weight:600 !important;color:#1e293b !important;">' + esc(item.name) + '</td>';
+          html += '<td style="padding:12px 16px !important;font-size:12px !important;color:#94a3b8 !important;">' + lastLog + '</td>';
+          html += '<td style="padding:12px 16px !important;text-align:right !important;"><button onclick="hhLogFortnightlyItem(\'' + item.id + '\')" style="background:#10b981 !important;color:white !important;border:none !important;border-radius:6px !important;padding:6px 12px !important;font-size:12px !important;cursor:pointer !important;">Log</button></td>';
+          html += '</tr>';
         });
+        html += '</tbody></table>';
         html += '</div>';
       }
       document.getElementById('hh-fortnightly-list').innerHTML = html;
@@ -7125,14 +7133,21 @@
     var list = document.getElementById('fn-items-list');
     var h = '';
     if (items.length === 0) {
-      h = '<div style="padding:16px !important;text-align:center !important;color:#94a3b8 !important;">No items yet</div>';
+      h = '<div style="padding:16px !important;text-align:center !important;color:#94a3b8 !important;font-size:13px !important;">No items yet</div>';
     } else {
+      h = '<table style="width:100% !important;border-collapse:collapse !important;">';
+      h += '<thead style="background:#f8fafc !important;"><tr style="border-bottom:1px solid #e2e8f0 !important;">';
+      h += '<th style="padding:12px 16px !important;text-align:left !important;font-size:11px !important;font-weight:700 !important;color:#64748b !important;text-transform:uppercase !important;">Item</th>';
+      h += '<th style="padding:12px 16px !important;text-align:right !important;font-size:11px !important;font-weight:700 !important;color:#64748b !important;text-transform:uppercase !important;">Action</th>';
+      h += '</tr></thead>';
+      h += '<tbody>';
       items.forEach(function(item) {
-        h += '<div style="display:flex !important;align-items:center !important;justify-content:space-between !important;padding:12px 16px !important;border-bottom:1px solid #e2e8f0 !important;">';
-        h += '<div style="font-size:13px !important;">' + esc(item.name) + '</div>';
-        h += '<button onclick="fnDeleteItem(\'' + item.id + '\')" style="background:#ef4444 !important;color:white !important;border:none !important;border-radius:6px !important;padding:6px 12px !important;font-size:12px !important;cursor:pointer !important;">Delete</button>';
-        h += '</div>';
+        h += '<tr style="border-bottom:1px solid #e2e8f0 !important;">';
+        h += '<td style="padding:12px 16px !important;font-size:13px !important;color:#1e293b !important;">' + esc(item.name) + '</td>';
+        h += '<td style="padding:12px 16px !important;text-align:right !important;"><button onclick="fnDeleteItem(\'' + item.id + '\')" style="background:#ef4444 !important;color:white !important;border:none !important;border-radius:6px !important;padding:6px 12px !important;font-size:12px !important;cursor:pointer !important;">Delete</button></td>';
+        h += '</tr>';
       });
+      h += '</tbody></table>';
     }
     list.innerHTML = h;
   };
