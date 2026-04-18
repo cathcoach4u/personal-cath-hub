@@ -593,7 +593,7 @@
 
 <div id="cathHub">
   <div style="position:fixed !important;top:16px !important;right:16px !important;display:flex !important;flex-direction:column !important;align-items:flex-end !important;gap:4px !important;z-index:10 !important;">
-    <div class="version-badge">Cath Hub v6.6</div>
+    <div class="version-badge">Cath Hub v6.7</div>
     <div id="today-date-badge" style="font-size:11px !important;font-weight:600 !important;color:#1e293b !important;background:#f1f5f9 !important;padding:3px 8px !important;border-radius:6px !important;border:1px solid #cbd5e1 !important;min-height:16px !important;display:flex !important;align-items:center !important;white-space:nowrap !important;">--/--/----</div>
   </div>
 
@@ -601,7 +601,7 @@
   <div class="mobile-top-bar">
     <button class="hamburger-btn" onclick="toggleMobileNav()" aria-label="Menu">&#x2630;</button>
     <h1>&#x1F3E0; Cath Hub</h1>
-    <div style="font-size:10px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:4px 8px !important;border-radius:99px !important;">v6.6</div>
+    <div style="font-size:10px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:4px 8px !important;border-radius:99px !important;">v6.7</div>
   </div>
 
   <!-- Mobile slide-out drawer -->
@@ -645,7 +645,7 @@
     <button class="nav-item" onclick="chNav('about',this)"><span class="icon">&#x2139;&#xFE0F;</span> About</button>
     <div class="sidebar-footer">
       <div style="display:flex !important;align-items:center !important;gap:6px !important;margin-bottom:8px !important;">
-        <div style="font-size:10px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:2px 8px !important;border-radius:99px !important;">v6.6</div>
+        <div style="font-size:10px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:2px 8px !important;border-radius:99px !important;">v6.7</div>
       </div>
       <div style="display:flex !important;align-items:center !important;gap:6px !important;margin-bottom:6px !important;">
         <span style="font-size:12px !important;color:rgba(255,255,255,0.5) !important;">&#x1F319;</span>
@@ -748,7 +748,7 @@
             <div id="dash-daily-meds" style="font-size:16px !important;font-weight:700 !important;color:#3b82f6 !important;">-</div>
             <div style="font-size:10px !important;color:#94a3b8 !important;margin-top:4px !important;">today (top 3)</div>
           </div>
-          <div onclick="chNav('habit-history')" style="cursor:pointer !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:12px !important;text-align:center !important;transition:all 0.2s !important;" onmouseover="this.style.borderColor='#10b981 !important'" onmouseout="this.style.borderColor='#e2e8f0 !important'">
+          <div onclick="chNav('habits')" style="cursor:pointer !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:12px !important;text-align:center !important;transition:all 0.2s !important;" onmouseover="this.style.borderColor='#10b981 !important'" onmouseout="this.style.borderColor='#e2e8f0 !important'">
             <div style="font-size:11px !important;font-weight:700 !important;color:#64748b !important;text-transform:uppercase !important;margin-bottom:6px !important;">📅 Weekly Meds</div>
             <div id="dash-weekly-meds" style="font-size:16px !important;font-weight:700 !important;color:#10b981 !important;">-</div>
             <div style="font-size:10px !important;color:#94a3b8 !important;margin-top:4px !important;">this week</div>
@@ -1882,7 +1882,7 @@
       <!-- Version -->
       <div style="background:#ecfdf5 !important;border:1px solid #d1fae5 !important;border-radius:10px !important;padding:14px 16px !important;margin-bottom:16px !important;display:flex !important;align-items:center !important;justify-content:space-between !important;">
         <div style="font-size:13px !important;color:#065f46 !important;"><strong>Current version</strong></div>
-        <div style="font-size:12px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:2px 10px !important;border-radius:99px !important;">v6.6</div>
+        <div style="font-size:12px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:2px 10px !important;border-radius:99px !important;">v6.7</div>
       </div>
 
       <!-- Overview -->
@@ -8290,11 +8290,11 @@
 
       var weeklyDone = 0;
       var weekKeys = [];
+      var n = new Date(), d = n.getDay();
+      var mon = new Date(n); mon.setDate(n.getDate() - (d === 0 ? 6 : d-1));
       for (var i = 0; i < 7; i++) {
-        var d = new Date();
-        d.setDate(d.getDate() - new Date().getDay() + i);
-        var dk = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-        weekKeys.push(dk);
+        var x = new Date(mon); x.setDate(mon.getDate()+i);
+        weekKeys.push(x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0'));
       }
       weekly.forEach(function(m){ weekKeys.forEach(function(dk){ if(logsMap[m.id]&&logsMap[m.id][dk]) weeklyDone++; }); });
 
