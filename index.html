@@ -733,8 +733,8 @@
             <div id="dash-weekly-items" style="font-size:13px !important;color:#64748b !important;">Loading...</div>
           </div>
           <div style="background:#fef3c7 !important;border:1px solid #fcd34d !important;border-radius:10px !important;padding:12px !important;">
-            <div style="font-size:11px !important;font-weight:700 !important;color:#b45309 !important;text-transform:uppercase !important;margin-bottom:6px !important;">Streaks 🔥</div>
-            <div id="dash-streaks" style="font-size:13px !important;color:#64748b !important;">Loading...</div>
+            <div style="font-size:11px !important;font-weight:700 !important;color:#b45309 !important;text-transform:uppercase !important;margin-bottom:6px !important;">✅ To-Do</div>
+            <div id="dash-todo-list" style="font-size:13px !important;color:#64748b !important;">Loading...</div>
           </div>
         </div>
       </div>
@@ -8101,16 +8101,16 @@
 
   // ─── Dashboard Data Renderers ───
   window.dashRenderAllData = async function() {
-    dashRenderQuickWins();
-    dashRenderHealth();
-    dashRenderProductivity();
-    dashRenderFocusArea();
+    await dashRenderQuickWins();
+    await dashRenderHealth();
+    await dashRenderProductivity();
+    await dashRenderFocusArea();
   };
 
   window.dashRenderQuickWins = async function() {
     try {
       var userId = (await sb.auth.getSession()).data.session.user.id;
-      var { data: weeklyItems } = await sb.from('weekly_items').select('name').limit(3);
+      var { data: weeklyItems } = await sb.from('weekly_items').select('name').eq('user_id', userId).limit(3);
       var weeklyHtml = weeklyItems && weeklyItems.length ? weeklyItems.map(function(i) { return '✓ ' + esc(i.name); }).join('<br>') : 'No weekly items';
       document.getElementById('dash-weekly-items').innerHTML = weeklyHtml;
     } catch(e) {
@@ -8120,11 +8120,11 @@
     try {
       var today = new Date().toISOString().split('T')[0];
       var userId = (await sb.auth.getSession()).data.session.user.id;
-      var { data: dailyLogs } = await sb.from('daily_logs').select('item_id').eq('user_id', userId).gte('log_date', new Date(new Date().setDate(new Date().getDate()-7)).toISOString().split('T')[0]);
-      var streaks = dailyLogs ? Object.keys(dailyLogs.reduce(function(acc, log) { acc[log.item_id] = (acc[log.item_id] || 0) + 1; return acc; }, {})).filter(function(k) { return dailyLogs.filter(function(l) { return l.item_id === k; }).length >= 5; }) : [];
-      document.getElementById('dash-streaks').innerHTML = streaks.length > 0 ? streaks.length + ' active streaks' : 'Build your streaks!';
+      var { data: todos } = await sb.from('personal_todos').select('task').eq('user_id', userId).eq('done', false).eq('due_date', today).limit(3);
+      var todoHtml = todos && todos.length ? todos.map(function(t) { return '• ' + esc(t.task); }).join('<br>') : 'No tasks due today';
+      document.getElementById('dash-todo-list').innerHTML = todoHtml;
     } catch(e) {
-      document.getElementById('dash-streaks').innerHTML = 'Error loading';
+      document.getElementById('dash-todo-list').innerHTML = 'Error loading';
     }
   };
 
