@@ -8225,7 +8225,7 @@
         document.getElementById('dash-weekly-items').innerHTML = 'All done!';
         return;
       }
-      var weeklyHtml = activeItems.map(function(i) { return '<a href="#" onclick="dashLogWeeklyItem(' + i.id + '); return false;" style="color:#10b981 !important;text-decoration:none !important;cursor:pointer !important;">✓ ' + esc(i.name) + '</a>'; }).join('<br>');
+      var weeklyHtml = activeItems.map(function(i) { return '<div style="display:flex !important;align-items:center !important;gap:8px !important;padding:6px 0 !important;"><input type="checkbox" onclick="dashLogWeeklyItem(' + i.id + ')" style="cursor:pointer !important;width:18px !important;height:18px !important;" /><label style="cursor:pointer !important;flex:1 !important;margin:0 !important;color:#1e293b !important;font-size:13px !important;">' + esc(i.name) + '</label></div>'; }).join('');
       document.getElementById('dash-weekly-items').innerHTML = weeklyHtml;
     } catch(e) {
       document.getElementById('dash-weekly-items').innerHTML = 'Error loading weekly items';
