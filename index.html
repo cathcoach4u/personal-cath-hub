@@ -8300,7 +8300,7 @@
       document.getElementById('dash-weekly-meds').innerHTML = html;
     } catch(e) {
       console.log('Weekly meds error:', e);
-      document.getElementById('dash-weekly-meds').textContent = '-';
+      document.getElementById('dash-weekly-meds').innerHTML = 'Error: ' + (e.message || 'unknown');
     }
 
     try {
