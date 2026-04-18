@@ -7667,9 +7667,7 @@
 
   window.weeklyRenderItems = async function() {
     try {
-      var session = await sb.auth.getSession();
-      var userId = session && session.data && session.data.session ? session.data.session.user.id : null;
-      var { data: items, error } = await sb.from('weekly_items').select('*').eq('user_id', userId).order('section', { ascending: true }).order('created_at', { ascending: false });
+      var { data: items, error } = await sb.from('weekly_items').select('*').order('section', { ascending: true }).order('created_at', { ascending: false });
       if (error) throw error;
       var list = document.getElementById('weekly-items-list');
       var h = '';
@@ -8207,8 +8205,8 @@
       var wk = window.weekKeys();
       var weekStart = wk[0];
 
-      console.log('Dashboard userId:', userId, 'weekStart:', weekStart);
-      var { data: weeklyItems, error } = await sb.from('weekly_items').select('*').eq('user_id', userId).order('created_at', { ascending: true });
+      console.log('Dashboard weekStart:', weekStart);
+      var { data: weeklyItems, error } = await sb.from('weekly_items').select('*').order('created_at', { ascending: true });
       if (error) throw error;
       console.log('Weekly items from DB:', weeklyItems);
 
