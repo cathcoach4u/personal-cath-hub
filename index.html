@@ -569,13 +569,16 @@
 </div>
 
 <div id="cathHub">
-  <div class="version-badge">Cath Hub v4.28</div>
+  <div style="position:fixed !important;top:16px !important;right:16px !important;display:flex !important;flex-direction:column !important;align-items:flex-end !important;gap:4px !important;z-index:10 !important;">
+    <div class="version-badge">Cath Hub v5.4</div>
+    <div id="today-date-badge" style="font-size:11px !important;font-weight:600 !important;color:#1e293b !important;background:#f1f5f9 !important;padding:3px 8px !important;border-radius:6px !important;border:1px solid #cbd5e1 !important;min-height:16px !important;display:flex !important;align-items:center !important;white-space:nowrap !important;">--/--/----</div>
+  </div>
 
   <!-- Mobile top bar -->
   <div class="mobile-top-bar">
     <button class="hamburger-btn" onclick="toggleMobileNav()" aria-label="Menu">&#x2630;</button>
     <h1>&#x1F3E0; Cath Hub</h1>
-    <div style="font-size:10px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:4px 8px !important;border-radius:99px !important;">v4.28</div>
+    <div style="font-size:10px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:4px 8px !important;border-radius:99px !important;">v5.4</div>
   </div>
 
   <!-- Mobile slide-out drawer -->
@@ -617,7 +620,7 @@
     <button class="nav-item" onclick="chNav('about',this)"><span class="icon">&#x2139;&#xFE0F;</span> About</button>
     <div class="sidebar-footer">
       <div style="display:flex !important;align-items:center !important;gap:6px !important;margin-bottom:8px !important;">
-        <div style="font-size:10px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:2px 8px !important;border-radius:99px !important;">v4.28</div>
+        <div style="font-size:10px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:2px 8px !important;border-radius:99px !important;">v5.4</div>
       </div>
       <div style="display:flex !important;align-items:center !important;gap:6px !important;margin-bottom:6px !important;">
         <span style="font-size:12px !important;color:rgba(255,255,255,0.5) !important;">&#x1F319;</span>
@@ -1721,7 +1724,7 @@
       <!-- Version -->
       <div style="background:#ecfdf5 !important;border:1px solid #d1fae5 !important;border-radius:10px !important;padding:14px 16px !important;margin-bottom:16px !important;display:flex !important;align-items:center !important;justify-content:space-between !important;">
         <div style="font-size:13px !important;color:#065f46 !important;"><strong>Current version</strong></div>
-        <div style="font-size:12px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:2px 10px !important;border-radius:99px !important;">v4.28</div>
+        <div style="font-size:12px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:2px 10px !important;border-radius:99px !important;">v5.4</div>
       </div>
 
       <!-- Overview -->
@@ -6347,6 +6350,155 @@
     dashRenderWater();
   };
 
+  // ─── Dashboard Data Renderers ───
+  window.dashRenderAllData = async function() {
+    await dashRenderQuickWins();
+    await dashRenderHealth();
+    await dashRenderProductivity();
+    await dashRenderFocusArea();
+  };
+
+  window.dashRenderQuickWins = async function() {
+    try {
+      var { data: weeklyItems, error } = await sb.from('weekly_items').select('*').order('created_at', { ascending: true });
+      if (error) throw error;
+      if (!weeklyItems || !weeklyItems.length) {
+        document.getElementById('dash-weekly-items').innerHTML = 'No weekly items';
+        return;
+      }
+      var weeklyHtml = weeklyItems.map(function(i) { return '<a href="#" onclick="chNav(\'habits2\'); setTimeout(function(){zbTab(\'weekly\')},100); return false;" style="color:#10b981 !important;text-decoration:none !important;">✓ ' + esc(i.name) + '</a>'; }).join('<br>');
+      document.getElementById('dash-weekly-items').innerHTML = weeklyHtml;
+    } catch(e) {
+      document.getElementById('dash-weekly-items').innerHTML = 'Error loading weekly items';
+    }
+
+    try {
+      var { data: todos, error } = await sb.from('personal_todos').select('*').eq('done', false).order('created_at', { ascending: true });
+      if (error) throw error;
+      if (!todos || !todos.length) {
+        document.getElementById('dash-todo-list').innerHTML = 'No tasks';
+        return;
+      }
+      var todoHtml = todos.map(function(t) { return '<a href="#" onclick="chNav(\'todo\'); return false;" style="color:#3b82f6 !important;text-decoration:none !important;">• ' + esc(t.task) + '</a>'; }).join('<br>');
+      document.getElementById('dash-todo-list').innerHTML = todoHtml;
+    } catch(e) {
+      document.getElementById('dash-todo-list').innerHTML = 'Error: ' + (e.message || 'unknown');
+    }
+  };
+
+  window.dashRenderHealth = async function() {
+    try {
+      var session = await sb.auth.getSession();
+      if (!session || !session.data || !session.data.session) {
+        document.getElementById('dash-daily-meds').textContent = '-';
+        document.getElementById('dash-weekly-meds').textContent = '-';
+        document.getElementById('dash-mental-sessions').textContent = '-';
+        return;
+      }
+      var userId = session.data.session.user.id;
+      var today = new Date().toISOString().split('T')[0];
+      var weekStart = new Date(new Date().setDate(new Date().getDate() - new Date().getDay())).toISOString().split('T')[0];
+
+    try {
+      var dailyMedsEl = document.getElementById('hab-daily-done');
+      if (dailyMedsEl) {
+        var count = dailyMedsEl.textContent || '0';
+        var html = '<a href="#" onclick="chNav(\'habits\'); return false;" style="color:#3b82f6 !important;text-decoration:none !important;cursor:pointer !important;font-size:18px !important;font-weight:bold !important;">' + count + '</a><div style="font-size:11px !important;color:#94a3b8 !important;">taken today</div>';
+        document.getElementById('dash-daily-meds').innerHTML = html;
+      } else {
+        document.getElementById('dash-daily-meds').textContent = '-';
+      }
+    } catch(e) {
+      console.log('Daily meds error:', e);
+      document.getElementById('dash-daily-meds').innerHTML = 'Error: ' + (e.message || 'unknown');
+    }
+
+    try {
+      var { data: allHabits } = await sb.from('habit_meds').select('id').eq('user_id', userId);
+      console.log('Weekly meds habits:', allHabits);
+      if (allHabits && allHabits.length > 0) {
+        var { data: weekLogs } = await sb.from('habit_logs').select('med_id,date').eq('user_id', userId).gte('date', weekStart);
+        console.log('Week logs:', weekLogs);
+        var uniqueMeds = new Set();
+        if (weekLogs) {
+          weekLogs.forEach(function(log) { uniqueMeds.add(log.med_id); });
+        }
+        var medsLogged = uniqueMeds.size;
+        var totalMeds = allHabits.length;
+        document.getElementById('dash-weekly-meds').textContent = medsLogged + '/' + totalMeds;
+      } else {
+        document.getElementById('dash-weekly-meds').textContent = '➕ Start tracking';
+      }
+    } catch(e) {
+      console.log('Weekly meds error:', e);
+      document.getElementById('dash-weekly-meds').textContent = '-';
+    }
+
+    try {
+      var { data: mhSessions } = await sb.from('mental_health_sessions').select('id').eq('user_id', userId).gte('date', today).order('date');
+      console.log('Mental health sessions:', mhSessions);
+      var count = mhSessions ? mhSessions.length : 0;
+      document.getElementById('dash-mental-sessions').textContent = count > 0 ? count + ' planned' : 'Schedule session';
+    } catch(e) {
+      console.log('Mental health error:', e);
+      document.getElementById('dash-mental-sessions').textContent = 'Schedule session';
+    }
+    } catch(e) {
+      console.error('dashRenderHealth error:', e);
+      document.getElementById('dash-daily-meds').textContent = '-';
+      document.getElementById('dash-weekly-meds').textContent = '-';
+      document.getElementById('dash-mental-sessions').textContent = '-';
+    }
+  };
+
+  window.dashRenderProductivity = async function() {
+    try {
+      var userId = (await sb.auth.getSession()).data.session.user.id;
+      var { data: workouts } = await sb.from('workout_sessions').select('date,type').eq('user_id', userId).order('date', { ascending: false }).limit(1);
+      if (workouts && workouts.length) {
+        var daysAgo = Math.floor((new Date() - new Date(workouts[0].date)) / (24*60*60*1000));
+        document.getElementById('dash-last-workout').textContent = daysAgo + 'd ago';
+      } else {
+        document.getElementById('dash-last-workout').textContent = 'None yet';
+      }
+    } catch(e) {
+      document.getElementById('dash-last-workout').textContent = '-';
+    }
+
+    try {
+      var today = new Date().toISOString().split('T')[0];
+      var userId = (await sb.auth.getSession()).data.session.user.id;
+      var { data: todos } = await sb.from('personal_todos').select('id').eq('user_id', userId).eq('done', false).lte('due_date', today);
+      document.getElementById('dash-todo-count').textContent = (todos || []).length;
+    } catch(e) {
+      document.getElementById('dash-todo-count').textContent = '-';
+    }
+
+    try {
+      var userId = (await sb.auth.getSession()).data.session.user.id;
+      var monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0];
+      var { data: receipts } = await sb.from('receipts').select('total').eq('user_id', userId).gte('receipt_date', monthStart);
+      var total = receipts ? receipts.reduce(function(sum, r) { return sum + (parseFloat(r.total) || 0); }, 0) : 0;
+      document.getElementById('dash-month-spend').textContent = '$' + total.toFixed(0);
+    } catch(e) {
+      document.getElementById('dash-month-spend').textContent = '-';
+    }
+  };
+
+  window.dashRenderFocusArea = async function() {
+    try {
+      var week = zbGetFortnightWeek();
+      var userId = (await sb.auth.getSession()).data.session.user.id;
+      var { data: items } = await sb.from('fortnightly_items').select('name').eq('user_id', userId).eq('week', week);
+      var text = 'Week ' + week;
+      if (items && items.length) {
+        text = 'Week ' + week + ': ' + items[0].name;
+      }
+      document.getElementById('dash-focus-text').textContent = text;
+    } catch(e) {
+      document.getElementById('dash-focus-text').textContent = 'Week -';
+    }
+  };
   // ═══════════════════════════════════════════════════
   // FEATURE: Shopping List Share
   // ═══════════════════════════════════════════════════
