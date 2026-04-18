@@ -8121,11 +8121,11 @@
       var today = new Date().toISOString().split('T')[0];
       var userId = (await sb.auth.getSession()).data.session.user.id;
       var { data: todos } = await sb.from('personal_todos').select('task').eq('user_id', userId).eq('done', false).lte('due_date', today).limit(3);
-      var todoHtml = todos && todos.length ? todos.map(function(t) { return '• ' + esc(t.task); }).join('<br>') : 'No overdue tasks';
+      var todoHtml = todos && todos.length ? todos.map(function(t) { return '• ' + esc(t.task); }).join('<br>') : '✓ All caught up';
       document.getElementById('dash-todo-list').innerHTML = todoHtml;
     } catch(e) {
       console.log('To-do error:', e);
-      document.getElementById('dash-todo-list').innerHTML = 'Error loading';
+      document.getElementById('dash-todo-list').innerHTML = '➕ Add your first task';
     }
   };
 
@@ -8153,7 +8153,7 @@
         var count = loggedMedIds.filter(function(id) { return topMeds.indexOf(id) !== -1; }).length;
         document.getElementById('dash-daily-meds').textContent = count + '/' + topMeds.length;
       } else {
-        document.getElementById('dash-daily-meds').textContent = '-';
+        document.getElementById('dash-daily-meds').textContent = '➕ Add meds';
       }
     } catch(e) {
       console.log('Daily meds error:', e);
@@ -8174,7 +8174,7 @@
         var totalMeds = allHabits.length;
         document.getElementById('dash-weekly-meds').textContent = medsLogged + '/' + totalMeds;
       } else {
-        document.getElementById('dash-weekly-meds').textContent = '-';
+        document.getElementById('dash-weekly-meds').textContent = '➕ Start tracking';
       }
     } catch(e) {
       console.log('Weekly meds error:', e);
@@ -8185,10 +8185,10 @@
       var { data: mhSessions } = await sb.from('mental_health_sessions').select('id').eq('user_id', userId).gte('date', today).order('date');
       console.log('Mental health sessions:', mhSessions);
       var count = mhSessions ? mhSessions.length : 0;
-      document.getElementById('dash-mental-sessions').textContent = count + ' planned';
+      document.getElementById('dash-mental-sessions').textContent = count > 0 ? count + ' planned' : 'Schedule session';
     } catch(e) {
       console.log('Mental health error:', e);
-      document.getElementById('dash-mental-sessions').textContent = '-';
+      document.getElementById('dash-mental-sessions').textContent = 'Schedule session';
     }
     } catch(e) {
       console.error('dashRenderHealth error:', e);
