@@ -4964,8 +4964,9 @@
         var isEvening = name.indexOf('evening') !== -1;
         var isBetamethasone = name.indexOf('betamethasone') !== -1 && name.indexOf('valerate') !== -1;
         var isMorning = name.indexOf('morning') !== -1;
-        // Exclude creams/ointments and other time variants, but include Betamethasone Morning and other regular meds
-        return !isCreamOintment && !isMidday && !isEvening && (!isBetamethasone || isMorning);
+        var isPlainBetamethasone = isBetamethasone && !isMorning && !isMidday && !isEvening;
+        // Exclude: creams/ointments, other time variants, plain Betamethasone
+        return !isCreamOintment && !isMidday && !isEvening && !isPlainBetamethasone;
       });
       var middayMeds = daily.filter(function(m){
         var name = m.name.toLowerCase();
@@ -4974,10 +4975,12 @@
       var creamsOintments = daily.filter(function(m){
         var name = m.name.toLowerCase();
         var isCreamOintment = name.indexOf('cream') !== -1 || name.indexOf('ointment') !== -1;
-        var isBetamethasonEvening = name.indexOf('betamethasone') !== -1 && name.indexOf('valerate') !== -1 && name.indexOf('evening') !== -1;
+        var isBetamethasone = name.indexOf('betamethasone') !== -1 && name.indexOf('valerate') !== -1;
+        var isBetamethasonEvening = isBetamethasone && name.indexOf('evening') !== -1;
+        var isPlainBetamethasone = isBetamethasone && name.indexOf('morning') === -1 && name.indexOf('midday') === -1 && name.indexOf('evening') === -1;
         var isMorningOrMidday = name.indexOf('morning') !== -1 || name.indexOf('midday') !== -1;
-        // Include creams/ointments (but not morning/midday ones) or specifically Betamethasone Evening
-        return (isCreamOintment && !isMorningOrMidday) || isBetamethasonEvening;
+        // Include creams/ointments (but not morning/midday) or specifically Betamethasone Evening, exclude plain Betamethasone
+        return ((isCreamOintment && !isMorningOrMidday) || isBetamethasonEvening) && !isPlainBetamethasone;
       });
       // Sort evening meds: Xobet first, then Betamethasone Valerate
       creamsOintments.sort(function(a, b) {
