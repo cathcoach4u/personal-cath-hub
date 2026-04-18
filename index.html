@@ -5106,13 +5106,15 @@
         var eh = '';
         for (var ei = 0; ei < creamsOintments.length; ei++) {
           var eitem = creamsOintments[ei];
-          var eDone = !!(logs[eitem.id] && logs[eitem.id][today]);
-          var eS = await streakFor(eitem.id, logs);
+          var baseId = eitem.id.replace('_evening', '');
+          var eDone = !!(logs[baseId] && logs[baseId][today]);
+          var eS = await streakFor(baseId, logs);
           eh += '<div class="hab-med-row">';
           eh += '<div class="hab-check'+(eDone?' done':'')+'" onclick="habToggleDaily('+eitem.id+')" style="cursor:pointer !important;"></div>';
           var eMedInfo = medsLookup[eitem.name.toLowerCase()];
           var eDoseStr = eMedInfo && eMedInfo.dose ? eMedInfo.dose : '';
-          eh += '<div style="flex:1 !important;"><div class="hab-med-name" style="margin-bottom:0 !important;">'+esc(eitem.name)+(eDoseStr ? ' <span style="font-size:10px !important;color:#94a3b8 !important;font-weight:400 !important;">'+esc(eDoseStr)+'</span>' : '')+'</div>';
+          var displayName = eitem.name.replace(/\s+cream/i, '').replace(/\s+ointment/i, '');
+          eh += '<div style="flex:1 !important;"><div class="hab-med-name" style="margin-bottom:0 !important;">'+esc(displayName)+(eDoseStr ? ' <span style="font-size:10px !important;color:#94a3b8 !important;font-weight:400 !important;">'+esc(eDoseStr)+'</span>' : '')+'</div>';
           if (eDone) {
             eh += '<div style="font-size:10px !important;color:#10b981 !important;">✓ Done</div>';
           }
