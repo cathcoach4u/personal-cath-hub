@@ -593,7 +593,7 @@
 
 <div id="cathHub">
   <div style="position:fixed !important;top:16px !important;right:16px !important;display:flex !important;flex-direction:column !important;align-items:flex-end !important;gap:4px !important;z-index:10 !important;">
-    <div class="version-badge">Cath Hub v4.87</div>
+    <div class="version-badge">Cath Hub v4.89</div>
     <div id="today-date-badge" style="font-size:11px !important;font-weight:600 !important;color:#1e293b !important;background:#f1f5f9 !important;padding:3px 8px !important;border-radius:6px !important;border:1px solid #cbd5e1 !important;min-height:16px !important;display:flex !important;align-items:center !important;white-space:nowrap !important;">--/--/----</div>
   </div>
 
@@ -601,7 +601,7 @@
   <div class="mobile-top-bar">
     <button class="hamburger-btn" onclick="toggleMobileNav()" aria-label="Menu">&#x2630;</button>
     <h1>&#x1F3E0; Cath Hub</h1>
-    <div style="font-size:10px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:4px 8px !important;border-radius:99px !important;">v4.87</div>
+    <div style="font-size:10px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:4px 8px !important;border-radius:99px !important;">v4.89</div>
   </div>
 
   <!-- Mobile slide-out drawer -->
@@ -645,7 +645,7 @@
     <button class="nav-item" onclick="chNav('about',this)"><span class="icon">&#x2139;&#xFE0F;</span> About</button>
     <div class="sidebar-footer">
       <div style="display:flex !important;align-items:center !important;gap:6px !important;margin-bottom:8px !important;">
-        <div style="font-size:10px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:2px 8px !important;border-radius:99px !important;">v4.87</div>
+        <div style="font-size:10px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:2px 8px !important;border-radius:99px !important;">v4.89</div>
       </div>
       <div style="display:flex !important;align-items:center !important;gap:6px !important;margin-bottom:6px !important;">
         <span style="font-size:12px !important;color:rgba(255,255,255,0.5) !important;">&#x1F319;</span>
@@ -688,95 +688,98 @@
         <button class="am-btn" onclick="dashQuickNav({value:'filing'})" style="padding:10px 14px !important;font-size:12px !important;text-align:center !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:12px !important;color:#1e293b !important;white-space:nowrap !important;align-self:stretch !important;display:flex !important;align-items:center !important;gap:6px !important;">&#x1F4C1; Filing</button>
       </div>
 
-      <!-- Two-column: Daily Habits + Daily Rhythm -->
-      <div style="display:grid !important;grid-template-columns:1fr 1fr !important;gap:10px !important;margin-bottom:12px !important;">
+      <!-- Quick Wins: This Week + Streaks -->
+      <div class="dash-section">
+        <h3 style="margin-bottom:0 !important;">⚡ Quick Wins</h3>
+        <div id="dash-quick-wins" style="display:grid !important;grid-template-columns:1fr 1fr !important;gap:10px !important;margin-top:10px !important;">
+          <div style="background:#f0fdf4 !important;border:1px solid #bbf7d0 !important;border-radius:10px !important;padding:12px !important;">
+            <div style="font-size:11px !important;font-weight:700 !important;color:#166534 !important;text-transform:uppercase !important;margin-bottom:6px !important;">This Week</div>
+            <div id="dash-weekly-items" style="font-size:13px !important;color:#64748b !important;">Loading...</div>
+          </div>
+          <div style="background:#fef3c7 !important;border:1px solid #fcd34d !important;border-radius:10px !important;padding:12px !important;">
+            <div style="font-size:11px !important;font-weight:700 !important;color:#b45309 !important;text-transform:uppercase !important;margin-bottom:6px !important;">Streaks 🔥</div>
+            <div id="dash-streaks" style="font-size:13px !important;color:#64748b !important;">Loading...</div>
+          </div>
+        </div>
+      </div>
 
-        <!-- Daily Habits Box (compact) -->
+      <!-- Health Dashboard -->
+      <div class="dash-section">
+        <h3 style="margin-bottom:0 !important;">💚 Health</h3>
+        <div style="display:grid !important;grid-template-columns:1fr 1fr 1fr !important;gap:10px !important;margin-top:10px !important;">
+          <div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:12px !important;text-align:center !important;">
+            <div style="font-size:11px !important;font-weight:700 !important;color:#64748b !important;text-transform:uppercase !important;margin-bottom:6px !important;">💊 Meds</div>
+            <div id="dash-meds-compliance" style="font-size:16px !important;font-weight:700 !important;color:#3b82f6 !important;">-</div>
+            <div style="font-size:10px !important;color:#94a3b8 !important;margin-top:4px !important;">this week</div>
+          </div>
+          <div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:12px !important;text-align:center !important;">
+            <div style="font-size:11px !important;font-weight:700 !important;color:#64748b !important;text-transform:uppercase !important;margin-bottom:6px !important;">😊 Mood</div>
+            <div id="dash-mood-trend" style="font-size:16px !important;font-weight:700 !important;color:#f59e0b !important;">-</div>
+            <div style="font-size:10px !important;color:#94a3b8 !important;margin-top:4px !important;">last 3 sessions</div>
+          </div>
+          <div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:12px !important;text-align:center !important;">
+            <div style="font-size:11px !important;font-weight:700 !important;color:#64748b !important;text-transform:uppercase !important;margin-bottom:6px !important;">📋 Medical</div>
+            <div id="dash-medical-next" style="font-size:13px !important;font-weight:700 !important;color:#ef4444 !important;">-</div>
+            <div style="font-size:10px !important;color:#94a3b8 !important;margin-top:4px !important;">next appt</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Productivity -->
+      <div class="dash-section">
+        <h3 style="margin-bottom:0 !important;">📈 Productivity</h3>
+        <div style="display:grid !important;grid-template-columns:1fr 1fr 1fr !important;gap:10px !important;margin-top:10px !important;">
+          <div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:12px !important;text-align:center !important;">
+            <div style="font-size:11px !important;font-weight:700 !important;color:#64748b !important;text-transform:uppercase !important;margin-bottom:6px !important;">💪 Workout</div>
+            <div id="dash-last-workout" style="font-size:13px !important;font-weight:700 !important;color:#10b981 !important;">-</div>
+            <div style="font-size:10px !important;color:#94a3b8 !important;margin-top:4px !important;">last session</div>
+          </div>
+          <div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:12px !important;text-align:center !important;">
+            <div style="font-size:11px !important;font-weight:700 !important;color:#64748b !important;text-transform:uppercase !important;margin-bottom:6px !important;">✅ To-Do</div>
+            <div id="dash-todo-count" style="font-size:16px !important;font-weight:700 !important;color:#3b82f6 !important;">-</div>
+            <div style="font-size:10px !important;color:#94a3b8 !important;margin-top:4px !important;">due today</div>
+          </div>
+          <div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:12px !important;text-align:center !important;">
+            <div style="font-size:11px !important;font-weight:700 !important;color:#64748b !important;text-transform:uppercase !important;margin-bottom:6px !important;">💰 Spending</div>
+            <div id="dash-month-spend" style="font-size:16px !important;font-weight:700 !important;color:#8b5cf6 !important;">-</div>
+            <div style="font-size:10px !important;color:#94a3b8 !important;margin-top:4px !important;">this month</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Focus Area: Fortnightly Prep -->
+      <div class="dash-section">
+        <h3 style="margin-bottom:0 !important;">🎯 Focus Area</h3>
+        <div id="dash-focus-area" style="background:#f3f4f6 !important;border:1px solid #d1d5db !important;border-radius:10px !important;padding:14px !important;margin-top:10px !important;text-align:center !important;">
+          <div style="font-size:13px !important;color:#374151 !important;">Loading focus area...</div>
+        </div>
+      </div>
+
+      <!-- Water Tracker + Morning Habits (kept from original) -->
+      <div style="display:grid !important;grid-template-columns:1fr 1fr !important;gap:10px !important;margin-top:12px !important;">
         <div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:12px !important;padding:12px !important;">
-          <div style="font-size:12px !important;font-weight:700 !important;color:#1e293b !important;margin-bottom:8px !important;">&#x2600;&#xFE0F; Daily Habits</div>
-
-          <!-- Fortnightly Week Indicator -->
+          <div style="font-size:12px !important;font-weight:700 !important;color:#1e293b !important;margin-bottom:8px !important;">&#x1F4A7; Water</div>
           <div style="display:flex !important;align-items:center !important;justify-content:space-between !important;margin-bottom:6px !important;">
-            <span id="dash-fortnight-pill" style="display:inline-block !important;padding:4px 10px !important;border-radius:99px !important;font-size:11px !important;font-weight:700 !important;background:#f0fdf4 !important;color:#166534 !important;border:1px solid #bbf7d0 !important;"></span>
-            <button onclick="dashSwapWeek()" style="background:none !important;border:none !important;font-size:10px !important;color:#3b82f6 !important;cursor:pointer !important;font-weight:500 !important;text-decoration:underline !important;font-family:inherit !important;">Swap</button>
+            <div style="font-size:11px !important;font-weight:600 !important;color:#1e293b !important;">Hydration</div>
+            <span style="font-size:10px !important;color:#64748b !important;" id="dash-water-label">0 / 8</span>
           </div>
-          <div id="dash-fortnight-cards" style="display:flex !important;flex-direction:column !important;gap:6px !important;margin-bottom:8px !important;"></div>
-
-          <!-- Morning Meds Reminder -->
-          <div id="dash-meds-btn" onclick="dashGoToMorningMeds()" style="display:flex !important;align-items:center !important;gap:8px !important;padding:8px 10px !important;background:#f0fdf4 !important;border:1px solid #bbf7d0 !important;border-radius:8px !important;margin-bottom:8px !important;cursor:pointer !important;">
-            <span style="font-size:16px !important;">&#x1F48A;</span>
-            <div style="flex:1 !important;">
-              <div style="font-size:12px !important;font-weight:600 !important;color:#166534 !important;">Log Medication</div>
-              <div style="font-size:10px !important;color:#15803d !important;">Tap to log</div>
-            </div>
-            <span style="font-size:12px !important;color:#86efac !important;">&#x276F;</span>
+          <div style="display:flex !important;gap:3px !important;align-items:center !important;">
+            <div id="dash-water-glasses" style="display:flex !important;gap:3px !important;flex:1 !important;flex-wrap:wrap !important;"></div>
+            <button onclick="dashAddWater()" style="padding:5px 8px !important;background:#3b82f6 !important;color:white !important;border:none !important;border-radius:6px !important;font-size:14px !important;cursor:pointer !important;line-height:1 !important;">+</button>
+            <button onclick="dashRemoveWater()" style="padding:5px 6px !important;background:#e2e8f0 !important;color:#64748b !important;border:none !important;border-radius:6px !important;font-size:14px !important;cursor:pointer !important;line-height:1 !important;">&minus;</button>
           </div>
-
-          <!-- Water Tracker -->
-          <div>
-            <div style="display:flex !important;align-items:center !important;justify-content:space-between !important;margin-bottom:6px !important;">
-              <div style="font-size:11px !important;font-weight:600 !important;color:#1e293b !important;">&#x1F4A7; Water</div>
-              <span style="font-size:10px !important;color:#64748b !important;" id="dash-water-label">0 / 8</span>
-            </div>
-            <div style="display:flex !important;gap:3px !important;align-items:center !important;">
-              <div id="dash-water-glasses" style="display:flex !important;gap:3px !important;flex:1 !important;flex-wrap:wrap !important;"></div>
-              <button onclick="dashAddWater()" style="padding:5px 8px !important;background:#3b82f6 !important;color:white !important;border:none !important;border-radius:6px !important;font-size:14px !important;cursor:pointer !important;line-height:1 !important;">+</button>
-              <button onclick="dashRemoveWater()" style="padding:5px 6px !important;background:#e2e8f0 !important;color:#64748b !important;border:none !important;border-radius:6px !important;font-size:14px !important;cursor:pointer !important;line-height:1 !important;">&minus;</button>
-            </div>
-            <div style="height:4px !important;background:#e2e8f0 !important;border-radius:2px !important;margin-top:6px !important;overflow:hidden !important;">
-              <div id="dash-water-bar" style="height:100% !important;background:#3b82f6 !important;border-radius:2px !important;transition:width 0.3s !important;width:0% !important;"></div>
-            </div>
+          <div style="height:4px !important;background:#e2e8f0 !important;border-radius:2px !important;margin-top:6px !important;overflow:hidden !important;">
+            <div id="dash-water-bar" style="height:100% !important;background:#3b82f6 !important;border-radius:2px !important;transition:width 0.3s !important;width:0% !important;"></div>
           </div>
         </div>
 
-        <!-- Morning Habits Link -->
         <div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:12px !important;padding:12px !important;">
-          <div onclick="chNav('habits');setTimeout(function(){zbTab('rhythms')},100)" style="cursor:pointer !important;display:flex !important;align-items:center !important;justify-content:space-between !important;padding:8px !important;background:#f0fdf4 !important;border:1px solid #bbf7d0 !important;border-radius:8px !important;">
+          <div onclick="chNav('habits2');setTimeout(function(){zbTab('morning')},100)" style="cursor:pointer !important;display:flex !important;align-items:center !important;justify-content:space-between !important;padding:8px !important;background:#f0fdf4 !important;border:1px solid #bbf7d0 !important;border-radius:8px !important;">
             <div>
-              <div style="font-size:12px !important;font-weight:700 !important;color:#166534 !important;">&#x2600;&#xFE0F; Morning Habits</div>
-              <div style="font-size:10px !important;color:#15803d !important;">View & track your routine</div>
+              <div style="font-size:12px !important;font-weight:700 !important;color:#166534 !important;">&#x2600;&#xFE0F; My Habits</div>
+              <div style="font-size:10px !important;color:#15803d !important;">View all rituals</div>
             </div>
             <span style="font-size:12px !important;color:#86efac !important;">&#x276F;</span>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="dash-section">
-        <div style="display:flex !important;justify-content:space-between !important;align-items:center !important;margin-bottom:12px !important;">
-          <h3 style="margin-bottom:0 !important;">&#x2705; My To-Do</h3>
-          <span style="font-size:12px !important;color:#3b82f6 !important;cursor:pointer !important;" onclick="chNav('todo',document.querySelectorAll('#cathHub .nav-item')[1])">View all &rarr;</span>
-        </div>
-        <div id="dash-todo-summary">
-          <div style="font-size:13px !important;color:#94a3b8 !important;">Loading...</div>
-        </div>
-      </div>
-
-
-
-      <div class="dash-section">
-        <div style="display:flex !important;justify-content:space-between !important;align-items:center !important;margin-bottom:12px !important;">
-          <h3 style="margin-bottom:0 !important;">&#x1F9E0; Mental Health Summary</h3>
-          <span style="font-size:12px !important;color:#3b82f6 !important;cursor:pointer !important;" onclick="chNav('medical',document.querySelectorAll('#cathHub .nav-item')[3]);setTimeout(function(){medGo('mhplan')},100)">View plan &rarr;</span>
-        </div>
-        <div class="dash-mh-summary" id="dash-mh-summary">
-          <div class="dash-mh-stat"><div class="mh-num" id="dash-mh-remaining" style="color:#16a34a !important;font-size:28px !important;">3</div><div class="mh-label">Sessions Left (2026)</div></div>
-        </div>
-      </div>
-
-      <div class="dash-section">
-        <div style="display:flex !important;justify-content:space-between !important;align-items:center !important;margin-bottom:12px !important;">
-          <h3 style="margin-bottom:0 !important;">&#x1F4CB; Care Plan (CDM) 2026</h3>
-          <span style="font-size:12px !important;color:#3b82f6 !important;cursor:pointer !important;" onclick="chNav('medical',document.querySelectorAll('#cathHub .nav-item')[3]);setTimeout(function(){medGo('cdm')},100)">View &rarr;</span>
-        </div>
-        <div style="display:grid !important;grid-template-columns:1fr 1fr !important;gap:10px !important;">
-          <div style="background:#f0fdf4 !important;border:1px solid #bbf7d0 !important;border-radius:10px !important;padding:12px !important;text-align:center !important;">
-            <div style="font-size:20px !important;font-weight:700 !important;color:#166534 !important;" id="dash-cdm-claimed">0/5</div>
-            <div style="font-size:11px !important;color:#64748b !important;margin-top:4px !important;">Services Claimed</div>
-          </div>
-          <div style="background:#f0fdf4 !important;border:1px solid #bbf7d0 !important;border-radius:10px !important;padding:12px !important;text-align:center !important;">
-            <div style="font-size:13px !important;font-weight:600 !important;color:#64748b !important;margin-bottom:4px !important;">Total Cost</div>
-            <div style="font-size:16px !important;font-weight:700 !important;color:#166534 !important;" id="dash-cdm-cost">$0.00</div>
           </div>
         </div>
       </div>
@@ -1874,7 +1877,7 @@
       <!-- Version -->
       <div style="background:#ecfdf5 !important;border:1px solid #d1fae5 !important;border-radius:10px !important;padding:14px 16px !important;margin-bottom:16px !important;display:flex !important;align-items:center !important;justify-content:space-between !important;">
         <div style="font-size:13px !important;color:#065f46 !important;"><strong>Current version</strong></div>
-        <div style="font-size:12px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:2px 10px !important;border-radius:99px !important;">v4.87</div>
+        <div style="font-size:12px !important;font-weight:600 !important;background:#10b981 !important;color:white !important;padding:2px 10px !important;border-radius:99px !important;">v4.89</div>
       </div>
 
       <!-- Overview -->
@@ -7445,7 +7448,7 @@
 
   // Initialize fortnightly list and load rhythm logs on page load
   window.addEventListener('load', function() {
-    setTimeout(function() { fnRenderList(); zbLoadRhythmLogs(); dailyRenderItems('wd'); dailyRenderItems('we'); dailyRenderItems('midday-wd'); dailyRenderItems('midday-we'); dailyRenderItems('evening-wd'); dailyRenderItems('evening-we'); weeklyRenderItems(); sixmonthlyRenderItems(); annualRenderItems(); }, 100);
+    setTimeout(function() { fnRenderList(); zbLoadRhythmLogs(); dailyRenderItems('wd'); dailyRenderItems('we'); dailyRenderItems('midday-wd'); dailyRenderItems('midday-we'); dailyRenderItems('evening-wd'); dailyRenderItems('evening-we'); weeklyRenderItems(); sixmonthlyRenderItems(); annualRenderItems(); dashRenderAllData(); }, 100);
   });
 
   // ─── Daily Item Management ───
@@ -8095,6 +8098,119 @@
   window.dashSetWater = function(n) {
     localStorage.setItem(dashGetWaterKey(), String(n));
     dashRenderWater();
+  };
+
+  // ─── Dashboard Data Renderers ───
+  window.dashRenderAllData = async function() {
+    dashRenderQuickWins();
+    dashRenderHealth();
+    dashRenderProductivity();
+    dashRenderFocusArea();
+  };
+
+  window.dashRenderQuickWins = async function() {
+    try {
+      var userId = (await sb.auth.getSession()).data.session.user.id;
+      var { data: weeklyItems } = await sb.from('weekly_items').select('name').limit(3);
+      var weeklyHtml = weeklyItems && weeklyItems.length ? weeklyItems.map(function(i) { return '✓ ' + esc(i.name); }).join('<br>') : 'No weekly items';
+      document.getElementById('dash-weekly-items').innerHTML = weeklyHtml;
+    } catch(e) {
+      document.getElementById('dash-weekly-items').innerHTML = 'Error loading';
+    }
+
+    try {
+      var today = new Date().toISOString().split('T')[0];
+      var userId = (await sb.auth.getSession()).data.session.user.id;
+      var { data: dailyLogs } = await sb.from('daily_logs').select('item_id').eq('user_id', userId).gte('log_date', new Date(new Date().setDate(new Date().getDate()-7)).toISOString().split('T')[0]);
+      var streaks = dailyLogs ? Object.keys(dailyLogs.reduce(function(acc, log) { acc[log.item_id] = (acc[log.item_id] || 0) + 1; return acc; }, {})).filter(function(k) { return dailyLogs.filter(function(l) { return l.item_id === k; }).length >= 5; }) : [];
+      document.getElementById('dash-streaks').innerHTML = streaks.length > 0 ? streaks.length + ' active streaks' : 'Build your streaks!';
+    } catch(e) {
+      document.getElementById('dash-streaks').innerHTML = 'Error loading';
+    }
+  };
+
+  window.dashRenderHealth = async function() {
+    try {
+      var today = new Date().toISOString().split('T')[0];
+      var userId = (await sb.auth.getSession()).data.session.user.id;
+      var weekStart = new Date(new Date().setDate(new Date().getDate() - new Date().getDay())).toISOString().split('T')[0];
+      var { data: medsLogs } = await sb.from('habit_logs').select('id').eq('user_id', userId).gte('created_at', weekStart);
+      var compliance = medsLogs ? Math.round((medsLogs.length / 7) * 100) : 0;
+      document.getElementById('dash-meds-compliance').textContent = compliance + '%';
+    } catch(e) {
+      document.getElementById('dash-meds-compliance').textContent = '-';
+    }
+
+    try {
+      var userId = (await sb.auth.getSession()).data.session.user.id;
+      var { data: mhSessions } = await sb.from('mental_health_sessions').select('mood').eq('user_id', userId).order('date', { ascending: false }).limit(3);
+      if (mhSessions && mhSessions.length > 0) {
+        var moods = mhSessions.map(function(s) { return parseInt(s.mood) || 0; });
+        var avg = Math.round(moods.reduce(function(a,b) { return a+b; }) / moods.length);
+        document.getElementById('dash-mood-trend').textContent = ['😟','😕','😐','🙂','😊'][Math.min(Math.max(Math.round(avg/2), 0), 4)];
+      }
+    } catch(e) {
+      document.getElementById('dash-mood-trend').textContent = '-';
+    }
+
+    try {
+      var userId = (await sb.auth.getSession()).data.session.user.id;
+      var { data: medSessions } = await sb.from('medical_sessions').select('date').eq('user_id', userId).gte('date', new Date().toISOString().split('T')[0]).order('date').limit(1);
+      document.getElementById('dash-medical-next').textContent = medSessions && medSessions.length ? new Date(medSessions[0].date).toLocaleDateString('en-AU', {month:'short',day:'numeric'}) : 'None soon';
+    } catch(e) {
+      document.getElementById('dash-medical-next').textContent = '-';
+    }
+  };
+
+  window.dashRenderProductivity = async function() {
+    try {
+      var userId = (await sb.auth.getSession()).data.session.user.id;
+      var { data: workouts } = await sb.from('workout_sessions').select('date,type').eq('user_id', userId).order('date', { ascending: false }).limit(1);
+      if (workouts && workouts.length) {
+        var daysAgo = Math.floor((new Date() - new Date(workouts[0].date)) / (24*60*60*1000));
+        document.getElementById('dash-last-workout').textContent = daysAgo + 'd ago';
+      } else {
+        document.getElementById('dash-last-workout').textContent = 'None yet';
+      }
+    } catch(e) {
+      document.getElementById('dash-last-workout').textContent = '-';
+    }
+
+    try {
+      var today = new Date().toISOString().split('T')[0];
+      var userId = (await sb.auth.getSession()).data.session.user.id;
+      var { data: todos } = await sb.from('personal_todos').select('id').eq('user_id', userId).eq('done', false).lte('due_date', today);
+      document.getElementById('dash-todo-count').textContent = (todos || []).length;
+    } catch(e) {
+      document.getElementById('dash-todo-count').textContent = '-';
+    }
+
+    try {
+      var userId = (await sb.auth.getSession()).data.session.user.id;
+      var monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0];
+      var { data: receipts } = await sb.from('receipts').select('total').eq('user_id', userId).gte('receipt_date', monthStart);
+      var total = receipts ? receipts.reduce(function(sum, r) { return sum + (parseFloat(r.total) || 0); }, 0) : 0;
+      document.getElementById('dash-month-spend').textContent = '$' + total.toFixed(0);
+    } catch(e) {
+      document.getElementById('dash-month-spend').textContent = '-';
+    }
+  };
+
+  window.dashRenderFocusArea = async function() {
+    try {
+      var week = zbGetFortnightWeek();
+      var userId = (await sb.auth.getSession()).data.session.user.id;
+      var { data: items } = await sb.from('fortnightly_items').select('name').eq('user_id', userId).eq('week', week);
+      var html = '<div style="font-size:13px !important;font-weight:700 !important;color:#374151 !important;margin-bottom:8px !important;">Week ' + week + ' Focus:</div>';
+      if (items && items.length) {
+        html += items.map(function(i) { return '<div style="font-size:12px !important;color:#1f2937 !important;padding:4px 0 !important;">• ' + esc(i.name) + '</div>'; }).join('');
+      } else {
+        html += '<div style="font-size:12px !important;color:#9ca3af !important;">No focus items for this week</div>';
+      }
+      document.getElementById('dash-focus-area').innerHTML = html;
+    } catch(e) {
+      document.getElementById('dash-focus-area').innerHTML = '<div style="color:#ef4444 !important;">Error loading focus area</div>';
+    }
   };
 
   // ═══════════════════════════════════════════════════
