@@ -8194,11 +8194,19 @@
 
       var { data: weeklyItems, error } = await sb.from('weekly_items').select('*').eq('user_id', userId).order('created_at', { ascending: true });
       if (error) throw error;
+      console.log('Weekly items:', weeklyItems);
 
       var { data: weeklyLogs } = await sb.from('weekly_logs').select('item_id').eq('user_id', userId).gte('logged_date', weekStart);
+      console.log('Weekly logs this week:', weeklyLogs, 'from', weekStart);
       var completedIds = new Set((weeklyLogs || []).map(function(l){ return l.item_id; }));
+      console.log('Completed IDs:', completedIds);
 
       var activeItems = (weeklyItems || []).filter(function(i){ return !completedIds.has(i.id); });
+      console.log('Active items:', activeItems);
+      if (!weeklyItems || !weeklyItems.length) {
+        document.getElementById('dash-weekly-items').innerHTML = 'No items yet';
+        return;
+      }
       if (!activeItems.length) {
         document.getElementById('dash-weekly-items').innerHTML = 'All done!';
         return;
