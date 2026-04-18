@@ -8288,7 +8288,6 @@
         logsMap[l.med_id][l.date] = true;
       });
 
-      var weeklyDone = 0;
       var weekKeys = [];
       var n = new Date(), d = n.getDay();
       var mon = new Date(n); mon.setDate(n.getDate() - (d === 0 ? 6 : d-1));
@@ -8296,9 +8295,10 @@
         var x = new Date(mon); x.setDate(mon.getDate()+i);
         weekKeys.push(x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0'));
       }
-      weekly.forEach(function(m){ weekKeys.forEach(function(dk){ if(logsMap[m.id]&&logsMap[m.id][dk]) weeklyDone++; }); });
+      var weeklyDone = 0;
+      weekly.forEach(function(m){ var takenThisWeek = weekKeys.some(function(dk){ return logsMap[m.id]&&logsMap[m.id][dk]; }); if(takenThisWeek) weeklyDone++; });
 
-      var html = '<a href="#" onclick="chNav(\'habits\'); return false;" style="color:#10b981 !important;text-decoration:none !important;cursor:pointer !important;font-size:18px !important;font-weight:bold !important;">' + weeklyDone + '</a><div style="font-size:11px !important;color:#94a3b8 !important;">weekly</div>';
+      var html = '<a href="#" onclick="chNav(\'habits\'); return false;" style="color:#10b981 !important;text-decoration:none !important;cursor:pointer !important;font-size:18px !important;font-weight:bold !important;">' + weeklyDone + '/' + weekly.length + '</a><div style="font-size:11px !important;color:#94a3b8 !important;">weekly</div>';
       document.getElementById('dash-weekly-meds').innerHTML = html;
     } catch(e) {
       console.log('Weekly meds error:', e);
