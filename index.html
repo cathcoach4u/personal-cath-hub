@@ -4200,7 +4200,7 @@
       return n.getFullYear() + '-' + String(n.getMonth()+1).padStart(2,'0') + '-' + String(n.getDate()).padStart(2,'0');
     }
 
-    function weekKeys() {
+    window.weekKeys = function() {
       var n = new Date(), d = n.getDay(), keys = [];
       var mon = new Date(n); mon.setDate(n.getDate() - (d === 0 ? 6 : d-1));
       for (var i = 0; i < 7; i++) {
@@ -4208,7 +4208,7 @@
         keys.push(x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0'));
       }
       return keys;
-    }
+    };
 
     function todayIdx() { var d = new Date().getDay(); return d === 0 ? 6 : d-1; }
 
