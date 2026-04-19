@@ -1754,6 +1754,7 @@
       <!-- Pill Navigation -->
       <div style="display:flex !important;gap:8px !important;margin-bottom:16px !important;flex-wrap:wrap !important;">
         <button class="hh-pill active" onclick="hhSwitchPill('medication')" id="hh-pill-medication" style="padding:10px 16px !important;background:#10b981 !important;color:white !important;border:none !important;border-radius:20px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;transition:all 0.2s !important;">Medication Log</button>
+        <button class="hh-pill" onclick="hhSwitchPill('daily')" id="hh-pill-daily" style="padding:10px 16px !important;background:white !important;color:black !important;border:none !important;border-radius:20px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;transition:all 0.2s !important;">Daily Log</button>
         <button class="hh-pill" onclick="hhSwitchPill('weekly')" id="hh-pill-weekly" style="padding:10px 16px !important;background:white !important;color:black !important;border:none !important;border-radius:20px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;transition:all 0.2s !important;">Weekly Log</button>
         <button class="hh-pill" onclick="hhSwitchPill('workout')" id="hh-pill-workout" style="padding:10px 16px !important;background:white !important;color:black !important;border:none !important;border-radius:20px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;transition:all 0.2s !important;">Workout Log</button>
         <button class="hh-pill" onclick="hhSwitchPill('fortnightly')" id="hh-pill-fortnightly" style="padding:10px 16px !important;background:white !important;color:black !important;border:none !important;border-radius:20px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;transition:all 0.2s !important;">Fortnightly Log</button>
@@ -1770,6 +1771,11 @@
             <div class="hab-empty">Loading...</div>
           </div>
         </div>
+      </div>
+
+      <!-- Daily Log Panel -->
+      <div id="hh-daily-panel" style="display:none !important;">
+        <div id="hh-daily-list"></div>
       </div>
 
       <!-- Weekly Log Panel -->
@@ -4473,29 +4479,37 @@
 
     window.hhSwitchPill = function(pill) {
       var mp = document.getElementById('hh-medication-panel');
+      var dp = document.getElementById('hh-daily-panel');
       var wp = document.getElementById('hh-workout-panel');
       var wkp = document.getElementById('hh-weekly-panel');
       var fp = document.getElementById('hh-fortnightly-panel');
       var pmm = document.getElementById('hh-pill-medication');
+      var pmd = document.getElementById('hh-pill-daily');
       var pmw = document.getElementById('hh-pill-workout');
       var pmwk = document.getElementById('hh-pill-weekly');
       var pmf = document.getElementById('hh-pill-fortnightly');
 
       // Hide all panels first
       mp.style.cssText = 'display: none !important;';
+      dp.style.cssText = 'display: none !important;';
       wp.style.cssText = 'display: none !important;';
       wkp.style.cssText = 'display: none !important;';
       fp.style.cssText = 'display: none !important;';
 
       // Reset all pill styles
-      pmm.style.cssText = 'padding:10px 16px !important;background:#e2e8f0 !important;color:#64748b !important;border:none !important;border-radius:20px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;transition:all 0.2s !important;';
-      pmw.style.cssText = 'padding:10px 16px !important;background:#e2e8f0 !important;color:#64748b !important;border:none !important;border-radius:20px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;transition:all 0.2s !important;';
-      pmwk.style.cssText = 'padding:10px 16px !important;background:#e2e8f0 !important;color:#64748b !important;border:none !important;border-radius:20px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;transition:all 0.2s !important;';
-      pmf.style.cssText = 'padding:10px 16px !important;background:#e2e8f0 !important;color:#64748b !important;border:none !important;border-radius:20px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;transition:all 0.2s !important;';
+      pmm.style.cssText = 'padding:10px 16px !important;background:white !important;color:black !important;border:none !important;border-radius:20px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;transition:all 0.2s !important;';
+      pmd.style.cssText = 'padding:10px 16px !important;background:white !important;color:black !important;border:none !important;border-radius:20px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;transition:all 0.2s !important;';
+      pmw.style.cssText = 'padding:10px 16px !important;background:white !important;color:black !important;border:none !important;border-radius:20px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;transition:all 0.2s !important;';
+      pmwk.style.cssText = 'padding:10px 16px !important;background:white !important;color:black !important;border:none !important;border-radius:20px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;transition:all 0.2s !important;';
+      pmf.style.cssText = 'padding:10px 16px !important;background:white !important;color:black !important;border:none !important;border-radius:20px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;transition:all 0.2s !important;';
 
       if (pill === 'medication') {
         mp.style.cssText = 'display: block !important;';
         pmm.style.cssText = 'padding:10px 16px !important;background:#10b981 !important;color:white !important;border:none !important;border-radius:20px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;transition:all 0.2s !important;';
+      } else if (pill === 'daily') {
+        dp.style.cssText = 'display: block !important;';
+        pmd.style.cssText = 'padding:10px 16px !important;background:#10b981 !important;color:white !important;border:none !important;border-radius:20px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;transition:all 0.2s !important;';
+        hhLoadDailyLog();
       } else if (pill === 'weekly') {
         wkp.style.cssText = 'display: block !important;';
         pmwk.style.cssText = 'padding:10px 16px !important;background:#10b981 !important;color:white !important;border:none !important;border-radius:20px !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;transition:all 0.2s !important;';
@@ -4554,6 +4568,52 @@
       } catch (error) {
         console.error('Error loading weekly history:', error);
         document.getElementById('hh-weekly-list').innerHTML = '<div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:16px !important;text-align:center !important;color:#94a3b8 !important;font-size:13px !important;">Error loading history</div>';
+      }
+    };
+
+    window.hhLoadDailyLog = async function() {
+      try {
+        var session = await sb.auth.getSession();
+        var userId = session && session.data && session.data.session ? session.data.session.user.id : null;
+        console.log('Loading daily logs - userId:', userId);
+
+        var { data: dailyLogs, error: logsError } = await sb.from('daily_logs').select('item_id,log_date').eq('user_id', userId).order('log_date', { ascending: false });
+        if (logsError) throw logsError;
+        console.log('Daily logs fetched:', dailyLogs);
+
+        var { data: dailyItems, error: itemsError } = await sb.from('daily_items').select('id,name');
+        if (itemsError) throw itemsError;
+        console.log('Daily items fetched:', dailyItems);
+
+        var itemMap = {};
+        (dailyItems || []).forEach(function(i){ itemMap[i.id] = i.name; });
+
+        var logsByDate = {};
+        (dailyLogs || []).forEach(function(log) {
+          if (!logsByDate[log.log_date]) logsByDate[log.log_date] = [];
+          logsByDate[log.log_date].push(log.item_id);
+        });
+
+        var html = '';
+        if (!dailyLogs || dailyLogs.length === 0) {
+          html = '<div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:16px !important;text-align:center !important;color:#94a3b8 !important;font-size:13px !important;">No daily logs yet</div>';
+        } else {
+          var dates = Object.keys(logsByDate).sort().reverse();
+          dates.forEach(function(date) {
+            var dateObj = new Date(date);
+            var dateStr = dateObj.toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short' });
+            html += '<div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:12px 16px !important;margin-bottom:10px !important;">';
+            html += '<div style="font-size:12px !important;color:#94a3b8 !important;margin-bottom:8px !important;">' + dateStr + '</div>';
+            logsByDate[date].forEach(function(itemId) {
+              html += '<div style="font-size:13px !important;color:#64748b !important;margin-bottom:4px !important;">✓ ' + esc(itemMap[itemId] || 'Unknown') + '</div>';
+            });
+            html += '</div>';
+          });
+        }
+        document.getElementById('hh-daily-list').innerHTML = html;
+      } catch (error) {
+        console.error('Error loading daily history:', error);
+        document.getElementById('hh-daily-list').innerHTML = '<div style="background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:16px !important;text-align:center !important;color:#94a3b8 !important;font-size:13px !important;">Error loading history</div>';
       }
     };
 
@@ -8291,7 +8351,7 @@
         document.getElementById('dash-daily-items').innerHTML = 'No items';
         return;
       }
-      var { data: dailyLogs } = await sb.from('daily_logs').select('item_id').eq('log_date', today);
+      var { data: dailyLogs } = await sb.from('daily_logs').select('item_id').eq('user_id', userId).eq('log_date', today);
       var completedIds = new Set((dailyLogs || []).map(function(l){ return l.item_id; }));
 
       var sections = ['morning', 'midday', 'evening'];
