@@ -725,10 +725,14 @@
           <div style="font-size:11px !important;font-weight:700 !important;color:#1e40af !important;text-transform:uppercase !important;margin-bottom:6px !important;">Daily</div>
           <div id="dash-daily-items" style="font-size:13px !important;color:#64748b !important;">Loading...</div>
         </div>
-        <div style="display:grid !important;grid-template-columns:1fr 1fr !important;gap:10px !important;">
+        <div style="display:grid !important;grid-template-columns:1fr 1fr 1fr !important;gap:10px !important;">
           <div style="background:#f0fdf4 !important;border:1px solid #bbf7d0 !important;border-radius:10px !important;padding:12px !important;">
             <div style="font-size:11px !important;font-weight:700 !important;color:#166534 !important;text-transform:uppercase !important;margin-bottom:6px !important;">This Week</div>
             <div id="dash-weekly-items" style="font-size:13px !important;color:#64748b !important;">Loading...</div>
+          </div>
+          <div style="background:#fce7f3 !important;border:1px solid #fbcfe8 !important;border-radius:10px !important;padding:12px !important;">
+            <div style="font-size:11px !important;font-weight:700 !important;color:#be185d !important;text-transform:uppercase !important;margin-bottom:6px !important;">⭐ This Fortnight</div>
+            <div id="dash-fortnightly-items" style="font-size:13px !important;color:#64748b !important;">Loading...</div>
           </div>
           <div style="background:#fef3c7 !important;border:1px solid #fcd34d !important;border-radius:10px !important;padding:12px !important;">
             <div style="font-size:11px !important;font-weight:700 !important;color:#b45309 !important;text-transform:uppercase !important;margin-bottom:6px !important;">✅ To-Do</div>
@@ -2064,6 +2068,12 @@
     console.log('Water logs changed:', payload);
     if (document.getElementById('ch-home').style.display !== 'none') dashLoadWater();
     if (document.getElementById('ch-habit-history').style.display !== 'none') hhLoadWaterLog();
+  }).subscribe();
+
+  sb.channel('fortnightly_logs_channel').on('postgres_changes', { event: '*', schema: 'public', table: 'fortnightly_logs' }, function(payload) {
+    console.log('Fortnightly logs changed:', payload);
+    if (document.getElementById('ch-home').style.display !== 'none') dashRenderQuickWins();
+    if (document.getElementById('ch-habit-history').style.display !== 'none') hhLoadFortnightlyLog();
   }).subscribe();
 
   // ─── AUTH ───
@@ -8319,6 +8329,28 @@
     }
   };
 
+  window.dashLogFortnightlyItem = async function(itemId) {
+    try {
+      var session = await sb.auth.getSession();
+      var userId = session && session.data && session.data.session ? session.data.session.user.id : null;
+      var today = new Date().toISOString().split('T')[0];
+      console.log('Logging fortnightly item:', itemId, 'for user:', userId, 'date:', today);
+
+      var { error, data } = await sb.from('fortnightly_logs').insert({
+        item_id: itemId,
+        logged_date: today,
+        user_id: userId
+      });
+      if (error) throw error;
+      console.log('Fortnightly item logged successfully:', data);
+
+      await dashRenderQuickWins();
+    } catch(e) {
+      console.log('Error logging fortnightly item:', e);
+      alert('Error logging item: ' + e.message);
+    }
+  };
+
   window.dashLogWeeklyItem = async function(itemId) {
     try {
       var session = await sb.auth.getSession();
@@ -8418,6 +8450,31 @@
     }
 
     try {
+      var currentWeek = zbGetFortnightWeek();
+      var { data: fortnightlyItems, error } = await sb.from('fortnightly_items').select('*').eq('week', currentWeek).order('created_at', { ascending: true });
+      if (error) throw error;
+      console.log('Fortnightly items for week ' + currentWeek + ':', fortnightlyItems);
+
+      var { data: fortnightlyLogs } = await sb.from('fortnightly_logs').select('item_id').eq('user_id', userId).gte('logged_date', new Date(new Date().setDate(new Date().getDate() - 14)).toISOString().split('T')[0]);
+      var completedIds = new Set((fortnightlyLogs || []).map(function(l){ return l.item_id; }));
+
+      var activeItems = (fortnightlyItems || []).filter(function(i){ return !completedIds.has(i.id); });
+      console.log('Fortnightly items count:', fortnightlyItems ? fortnightlyItems.length : 0, 'Active items count:', activeItems.length);
+
+      if (!fortnightlyItems || !fortnightlyItems.length) {
+        document.getElementById('dash-fortnightly-items').innerHTML = 'No items yet';
+      } else if (!activeItems.length) {
+        document.getElementById('dash-fortnightly-items').innerHTML = 'All done!';
+      } else {
+        var fortHtml = activeItems.map(function(i) { return '<div style="display:flex !important;align-items:center !important;gap:8px !important;padding:6px 0 !important;"><label style="cursor:pointer !important;flex:1 !important;margin:0 !important;color:#1e293b !important;font-size:13px !important;">' + esc(i.name) + '</label><button onclick="dashLogFortnightlyItem(\'' + i.id + '\')" style="padding:4px 10px !important;background:#ec4899 !important;color:white !important;border:none !important;border-radius:4px !important;font-size:11px !important;cursor:pointer !important;white-space:nowrap !important;">Log</button></div>'; }).join('');
+        fortHtml += '<button onclick="chNav(\'zones\')" style="margin-top:8px !important;padding:6px 12px !important;background:#3b82f6 !important;color:white !important;border:none !important;border-radius:6px !important;font-size:12px !important;cursor:pointer !important;width:100% !important;">Manage</button>';
+        document.getElementById('dash-fortnightly-items').innerHTML = fortHtml;
+      }
+    } catch(e) {
+      console.log('Fortnightly error:', e);
+      document.getElementById('dash-fortnightly-items').innerHTML = 'Error: ' + (e.message || 'unknown');
+    }
+
       var { data: todos, error } = await sb.from('personal_todos').select('*').eq('done', false).order('created_at', { ascending: true });
       if (error) throw error;
       console.log('To-do items:', todos);
