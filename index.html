@@ -8257,7 +8257,7 @@
         user_id: userId,
         log_date: today,
         glasses_count: count
-      });
+      }, { onConflict: 'user_id,log_date' });
       if (error) throw error;
       window.currentWaterCount = count;
       dashRenderWater();
