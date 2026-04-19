@@ -2043,6 +2043,17 @@
 (function(){
   var sb = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
 
+  sb.channel('daily_items_channel').on('postgres_changes', { event: '*', schema: 'public', table: 'daily_items' }, function(payload) {
+    console.log('Daily items changed:', payload);
+    if (document.getElementById('ch-home').style.display !== 'none') dashRenderQuickWins();
+  }).subscribe();
+
+  sb.channel('daily_logs_channel').on('postgres_changes', { event: '*', schema: 'public', table: 'daily_logs' }, function(payload) {
+    console.log('Daily logs changed:', payload);
+    if (document.getElementById('ch-home').style.display !== 'none') dashRenderQuickWins();
+    if (document.getElementById('ch-habit-history').style.display !== 'none') hhLoadDailyLog();
+  }).subscribe();
+
   // ─── AUTH ───
   function showApp() {
     document.getElementById('cathHub-login').style.setProperty('display', 'none', 'important');
