@@ -7645,18 +7645,12 @@
 
   window.dailyRenderItems = async function(variant) {
     try {
-      var sectionMap = { 'wd': 'morning', 'we': 'morning', 'midday-wd': 'midday', 'midday-we': 'midday', 'evening-wd': 'evening', 'evening-we': 'evening' };
-      var dayTypeMap = { 'wd': 'weekday', 'we': 'weekend', 'midday-wd': 'weekday', 'midday-we': 'weekend', 'evening-wd': 'weekday', 'evening-we': 'weekend' };
-      var section = sectionMap[variant] || 'morning';
-      var dayType = dayTypeMap[variant] || 'weekday';
-
-      var { data: allItems, error } = await sb.from('daily_items').select('*').eq('section', section).order('created_at', { ascending: false });
+      var { data: allItems, error } = await sb.from('daily_items').select('*').order('created_at', { ascending: false });
       if (error) throw error;
-      var items = (allItems || []).filter(function(i) { return !i.day_type || i.day_type === dayType; });
       var list = document.getElementById('daily-items-list-' + variant);
       var h = '';
-      if (!items || items.length === 0) {
-        h = '<div style="padding:16px !important;text-align:center !important;color:#94a3b8 !important;font-size:13px !important;">No items</div>';
+      if (!allItems || allItems.length === 0) {
+        h = '<div style="padding:16px !important;text-align:center !important;color:#94a3b8 !important;font-size:13px !important;">No items in database</div>';
       } else {
         h = '<table style="width:100% !important;border-collapse:collapse !important;">';
         h += '<thead style="background:#f8fafc !important;"><tr style="border-bottom:1px solid #e2e8f0 !important;">';
@@ -7664,9 +7658,9 @@
         h += '<th style="padding:12px 16px !important;text-align:right !important;font-size:11px !important;font-weight:700 !important;color:#64748b !important;text-transform:uppercase !important;">Action</th>';
         h += '</tr></thead>';
         h += '<tbody>';
-        items.forEach(function(item) {
+        allItems.forEach(function(item) {
           h += '<tr id="daily-row-' + item.id + '" style="border-bottom:1px solid #e2e8f0 !important;">';
-          h += '<td style="padding:12px 16px !important;font-size:13px !important;color:#1e293b !important;">' + esc(item.name) + '</td>';
+          h += '<td style="padding:12px 16px !important;font-size:13px !important;color:#1e293b !important;">[' + (item.section || 'no-section') + '] ' + esc(item.name) + '</td>';
           h += '<td style="padding:12px 16px !important;text-align:right !important;"><div style="display:flex !important;gap:6px !important;justify-content:flex-end !important;"><button onclick="dailyEditItem(\'' + item.id + '\',\'' + variant + '\')" style="background:#3b82f6 !important;color:white !important;border:none !important;border-radius:6px !important;padding:6px 12px !important;font-size:12px !important;cursor:pointer !important;">Edit</button><button onclick="dailyDeleteItem(\'' + item.id + '\',\'' + variant + '\')" style="background:#ef4444 !important;color:white !important;border:none !important;border-radius:6px !important;padding:6px 12px !important;font-size:12px !important;cursor:pointer !important;">Delete</button></div></td>';
           h += '</tr>';
         });
