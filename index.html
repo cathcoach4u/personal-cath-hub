@@ -8375,10 +8375,9 @@
         }
       });
       if (!dailyHtml) {
-        var debugMsg = 'Total items: ' + dailyItems.length;
-        var morningCount = (dailyItems || []).filter(function(i) { return i.section && i.section.toLowerCase() === 'morning'; }).length;
-        var middayCount = (dailyItems || []).filter(function(i) { return i.section && (i.section.toLowerCase() === 'midday' || i.section.toLowerCase() === 'during day'); }).length;
-        var eveningCount = (dailyItems || []).filter(function(i) { return i.section && i.section.toLowerCase() === 'evening'; }).length;
+        var morningCount = (dailyItems || []).filter(function(i) { return i.section && i.section.toLowerCase() === 'morning' && (!i.day_type || i.day_type === dayType); }).length;
+        var middayCount = (dailyItems || []).filter(function(i) { return i.section && i.section.toLowerCase() === 'midday' && (!i.day_type || i.day_type === dayType); }).length;
+        var eveningCount = (dailyItems || []).filter(function(i) { return i.section && i.section.toLowerCase() === 'evening' && (!i.day_type || i.day_type === dayType); }).length;
         dailyHtml = 'All done! (Morning: ' + morningCount + ', Day: ' + middayCount + ', Evening: ' + eveningCount + ')';
       }
       document.getElementById('dash-daily-items').innerHTML = dailyHtml;
