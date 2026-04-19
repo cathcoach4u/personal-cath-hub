@@ -7588,15 +7588,12 @@
 
     try {
       var sectionMap = { 'wd': 'morning', 'we': 'morning', 'midday-wd': 'midday', 'midday-we': 'midday', 'evening-wd': 'evening', 'evening-we': 'evening' };
-      var dayTypeMap = { 'wd': 'weekday', 'we': 'weekend', 'midday-wd': 'weekday', 'midday-we': 'weekend', 'evening-wd': 'weekday', 'evening-we': 'weekend' };
       var section = sectionMap[variant] || 'morning';
-      var dayType = dayTypeMap[variant] || 'weekday';
 
       var { error } = await sb.from('daily_items').insert({
         id: 'custom_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
         name: name,
         section: section,
-        day_type: dayType,
         user_id: (await sb.auth.getSession()).data.session.user.id
       });
       if (error) throw error;
@@ -7646,16 +7643,12 @@
   window.dailyRenderItems = async function(variant) {
     try {
       var sectionMap = { 'wd': 'morning', 'we': 'morning', 'midday-wd': 'midday', 'midday-we': 'midday', 'evening-wd': 'evening', 'evening-we': 'evening' };
-      var dayTypeMap = { 'wd': 'weekday', 'we': 'weekend', 'midday-wd': 'weekday', 'midday-we': 'weekend', 'evening-wd': 'weekday', 'evening-we': 'weekend' };
       var section = sectionMap[variant] || 'morning';
-      var dayType = dayTypeMap[variant] || 'weekday';
 
       var { data: allItems, error } = await sb.from('daily_items').select('*').order('created_at', { ascending: false });
       if (error) throw error;
       var items = (allItems || []).filter(function(i) {
-        var sectionMatch = i.section && i.section.toLowerCase() === section.toLowerCase();
-        var dayTypeMatch = !i.day_type || i.day_type === dayType;
-        return sectionMatch && dayTypeMatch;
+        return i.section && i.section.toLowerCase() === section.toLowerCase();
       });
       var list = document.getElementById('daily-items-list-' + variant);
       var h = '';
@@ -8388,9 +8381,8 @@
           var sectionLower = i.section ? i.section.toLowerCase() : '';
           var keyLower = sectionKey.toLowerCase();
           var matchesSection = (keyLower === 'during day' && (sectionLower === 'midday' || sectionLower === 'during day')) || (sectionLower === keyLower);
-          var matchesDayType = !i.day_type || i.day_type === dayType;
           var notLogged = !completedIds.has(i.id);
-          return matchesSection && matchesDayType && notLogged;
+          return matchesSection && notLogged;
         });
         if (items.length > 0) {
           var config = sectionConfig[sectionKey] || { icon: '📌', color: '#6b7280', bgColor: '#f3f4f6' };
