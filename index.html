@@ -8356,12 +8356,16 @@
       var { data: dailyLogs } = await sb.from('daily_logs').select('item_id').eq('user_id', userId).eq('log_date', today);
       var completedIds = new Set((dailyLogs || []).map(function(l){ return l.item_id; }));
 
-      var sections = ['morning', 'midday', 'evening'];
+      var uniqueSections = {};
+      (dailyItems || []).forEach(function(i){
+        if (i.section) uniqueSections[i.section.toLowerCase()] = i.section;
+      });
+      var sections = Object.keys(uniqueSections).sort();
       var dailyHtml = '';
-      sections.forEach(function(section) {
-        var items = (dailyItems || []).filter(function(i){ return i.section === section && (!i.day_type || i.day_type === dayType) && !completedIds.has(i.id); });
+      sections.forEach(function(sectionKey) {
+        var items = (dailyItems || []).filter(function(i){ return i.section && i.section.toLowerCase() === sectionKey && (!i.day_type || i.day_type === dayType) && !completedIds.has(i.id); });
         if (items.length > 0) {
-          dailyHtml += '<div style="margin-bottom:8px !important;"><div style="font-size:10px !important;font-weight:600 !important;color:#64748b !important;text-transform:uppercase !important;margin-bottom:4px !important;">' + section + '</div>';
+          dailyHtml += '<div style="margin-bottom:8px !important;"><div style="font-size:10px !important;font-weight:600 !important;color:#64748b !important;text-transform:uppercase !important;margin-bottom:4px !important;">' + sectionKey + '</div>';
           items.forEach(function(item) {
             dailyHtml += '<div style="display:flex !important;align-items:center !important;gap:8px !important;padding:4px 0 !important;"><label style="flex:1 !important;margin:0 !important;color:#1e293b !important;font-size:12px !important;">' + esc(item.name) + '</label><button onclick="dashLogDailyItem(\'' + item.id + '\')" style="padding:3px 8px !important;background:#3b82f6 !important;color:white !important;border:none !important;border-radius:4px !important;font-size:10px !important;cursor:pointer !important;white-space:nowrap !important;">Log</button></div>';
           });
