@@ -8392,7 +8392,13 @@
           dailyHtml += '</div>';
         }
       });
-      if (!dailyHtml) dailyHtml = 'All done! (Items: ' + dailyItems.length + ', Logged: ' + completedIds.size + ')';
+      if (!dailyHtml) {
+        var debugMsg = 'Total items: ' + dailyItems.length;
+        var morningCount = (dailyItems || []).filter(function(i) { return i.section && i.section.toLowerCase() === 'morning'; }).length;
+        var middayCount = (dailyItems || []).filter(function(i) { return i.section && (i.section.toLowerCase() === 'midday' || i.section.toLowerCase() === 'during day'); }).length;
+        var eveningCount = (dailyItems || []).filter(function(i) { return i.section && i.section.toLowerCase() === 'evening'; }).length;
+        dailyHtml = 'All done! (Morning: ' + morningCount + ', Day: ' + middayCount + ', Evening: ' + eveningCount + ')';
+      }
       document.getElementById('dash-daily-items').innerHTML = dailyHtml;
     } catch(e) {
       console.error('Daily items error:', e);
