@@ -7587,10 +7587,16 @@
     if (!name) { alert('Enter item name'); return; }
 
     try {
+      var sectionMap = { 'wd': 'morning', 'we': 'morning', 'midday-wd': 'midday', 'midday-we': 'midday', 'evening-wd': 'evening', 'evening-we': 'evening' };
+      var dayTypeMap = { 'wd': 'weekday', 'we': 'weekend', 'midday-wd': 'weekday', 'midday-we': 'weekend', 'evening-wd': 'weekday', 'evening-we': 'weekend' };
+      var section = sectionMap[variant] || 'morning';
+      var dayType = dayTypeMap[variant] || 'weekday';
+
       var { error } = await sb.from('daily_items').insert({
         id: 'custom_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
         name: name,
-        section: 'Custom',
+        section: section,
+        day_type: dayType,
         user_id: (await sb.auth.getSession()).data.session.user.id
       });
       if (error) throw error;
