@@ -8204,6 +8204,28 @@
     }
   };
 
+  window.dashLogDailyItem = async function(itemId) {
+    try {
+      var session = await sb.auth.getSession();
+      var userId = session && session.data && session.data.session ? session.data.session.user.id : null;
+      var today = new Date().toISOString().split('T')[0];
+      console.log('Logging daily item:', itemId, 'for user:', userId, 'date:', today);
+
+      var { error, data } = await sb.from('daily_logs').insert({
+        item_id: itemId,
+        log_date: today,
+        user_id: userId
+      });
+      if (error) throw error;
+      console.log('Daily item logged successfully:', data);
+
+      await dashRenderQuickWins();
+    } catch(e) {
+      console.log('Error logging daily item:', e);
+      alert('Error logging item: ' + e.message);
+    }
+  };
+
   // ─── Dashboard Data Renderers ───
   window.dashRenderAllData = async function() {
     await dashRenderQuickWins();
@@ -8263,23 +8285,28 @@
     }
 
     try {
+      var today = new Date().toISOString().split('T')[0];
       var { data: dailyItems } = await sb.from('daily_items').select('*').order('section', { ascending: true });
       if (!dailyItems || !dailyItems.length) {
         document.getElementById('dash-daily-items').innerHTML = 'No items';
         return;
       }
+      var { data: dailyLogs } = await sb.from('daily_logs').select('item_id').eq('log_date', today);
+      var completedIds = new Set((dailyLogs || []).map(function(l){ return l.item_id; }));
+
       var sections = ['morning', 'midday', 'evening'];
       var dailyHtml = '';
       sections.forEach(function(section) {
-        var items = (dailyItems || []).filter(function(i){ return i.section === section; });
+        var items = (dailyItems || []).filter(function(i){ return i.section === section && !completedIds.has(i.id); });
         if (items.length > 0) {
-          dailyHtml += '<div style="margin-bottom:6px !important;"><div style="font-size:10px !important;font-weight:600 !important;color:#64748b !important;text-transform:uppercase !important;margin-bottom:3px !important;">' + section + '</div>';
+          dailyHtml += '<div style="margin-bottom:8px !important;"><div style="font-size:10px !important;font-weight:600 !important;color:#64748b !important;text-transform:uppercase !important;margin-bottom:4px !important;">' + section + '</div>';
           items.forEach(function(item) {
-            dailyHtml += '<div style="font-size:12px !important;color:#1e293b !important;margin-bottom:2px !important;">• ' + esc(item.name) + '</div>';
+            dailyHtml += '<div style="display:flex !important;align-items:center !important;gap:8px !important;padding:4px 0 !important;"><label style="flex:1 !important;margin:0 !important;color:#1e293b !important;font-size:12px !important;">' + esc(item.name) + '</label><button onclick="dashLogDailyItem(\'' + item.id + '\')" style="padding:3px 8px !important;background:#3b82f6 !important;color:white !important;border:none !important;border-radius:4px !important;font-size:10px !important;cursor:pointer !important;white-space:nowrap !important;">Log</button></div>';
           });
           dailyHtml += '</div>';
         }
       });
+      if (!dailyHtml) dailyHtml = 'All done!';
       document.getElementById('dash-daily-items').innerHTML = dailyHtml;
     } catch(e) {
       console.log('Daily items error:', e);
