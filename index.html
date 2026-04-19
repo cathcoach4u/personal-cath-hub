@@ -8361,8 +8361,9 @@
         var items = (dailyItems || []).filter(function(i) {
           var sectionLower = i.section ? i.section.toLowerCase() : '';
           var matchesSection = sectionLower === sectionKey.toLowerCase();
+          var matchesDayType = !i.day_type || i.day_type === dayType;
           var notLogged = !completedIds.has(i.id);
-          return matchesSection && notLogged;
+          return matchesSection && matchesDayType && notLogged;
         });
         if (items.length > 0) {
           var config = sectionConfig[sectionKey] || { icon: '📌', color: '#6b7280', bgColor: '#f3f4f6' };
