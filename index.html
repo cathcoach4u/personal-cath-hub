@@ -8349,12 +8349,15 @@
       var dayOfWeek = new Date().getDay();
       var dayType = dayOfWeek === 0 || dayOfWeek === 6 ? 'weekend' : 'weekday';
       var { data: dailyItems } = await sb.from('daily_items').select('*').order('section', { ascending: true });
+      console.log('Dashboard daily items:', dailyItems);
       if (!dailyItems || !dailyItems.length) {
         document.getElementById('dash-daily-items').innerHTML = 'No items';
         return;
       }
       var { data: dailyLogs } = await sb.from('daily_logs').select('item_id').eq('user_id', userId).eq('log_date', today);
+      console.log('Dashboard daily logs:', dailyLogs);
       var completedIds = new Set((dailyLogs || []).map(function(l){ return l.item_id; }));
+      console.log('Dashboard completed IDs:', Array.from(completedIds));
 
       var sectionConfig = {
         'morning': { icon: '🌅', color: '#f59e0b', bgColor: '#fef3c7' },
@@ -8376,7 +8379,7 @@
           dailyHtml += '</div>';
         }
       });
-      if (!dailyHtml) dailyHtml = 'All done!';
+      if (!dailyHtml) dailyHtml = 'All done! (Items: ' + dailyItems.length + ', Logged: ' + completedIds.size + ')';
       document.getElementById('dash-daily-items').innerHTML = dailyHtml;
     } catch(e) {
       console.log('Daily items error:', e);
