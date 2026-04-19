@@ -7639,7 +7639,12 @@
 
   window.dailyRenderItems = async function(variant) {
     try {
-      var { data: items, error } = await sb.from('daily_items').select('*').order('section', { ascending: true }).order('created_at', { ascending: false });
+      var sectionMap = { 'wd': 'morning', 'we': 'morning', 'midday-wd': 'midday', 'midday-we': 'midday', 'evening-wd': 'evening', 'evening-we': 'evening' };
+      var dayTypeMap = { 'wd': 'weekday', 'we': 'weekend', 'midday-wd': 'weekday', 'midday-we': 'weekend', 'evening-wd': 'weekday', 'evening-we': 'weekend' };
+      var section = sectionMap[variant] || 'morning';
+      var dayType = dayTypeMap[variant] || 'weekday';
+
+      var { data: items, error } = await sb.from('daily_items').select('*').eq('section', section).eq('day_type', dayType).order('created_at', { ascending: false });
       if (error) throw error;
       var list = document.getElementById('daily-items-list-' + variant);
       var h = '';
