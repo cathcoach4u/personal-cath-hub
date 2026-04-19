@@ -4631,7 +4631,7 @@
         var session = await sb.auth.getSession();
         var userId = session && session.data && session.data.session ? session.data.session.user.id : null;
 
-        var { data: waterLogs, error } = await sb.from('water_logs').select('log_date,glasses_count').eq('user_id', userId).order('log_date', { ascending: false }).limit(30);
+        var { data: waterLogs, error } = await sb.from('water_logs').select('log_date,glasses_count').eq('user_id', userId).order('log_date', { ascending: false });
         if (error) throw error;
 
         var html = '';
