@@ -718,18 +718,22 @@
         </div>
       </div>
 
-      <!-- Quick Wins: This Week + Streaks -->
+      <!-- Quick Wins: This Week + Daily -->
       <div class="dash-section">
         <h3 style="margin-bottom:0 !important;">⚡ Quick Wins</h3>
-        <div id="dash-quick-wins" style="display:grid !important;grid-template-columns:1fr 1fr !important;gap:10px !important;margin-top:10px !important;">
+        <div style="display:grid !important;grid-template-columns:1fr 1fr !important;gap:10px !important;margin-top:10px !important;">
           <div style="background:#f0fdf4 !important;border:1px solid #bbf7d0 !important;border-radius:10px !important;padding:12px !important;">
             <div style="font-size:11px !important;font-weight:700 !important;color:#166534 !important;text-transform:uppercase !important;margin-bottom:6px !important;">This Week</div>
             <div id="dash-weekly-items" style="font-size:13px !important;color:#64748b !important;">Loading...</div>
           </div>
-          <div style="background:#fef3c7 !important;border:1px solid #fcd34d !important;border-radius:10px !important;padding:12px !important;">
-            <div style="font-size:11px !important;font-weight:700 !important;color:#b45309 !important;text-transform:uppercase !important;margin-bottom:6px !important;">✅ To-Do</div>
-            <div id="dash-todo-list" style="font-size:13px !important;color:#64748b !important;">Loading...</div>
+          <div style="background:#dbeafe !important;border:1px solid #93c5fd !important;border-radius:10px !important;padding:12px !important;">
+            <div style="font-size:11px !important;font-weight:700 !important;color:#1e40af !important;text-transform:uppercase !important;margin-bottom:6px !important;">Daily</div>
+            <div id="dash-daily-items" style="font-size:13px !important;color:#64748b !important;">Loading...</div>
           </div>
+        </div>
+        <div style="background:#fef3c7 !important;border:1px solid #fcd34d !important;border-radius:10px !important;padding:12px !important;margin-top:10px !important;">
+          <div style="font-size:11px !important;font-weight:700 !important;color:#b45309 !important;text-transform:uppercase !important;margin-bottom:6px !important;">✅ To-Do</div>
+          <div id="dash-todo-list" style="font-size:13px !important;color:#64748b !important;">Loading...</div>
         </div>
       </div>
 
@@ -8256,6 +8260,30 @@
     } catch(e) {
       console.log('To-do error:', e);
       document.getElementById('dash-todo-list').innerHTML = 'Error: ' + (e.message || 'unknown');
+    }
+
+    try {
+      var { data: dailyItems } = await sb.from('daily_items').select('*').order('section', { ascending: true });
+      if (!dailyItems || !dailyItems.length) {
+        document.getElementById('dash-daily-items').innerHTML = 'No items';
+        return;
+      }
+      var sections = ['morning', 'midday', 'evening'];
+      var dailyHtml = '';
+      sections.forEach(function(section) {
+        var items = (dailyItems || []).filter(function(i){ return i.section === section; });
+        if (items.length > 0) {
+          dailyHtml += '<div style="margin-bottom:6px !important;"><div style="font-size:10px !important;font-weight:600 !important;color:#64748b !important;text-transform:uppercase !important;margin-bottom:3px !important;">' + section + '</div>';
+          items.forEach(function(item) {
+            dailyHtml += '<div style="font-size:12px !important;color:#1e293b !important;margin-bottom:2px !important;">• ' + esc(item.name) + '</div>';
+          });
+          dailyHtml += '</div>';
+        }
+      });
+      document.getElementById('dash-daily-items').innerHTML = dailyHtml;
+    } catch(e) {
+      console.log('Daily items error:', e);
+      document.getElementById('dash-daily-items').innerHTML = 'Error';
     }
   };
 
