@@ -7650,8 +7650,9 @@
       var section = sectionMap[variant] || 'morning';
       var dayType = dayTypeMap[variant] || 'weekday';
 
-      var { data: items, error } = await sb.from('daily_items').select('*').eq('section', section).eq('day_type', dayType).order('created_at', { ascending: false });
+      var { data: allItems, error } = await sb.from('daily_items').select('*').eq('section', section).order('created_at', { ascending: false });
       if (error) throw error;
+      var items = (allItems || []).filter(function(i) { return !i.day_type || i.day_type === dayType; });
       var list = document.getElementById('daily-items-list-' + variant);
       var h = '';
       if (!items || items.length === 0) {
