@@ -8359,7 +8359,7 @@
       var sections = ['morning', 'midday', 'evening'];
       var dailyHtml = '';
       sections.forEach(function(section) {
-        var items = (dailyItems || []).filter(function(i){ return i.section === section && i.day_type === dayType && !completedIds.has(i.id); });
+        var items = (dailyItems || []).filter(function(i){ return i.section === section && (!i.day_type || i.day_type === dayType) && !completedIds.has(i.id); });
         if (items.length > 0) {
           dailyHtml += '<div style="margin-bottom:8px !important;"><div style="font-size:10px !important;font-weight:600 !important;color:#64748b !important;text-transform:uppercase !important;margin-bottom:4px !important;">' + section + '</div>';
           items.forEach(function(item) {
