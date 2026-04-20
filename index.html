@@ -8434,11 +8434,17 @@
   window.dashRenderQuickWins = async function() {
     var session = await sb.auth.getSession();
     var userId = session && session.data && session.data.session ? session.data.session.user.id : null;
+    if (!userId) {
+      document.getElementById('dash-daily-items').innerHTML = 'Not logged in';
+      document.getElementById('dash-todo-list').innerHTML = 'Not logged in';
+      document.getElementById('dash-weekly-items').innerHTML = 'Not logged in';
+      return;
+    }
     var wk = window.weekKeys();
     var weekStart = wk[0];
 
     try {
-      var { data: weeklyItems, error } = await sb.from('weekly_items').select('*').order('created_at', { ascending: true });
+      var { data: weeklyItems, error } = await sb.from('weekly_items').select('*').eq('user_id', userId).order('created_at', { ascending: true });
       if (error) throw error;
       var { data: weeklyLogs } = await sb.from('weekly_logs').select('item_id').eq('user_id', userId).gte('logged_date', weekStart);
       var completedIds = new Set((weeklyLogs || []).map(function(l){ return l.item_id; }));
