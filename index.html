@@ -735,6 +735,10 @@
             <div id="dash-todo-list" style="font-size:13px !important;color:#64748b !important;">Loading...</div>
           </div>
         </div>
+        <div style="background:#f3e8ff !important;border:1px solid #e9d5ff !important;border-radius:10px !important;padding:12px !important;margin-top:10px !important;">
+          <div style="font-size:11px !important;font-weight:700 !important;color:#6b21a8 !important;text-transform:uppercase !important;margin-bottom:6px !important;">⏰ Fortnightly</div>
+          <div id="dash-fortnightly-items" style="font-size:13px !important;color:#64748b !important;">Loading...</div>
+        </div>
       </div>
 
       <!-- Health Dashboard -->
@@ -8313,6 +8317,28 @@
     }
   };
 
+  window.dashLogFortnightlyItem = async function(itemId) {
+    try {
+      var session = await sb.auth.getSession();
+      var userId = session && session.data && session.data.session ? session.data.session.user.id : null;
+      var today = new Date().toISOString().split('T')[0];
+      console.log('Logging fortnightly item:', itemId, 'for user:', userId, 'date:', today);
+
+      var { error, data } = await sb.from('fortnightly_logs').insert({
+        item_id: itemId,
+        logged_date: today,
+        user_id: userId
+      });
+      if (error) throw error;
+      console.log('Fortnightly item logged successfully:', data);
+
+      await dashRenderQuickWins();
+    } catch(e) {
+      console.log('Error logging fortnightly item:', e);
+      alert('Error logging item: ' + e.message);
+    }
+  };
+
   window.dashToggleTodo = async function(todoId) {
     try {
       var { data: todo } = await sb.from('personal_todos').select('done').eq('id', todoId).limit(1);
@@ -8455,6 +8481,43 @@
     } catch(e) {
       console.error('Daily items error:', e);
       document.getElementById('dash-daily-items').innerHTML = 'Error: ' + e.message;
+    }
+
+    try {
+      var { data: fortnightlyItems, error } = await sb.from('fortnightly_items').select('*').order('created_at', { ascending: true });
+      if (error) throw error;
+      console.log('Fortnightly items from DB:', fortnightlyItems);
+
+      if (!fortnightlyItems || !fortnightlyItems.length) {
+        document.getElementById('dash-fortnightly-items').innerHTML = 'No items yet';
+      } else {
+        var today = new Date();
+        var fortnight = Math.floor((today.getDate() - 1) / 14);
+        var fortStartDay = fortnight * 14 + 1;
+        var fortStart = new Date(today.getFullYear(), today.getMonth(), fortStartDay);
+        if (fortStart > today) {
+          fortStart = new Date(today.getFullYear(), today.getMonth() - 1, fortStartDay);
+          if (fortStart.getMonth() < 0) {
+            fortStart = new Date(today.getFullYear() - 1, 11, fortStartDay);
+          }
+        }
+        var fortStartStr = fortStart.toISOString().split('T')[0];
+
+        var { data: fortLogs } = await sb.from('fortnightly_logs').select('item_id').eq('user_id', userId).gte('logged_date', fortStartStr);
+        var completedIds = new Set((fortLogs || []).map(function(l){ return l.item_id; }));
+
+        var activeItems = (fortnightlyItems || []).filter(function(i){ return !completedIds.has(i.id); });
+        if (!activeItems.length) {
+          document.getElementById('dash-fortnightly-items').innerHTML = 'All done!';
+        } else {
+          var fortHtml = activeItems.map(function(i) { return '<div style="display:flex !important;align-items:center !important;gap:8px !important;padding:6px 0 !important;"><label style="cursor:pointer !important;flex:1 !important;margin:0 !important;color:#1e293b !important;font-size:13px !important;">' + esc(i.name) + '</label><button onclick="dashLogFortnightlyItem(\'' + i.id + '\')" style="padding:4px 10px !important;background:#9333ea !important;color:white !important;border:none !important;border-radius:4px !important;font-size:11px !important;cursor:pointer !important;white-space:nowrap !important;">Log</button></div>'; }).join('');
+          fortHtml += '<button onclick="chNav(\'habits2\');setTimeout(function(){zbTab(\'fortnightly\', \'h2\')},100)" style="margin-top:8px !important;padding:6px 12px !important;background:#3b82f6 !important;color:white !important;border:none !important;border-radius:6px !important;font-size:12px !important;cursor:pointer !important;width:100% !important;">View All Fortnightly</button>';
+          document.getElementById('dash-fortnightly-items').innerHTML = fortHtml;
+        }
+      }
+    } catch(e) {
+      console.error('Fortnightly items error:', e);
+      document.getElementById('dash-fortnightly-items').innerHTML = 'Error loading fortnightly items';
     }
   };
 
