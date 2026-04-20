@@ -63,7 +63,7 @@ Three separate, independent Claude services. Any can be swapped for alternatives
 ## screens (in index.html)
 
 1. **dashboard** (`ch-home`) — overview cards, quick stats, navigation
-2. **to-do** (`ch-todo`) — personal tasks with categories and due dates
+2. **to-do** (`ch-todo`) — personal tasks with categories and due dates (grouped by category with headers)
 3. **workout buddy** (`ch-workout`) — exercise tracking with sets/reps, custom exercises, session history
 4. **medical** (`ch-medical`) — medications, doctor sessions, mental health notes
 5. **tracking medication** (`ch-habits`) — daily medication log with completion tracking
@@ -76,8 +76,11 @@ Three separate, independent Claude services. Any can be swapped for alternatives
 ## standalone pages
 
 - `morning.html` — morning medication auto-recording (Vyvanse, Valtrex, Levothyroxine)
-- `todo.html` — personal to-do list with categories and due dates
+- `todo.html` — standalone personal to-do list with categories and due dates (grouped by category with headers)
 - `workout.html` — workout logging with exercise library
+- `ai.html` — floating AI assistant (separate app, can manipulate to-do via API tools)
+
+**Note:** Both `index.html` (ch-todo screen) and `todo.html` have separate to-do implementations. Always ask which one to modify when ambiguous.
 
 ## database schema
 
@@ -243,12 +246,18 @@ Before finishing:
 ## session notes (v7.15)
 
 **Changes made:**
-- Dashboard to-do list now groups tasks by category with purple uppercase headers
+- Dashboard to-do list (ch-todo in index.html) now groups tasks by category with purple uppercase headers
 - Pending & completed tasks sorted within each category: no-date items first, then by due date
-- Applies same grouping logic to both standalone todo.html and main dashboard
+- Both index.html (ch-todo) and todo.html have separate implementations — always ask which one to modify
+
+**Practice reminder:**
+When asked to modify a feature that has multiple implementations (e.g., "update to-do"), always ask which one:
+- Dashboard to-do (ch-todo in index.html)
+- Standalone to-do (todo.html)
+- etc.
 
 **Ready for next session:**
 - Daily items setup (DAILY_ITEMS_UPDATE.md, daily-items-setup.sql) documented in CLAUDE.md
-- User ID known: `ae560260-5fab-4b00-9d3e-00d982f97de7`
+- User ID: `ae560260-5fab-4b00-9d3e-00d982f97de7`
 - All changes pushed to main (v7.15)
 - No branches or uncommitted work
