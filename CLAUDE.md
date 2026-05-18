@@ -95,7 +95,7 @@ Three separate, independent Claude services. Any can be swapped for alternatives
 ### medical & health
 - `medications` — name, dose, schedule, purpose (no user_id)
 - `medical_sessions` — date, duration, plan, practitioner, user_id
-- `mental_health_sessions` — date, mood, notes, user_id
+- `mental_health_sessions` — id, date, provider, type, medicare_item, benefit, year, created_at, updated_at (no user_id; RLS uses allow_all policy)
 - `habit_meds` — id, name, freq ['daily', 'asneeded'] (shared, no user_id)
 - `habit_logs` — med_id, date, created_at, note (no user_id; `note` stores as-needed med brand/details and weekly dose e.g. Mounjaro)
 
@@ -292,31 +292,27 @@ Before finishing:
 - Deploy via GitHub Pages (push main → live in 1–2 minutes)
 - Service worker: mentioned in docs but not yet implemented (file doesn't exist)
 
-## session notes (v7.17)
+## session notes (v7.70)
 
 **Changes made this session:**
-- ✅ To-do lists grouped by category with headers (both dashboard and standalone)
-- ✅ Fixed My Habits deletion bug: added user_id filtering to all render functions (daily, weekly, fortnightly, 6-monthly, annual)
-- ✅ Fixed dashboard daily items: added user_id & day_type filtering to show only today's items
-- ✅ Fixed dashboard todos & fortnightly items: added user_id filtering
-- ✅ Standardised all page titles to "Cath Hub" (except ai.html which is "Cath AI")
-- ✅ Documented all to-do implementations in CLAUDE.md with clarification practice
-- ✅ Daily items now feed correctly into dashboard quick wins
+- ✅ Fixed MHP 2026 session filter: was using non-existent `year` column, now uses `date.startsWith('2026')`
+- ✅ Added In-person / Video toggle to Add Session form (defaults to In-person)
+- ✅ Session list now shows green/blue type badge per session
+- ✅ Stats (sessions remaining) now update correctly on navigation
+- ✅ Insert includes all required NOT NULL columns: date, provider, type, medicare_item, benefit, year
+- ✅ Fixed RLS: added `allow_all` policy so app can read sessions
+- ✅ Seeded 9 × 2026 sessions + 2 × Dec 2025 sessions from Medicare statement
 
-**Important fixes:**
-- Render functions were fetching ALL items (no user_id filter) — now filtered by user_id
-- Dashboard was showing items for all day types — now filters by weekday/weekend
-- Deletion appeared to fail because other users' items re-appeared — now isolated per user
-
-**Multiple implementations (ask which one):**
-- Dashboard to-do (`ch-todo` in index.html) — grouped by category
-- Standalone to-do (`todo.html`) — grouped by category
-- AI assistant (`ai.html`) — separate app with to-do API tools
+**mental_health_sessions schema (confirmed this session):**
+- Actual columns: `id, date, provider, type, medicare_item, benefit, year, created_at, updated_at`
+- NO user_id, NO mood, NO notes, NO duration, NO plan, NO practitioner
+- RLS enabled with `allow_all` policy (USING true / WITH CHECK true)
+- `type` values: `'Psychology'` (in-person) or `'Psychology (Video)'`
+- `medicare_item`: item number string (e.g. '91167', '80010', '80110', '10968')
+- `benefit`: benefit amount string (e.g. '145.25', '98.95', '254.55')
 
 **Ready for next session:**
-- All code on main (v7.17)
-- No open branches or PRs (feature branch cleaned up)
-- No uncommitted changes
-- CLAUDE.md fully documented with all fixes
-- Daily items setup documented (DAILY_ITEMS_UPDATE.md, daily-items-setup.sql)
+- All code on main (v7.70)
+- Working tree clean
+- Feature branch `claude/add-2026-sessions-y2ao1` still exists remotely (can delete)
 - User ID: `ae560260-5fab-4b00-9d3e-00d982f97de7`
