@@ -604,7 +604,7 @@
       <div id="today-date-badge-mobile" style="font-size:13px !important;font-weight:700 !important;color:white !important;white-space:nowrap !important;font-family:'Segoe UI',system-ui,-apple-system,sans-serif !important;"></div>
       <div style="display:flex !important;align-items:center !important;gap:6px !important;">
         <button onclick="chHardRefresh()" title="Hard refresh" aria-label="Hard refresh" style="font-size:12px !important;color:white !important;background:rgba(255,255,255,0.2) !important;border:none !important;padding:2px 7px !important;border-radius:99px !important;cursor:pointer !important;line-height:1 !important;">&#x21BB;</button>
-        <span style="font-size:10px !important;font-weight:700 !important;color:white !important;background:#065f46 !important;padding:2px 8px !important;border-radius:5px !important;">v7.64</span>
+        <span style="font-size:10px !important;font-weight:700 !important;color:white !important;background:#065f46 !important;padding:2px 8px !important;border-radius:5px !important;">v7.70</span>
       </div>
     </div>
   </div>
@@ -640,7 +640,7 @@
       <span>Cath Hub</span>
       <span style="display:flex !important;align-items:center !important;gap:6px !important;">
         <button onclick="chHardRefresh()" title="Hard refresh — reload latest version" aria-label="Hard refresh" style="font-size:13px !important;color:white !important;background:rgba(255,255,255,0.2) !important;border:none !important;padding:3px 8px !important;border-radius:99px !important;cursor:pointer !important;line-height:1 !important;">&#x21BB;</button>
-        <span style="font-size:11px !important;font-weight:700 !important;color:rgba(255,255,255,0.7) !important;background:rgba(255,255,255,0.15) !important;padding:3px 10px !important;border-radius:6px !important;">v7.64</span>
+        <span style="font-size:11px !important;font-weight:700 !important;color:rgba(255,255,255,0.7) !important;background:rgba(255,255,255,0.15) !important;padding:3px 10px !important;border-radius:6px !important;">v7.70</span>
       </span>
     </h1>
     <!-- Desktop: button nav -->
@@ -1114,9 +1114,16 @@
               <div style="font-size:12px !important;font-weight:700 !important;color:#64748b !important;margin-bottom:6px !important;">Date</div>
               <input type="date" id="med-session-date" style="width:100% !important;padding:10px !important;border:1px solid #e2e8f0 !important;border-radius:6px !important;font-size:13px !important;box-sizing:border-box !important;">
             </div>
-            <div style="margin-bottom:16px !important;">
+            <div style="margin-bottom:12px !important;">
               <div style="font-size:12px !important;font-weight:700 !important;color:#64748b !important;margin-bottom:6px !important;">Provider</div>
               <input type="text" id="med-session-provider" placeholder="e.g., Tamsen, Amanda" style="width:100% !important;padding:10px !important;border:1px solid #e2e8f0 !important;border-radius:6px !important;font-size:13px !important;box-sizing:border-box !important;">
+            </div>
+            <div style="margin-bottom:16px !important;">
+              <div style="font-size:12px !important;font-weight:700 !important;color:#64748b !important;margin-bottom:6px !important;">Type</div>
+              <div style="display:flex !important;gap:8px !important;">
+                <button type="button" id="med-session-type-psychology" onclick="medSetSessionType('Psychology')" style="flex:1 !important;padding:10px !important;border:2px solid #0d9488 !important;border-radius:6px !important;background:#0d9488 !important;color:white !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;">In-person</button>
+                <button type="button" id="med-session-type-video" onclick="medSetSessionType('Psychology (Video)')" style="flex:1 !important;padding:10px !important;border:2px solid #e2e8f0 !important;border-radius:6px !important;background:white !important;color:#64748b !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;">Video</button>
+              </div>
             </div>
             <div style="display:flex !important;gap:10px !important;justify-content:flex-end !important;">
               <button onclick="medCloseAddSession()" style="background:#f1f5f9 !important;color:#1e293b !important;border:1px solid #e2e8f0 !important;padding:10px 16px !important;border-radius:6px !important;cursor:pointer !important;font-weight:600 !important;">Cancel</button>
@@ -3747,11 +3754,35 @@
     }
   };
 
+  window._medSessionType = 'Psychology';
+
+  window.medSetSessionType = function(type) {
+    window._medSessionType = type;
+    var inBtn = document.getElementById('med-session-type-psychology');
+    var vidBtn = document.getElementById('med-session-type-video');
+    if (type === 'Psychology') {
+      inBtn.style.setProperty('background', '#0d9488', 'important');
+      inBtn.style.setProperty('color', 'white', 'important');
+      inBtn.style.setProperty('border-color', '#0d9488', 'important');
+      vidBtn.style.setProperty('background', 'white', 'important');
+      vidBtn.style.setProperty('color', '#64748b', 'important');
+      vidBtn.style.setProperty('border-color', '#e2e8f0', 'important');
+    } else {
+      vidBtn.style.setProperty('background', '#0d9488', 'important');
+      vidBtn.style.setProperty('color', 'white', 'important');
+      vidBtn.style.setProperty('border-color', '#0d9488', 'important');
+      inBtn.style.setProperty('background', 'white', 'important');
+      inBtn.style.setProperty('color', '#64748b', 'important');
+      inBtn.style.setProperty('border-color', '#e2e8f0', 'important');
+    }
+  };
+
   window.medOpenAddSession = function() {
     var modal = document.getElementById('med-add-session-modal');
     var today = new Date().toLocaleDateString('en-CA', { timeZone: 'Australia/Sydney' });
     document.getElementById('med-session-date').value = today;
     document.getElementById('med-session-provider').value = '';
+    window.medSetSessionType('Psychology');
     modal.style.setProperty('display', 'block', 'important');
   };
 
@@ -3767,11 +3798,16 @@
       alert('Please fill in all fields');
       return;
     }
-    var user = (await sb.auth.getUser()).data.user;
+    var sessionType = window._medSessionType || 'Psychology';
+    var year = parseInt(date.split('-')[0]);
+    var medicareItem = sessionType === 'Psychology (Video)' ? '91167' : '80010';
     var { error } = await sb.from('mental_health_sessions').insert([{
       date: date,
       provider: provider,
-      user_id: user.id
+      type: sessionType,
+      medicare_item: medicareItem,
+      benefit: '145.25',
+      year: year
     }]);
     if (error) {
       alert('Error saving session: ' + error.message);
@@ -3793,8 +3829,12 @@
 
     var html2026 = '';
     sessions2026.forEach(function(s, i) {
+      var typeLabel = s.type === 'Psychology (Video)' ? 'Video' : 'In-person';
+      var typeBg = s.type === 'Psychology (Video)' ? '#dbeafe' : '#dcfce7';
+      var typeColor = s.type === 'Psychology (Video)' ? '#1e40af' : '#166534';
       html2026 += '<div style="padding:10px 0 !important;border-bottom:1px solid #f1f5f9 !important;display:flex !important;justify-content:space-between !important;align-items:center !important;font-size:12px !important;">';
-      html2026 += '<div><div style="font-weight:600 !important;">' + s.provider + '</div><div style="color:#64748b !important;">' + s.date + '</div></div>';
+      html2026 += '<div><div style="font-weight:600 !important;">' + esc(s.provider || s.practitioner || '') + '</div>';
+      html2026 += '<div style="color:#64748b !important;">' + esc(s.date) + ' &nbsp;<span style="background:' + typeBg + ' !important;color:' + typeColor + ' !important;padding:2px 7px !important;border-radius:10px !important;font-size:10px !important;font-weight:600 !important;">' + typeLabel + '</span></div></div>';
       html2026 += '<button onclick="medDeleteSession(' + s.id + ')" style="background:#fee2e2 !important;color:#dc2626 !important;border:none !important;padding:6px 10px !important;border-radius:4px !important;cursor:pointer !important;font-size:11px !important;">Delete</button>';
       html2026 += '</div>';
     });
@@ -3803,8 +3843,12 @@
 
     var html2025 = '';
     sessions2025.forEach(function(s, i) {
+      var typeLabel = s.type === 'Psychology (Video)' ? 'Video' : 'In-person';
+      var typeBg = s.type === 'Psychology (Video)' ? '#dbeafe' : '#dcfce7';
+      var typeColor = s.type === 'Psychology (Video)' ? '#1e40af' : '#166534';
       html2025 += '<div style="padding:10px 0 !important;border-bottom:1px solid #f1f5f9 !important;display:flex !important;justify-content:space-between !important;align-items:center !important;font-size:12px !important;">';
-      html2025 += '<div><div style="font-weight:600 !important;">' + s.provider + '</div><div style="color:#64748b !important;">' + s.date + '</div></div>';
+      html2025 += '<div><div style="font-weight:600 !important;">' + esc(s.provider || s.practitioner || '') + '</div>';
+      html2025 += '<div style="color:#64748b !important;">' + esc(s.date) + ' &nbsp;<span style="background:' + typeBg + ' !important;color:' + typeColor + ' !important;padding:2px 7px !important;border-radius:10px !important;font-size:10px !important;font-weight:600 !important;">' + typeLabel + '</span></div></div>';
       html2025 += '<button onclick="medDeleteSession(' + s.id + ')" style="background:#fee2e2 !important;color:#dc2626 !important;border:none !important;padding:6px 10px !important;border-radius:4px !important;cursor:pointer !important;font-size:11px !important;">Delete</button>';
       html2025 += '</div>';
     });
@@ -3848,7 +3892,7 @@
   window.medGo = function(sub) {
     window._origMedGo2(sub);
     if (sub === 'mhplan') {
-      setTimeout(function() { loadMHPSessions(); }, 100);
+      setTimeout(function() { loadMHPSessions().then(updateMHPStats); }, 100);
     }
   };
 
