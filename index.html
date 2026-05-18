@@ -414,11 +414,6 @@
   #cathHub .hm-card h3 { font-size: 16px !important; font-weight: 700 !important; margin-bottom: 8px !important; }
   #cathHub .hm-card p { font-size: 13px !important; color: #94a3b8 !important; }
 
-  /* ───── DASHBOARD MENTAL HEALTH SUMMARY ───── */
-  #cathHub .dash-mh-summary { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 10px !important; }
-  #cathHub .dash-mh-stat { text-align: center !important; }
-  #cathHub .dash-mh-stat .mh-num { font-size: 22px !important; font-weight: 700 !important; color: #7c3aed !important; }
-  #cathHub .dash-mh-stat .mh-label { font-size: 11px !important; color: #64748b !important; }
 
   /* ───── HABITS HISTORY ───── */
   #cathHub .hab-history-table { width: 100% !important; border-collapse: collapse !important; }
@@ -468,9 +463,6 @@
     #cathHub #ch-home > div:first-child > div > div > div:last-child { font-size: 18px !important; }
     #cathHub #ch-home .dash-section { padding: 14px !important; margin-bottom: 12px !important; }
     #cathHub #ch-home .dash-section h3 { font-size: 13px !important; margin-bottom: 10px !important; }
-    #cathHub #ch-home .dash-mh-stat { padding: 10px 8px !important; }
-    #cathHub #ch-home .dash-mh-stat .mh-num { font-size: 24px !important; }
-    #cathHub #ch-home .dash-mh-stat .mh-label { font-size: 11px !important; }
     #cathHub #ch-home .dash-shop-item, #cathHub #ch-home .dash-receipt-row { font-size: 13px !important; padding: 8px 0 !important; }
     /* Dashboard habit cards - improve spacing */
     #cathHub #ch-home > div:nth-child(3) > div { padding: 14px !important; }
@@ -729,7 +721,7 @@
       <!-- Health Dashboard -->
       <div class="dash-section">
         <h3 style="margin-bottom:0 !important;">💚 Health</h3>
-        <div style="display:grid !important;grid-template-columns:1fr 1fr 1fr !important;gap:10px !important;margin-top:10px !important;">
+        <div style="display:grid !important;grid-template-columns:1fr 1fr !important;gap:10px !important;margin-top:10px !important;">
           <div onclick="chNav('habits')" style="cursor:pointer !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:12px !important;text-align:center !important;transition:all 0.2s !important;" onmouseover="this.style.borderColor='#3b82f6 !important'" onmouseout="this.style.borderColor='#e2e8f0 !important'">
             <div style="font-size:11px !important;font-weight:700 !important;color:#64748b !important;text-transform:uppercase !important;margin-bottom:6px !important;">💊 Daily Meds</div>
             <div id="dash-daily-meds" style="font-size:16px !important;font-weight:700 !important;color:#3b82f6 !important;">-</div>
@@ -740,11 +732,7 @@
             <div id="dash-weekly-meds" style="font-size:16px !important;font-weight:700 !important;color:#10b981 !important;">-</div>
             <div style="font-size:10px !important;color:#94a3b8 !important;margin-top:4px !important;">this week</div>
           </div>
-          <div onclick="chNav('medical')" style="cursor:pointer !important;background:white !important;border:1px solid #e2e8f0 !important;border-radius:10px !important;padding:12px !important;text-align:center !important;transition:all 0.2s !important;" onmouseover="this.style.borderColor='#a855f7 !important'" onmouseout="this.style.borderColor='#e2e8f0 !important'">
-            <div style="font-size:11px !important;font-weight:700 !important;color:#64748b !important;text-transform:uppercase !important;margin-bottom:6px !important;">🧠 Mental Health</div>
-            <div id="dash-mental-sessions" style="font-size:16px !important;font-weight:700 !important;color:#a855f7 !important;">-</div>
-            <div style="font-size:10px !important;color:#94a3b8 !important;margin-top:4px !important;">sessions left</div>
-          </div>
+
         </div>
       </div>
 
@@ -1741,7 +1729,6 @@
     dashUpdateMedsBtn();
   }
 
-  // Mental health dashboard is updated by loadMedicalSessions()
 
   // Load dashboard on startup
   dashLoad();
@@ -8375,7 +8362,6 @@
       if (!session || !session.data || !session.data.session) {
         document.getElementById('dash-daily-meds').textContent = '-';
         document.getElementById('dash-weekly-meds').textContent = '-';
-        document.getElementById('dash-mental-sessions').textContent = '-';
         return;
       }
       var userId = session.data.session.user.id;
@@ -8433,24 +8419,10 @@
       document.getElementById('dash-weekly-meds').innerHTML = 'Error: ' + (e.message || 'unknown');
     }
 
-    try {
-      var mhEl = document.getElementById('mh-remaining-count');
-      if (mhEl) {
-        var count = mhEl.textContent || '0';
-        var html = '<a href="#" onclick="chNav(\'medical\'); return false;" style="color:#a855f7 !important;text-decoration:none !important;cursor:pointer !important;font-size:18px !important;font-weight:bold !important;">' + count + '</a><div style="font-size:11px !important;color:#94a3b8 !important;">sessions left</div>';
-        document.getElementById('dash-mental-sessions').innerHTML = html;
-      } else {
-        document.getElementById('dash-mental-sessions').textContent = '-';
-      }
-    } catch(e) {
-      console.log('Mental health error:', e);
-      document.getElementById('dash-mental-sessions').textContent = '-';
-    }
     } catch(e) {
       console.error('dashRenderHealth error:', e);
       document.getElementById('dash-daily-meds').textContent = '-';
       document.getElementById('dash-weekly-meds').textContent = '-';
-      document.getElementById('dash-mental-sessions').textContent = '-';
     }
   };
 
