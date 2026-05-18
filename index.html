@@ -604,7 +604,7 @@
       <div id="today-date-badge-mobile" style="font-size:13px !important;font-weight:700 !important;color:white !important;white-space:nowrap !important;font-family:'Segoe UI',system-ui,-apple-system,sans-serif !important;"></div>
       <div style="display:flex !important;align-items:center !important;gap:6px !important;">
         <button onclick="chHardRefresh()" title="Hard refresh" aria-label="Hard refresh" style="font-size:12px !important;color:white !important;background:rgba(255,255,255,0.2) !important;border:none !important;padding:2px 7px !important;border-radius:99px !important;cursor:pointer !important;line-height:1 !important;">&#x21BB;</button>
-        <span style="font-size:10px !important;font-weight:700 !important;color:white !important;background:#065f46 !important;padding:2px 8px !important;border-radius:5px !important;">v7.64</span>
+        <span style="font-size:10px !important;font-weight:700 !important;color:white !important;background:#065f46 !important;padding:2px 8px !important;border-radius:5px !important;">v7.65</span>
       </div>
     </div>
   </div>
@@ -640,7 +640,7 @@
       <span>Cath Hub</span>
       <span style="display:flex !important;align-items:center !important;gap:6px !important;">
         <button onclick="chHardRefresh()" title="Hard refresh — reload latest version" aria-label="Hard refresh" style="font-size:13px !important;color:white !important;background:rgba(255,255,255,0.2) !important;border:none !important;padding:3px 8px !important;border-radius:99px !important;cursor:pointer !important;line-height:1 !important;">&#x21BB;</button>
-        <span style="font-size:11px !important;font-weight:700 !important;color:rgba(255,255,255,0.7) !important;background:rgba(255,255,255,0.15) !important;padding:3px 10px !important;border-radius:6px !important;">v7.64</span>
+        <span style="font-size:11px !important;font-weight:700 !important;color:rgba(255,255,255,0.7) !important;background:rgba(255,255,255,0.15) !important;padding:3px 10px !important;border-radius:6px !important;">v7.65</span>
       </span>
     </h1>
     <!-- Desktop: button nav -->
@@ -3794,7 +3794,7 @@
     var html2026 = '';
     sessions2026.forEach(function(s, i) {
       html2026 += '<div style="padding:10px 0 !important;border-bottom:1px solid #f1f5f9 !important;display:flex !important;justify-content:space-between !important;align-items:center !important;font-size:12px !important;">';
-      html2026 += '<div><div style="font-weight:600 !important;">' + s.provider + '</div><div style="color:#64748b !important;">' + s.date + '</div></div>';
+      html2026 += '<div><div style="font-weight:600 !important;">' + esc(s.provider || s.practitioner || '') + '</div><div style="color:#64748b !important;">' + esc(s.date) + '</div></div>';
       html2026 += '<button onclick="medDeleteSession(' + s.id + ')" style="background:#fee2e2 !important;color:#dc2626 !important;border:none !important;padding:6px 10px !important;border-radius:4px !important;cursor:pointer !important;font-size:11px !important;">Delete</button>';
       html2026 += '</div>';
     });
@@ -3804,7 +3804,7 @@
     var html2025 = '';
     sessions2025.forEach(function(s, i) {
       html2025 += '<div style="padding:10px 0 !important;border-bottom:1px solid #f1f5f9 !important;display:flex !important;justify-content:space-between !important;align-items:center !important;font-size:12px !important;">';
-      html2025 += '<div><div style="font-weight:600 !important;">' + s.provider + '</div><div style="color:#64748b !important;">' + s.date + '</div></div>';
+      html2025 += '<div><div style="font-weight:600 !important;">' + esc(s.provider || s.practitioner || '') + '</div><div style="color:#64748b !important;">' + esc(s.date) + '</div></div>';
       html2025 += '<button onclick="medDeleteSession(' + s.id + ')" style="background:#fee2e2 !important;color:#dc2626 !important;border:none !important;padding:6px 10px !important;border-radius:4px !important;cursor:pointer !important;font-size:11px !important;">Delete</button>';
       html2025 += '</div>';
     });
@@ -3848,7 +3848,7 @@
   window.medGo = function(sub) {
     window._origMedGo2(sub);
     if (sub === 'mhplan') {
-      setTimeout(function() { loadMHPSessions(); }, 100);
+      setTimeout(function() { loadMHPSessions().then(updateMHPStats); }, 100);
     }
   };
 
