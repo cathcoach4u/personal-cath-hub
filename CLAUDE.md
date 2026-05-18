@@ -66,7 +66,7 @@ Three separate, independent Claude services. Any can be swapped for alternatives
 1. **dashboard** (`ch-home`) — overview cards, quick stats, navigation
 2. **to-do** (`ch-todo`) — personal tasks with categories and due dates (grouped by category with headers)
 3. **workout buddy** (`ch-workout`) — exercise tracking with sets/reps, custom exercises, session history
-4. **medical** (`ch-medical`) — medications, doctor sessions, mental health notes
+4. **medical** (`ch-medical`) — medication tracking only: log & track medications (links to Habits), view medications. All other medical info (mental health, migraine, CDM, Medicare) moved to Baker Hub.
 5. **tracking medication** (`ch-habits`) — daily medication log with completion tracking
 6. **my habits** (`ch-habits2`) — rhythm cards (daily, weekly, fortnightly, 6-monthly, annual) with collapsible weekday/weekend sections
 7. **habit history** (`ch-habit-history`) — historical logs for all habit tracking
@@ -161,7 +161,7 @@ Three separate, independent Claude services. Any can be swapped for alternatives
 - Dashboard with quick stats and navigation cards
 - To-do lists with categories and due dates (grouped by category with headers)
 - Workout logging with exercise library, custom exercises, sets/reps tracking, session history
-- Medical records: medications, doctor sessions, mental health notes
+- Medical: medication tracking only — log & track medications, view medications list. Full medical hub (mental health, migraine, CDM, Medicare, Andrew's MH plan) is in Baker Hub.
 - Medication tracking with daily completion logging
 - Habit rhythm cards: daily (weekday/weekend), weekly, fortnightly, 6-monthly, annual with custom item management
 - Habit history with detailed logs
@@ -174,7 +174,7 @@ Three separate, independent Claude services. Any can be swapped for alternatives
 
 ## version numbering
 
-- Current: **v7.70** (green badge in sidebar footer and About page)
+- Current: **v7.71** (green badge in sidebar footer and About page)
 - Bumped on every code change (minor version increment)
 - No service worker in Cath Hub (GitHub Pages handles caching). If one is added, keep its cache name in sync with the version.
 
@@ -292,27 +292,15 @@ Before finishing:
 - Deploy via GitHub Pages (push main → live in 1–2 minutes)
 - Service worker: mentioned in docs but not yet implemented (file doesn't exist)
 
-## session notes (v7.70)
+## session notes (v7.71)
 
 **Changes made this session:**
-- ✅ Fixed MHP 2026 session filter: was using non-existent `year` column, now uses `date.startsWith('2026')`
-- ✅ Added In-person / Video toggle to Add Session form (defaults to In-person)
-- ✅ Session list now shows green/blue type badge per session
-- ✅ Stats (sessions remaining) now update correctly on navigation
-- ✅ Insert includes all required NOT NULL columns: date, provider, type, medicare_item, benefit, year
-- ✅ Fixed RLS: added `allow_all` policy so app can read sessions
-- ✅ Seeded 9 × 2026 sessions + 2 × Dec 2025 sessions from Medicare statement
-
-**mental_health_sessions schema (confirmed this session):**
-- Actual columns: `id, date, provider, type, medicare_item, benefit, year, created_at, updated_at`
-- NO user_id, NO mood, NO notes, NO duration, NO plan, NO practitioner
-- RLS enabled with `allow_all` policy (USING true / WITH CHECK true)
-- `type` values: `'Psychology'` (in-person) or `'Psychology (Video)'`
-- `medicare_item`: item number string (e.g. '91167', '80010', '80110', '10968')
-- `benefit`: benefit amount string (e.g. '145.25', '98.95', '254.55')
+- ✅ Simplified Medical screen to medication tracking only (Log & Track Medications → Habits, View Medications subscreen)
+- ✅ All other medical info moved to Baker Hub (mental health, migraine, CDM, Medicare, Andrew's MH plan)
+- ✅ Dashboard Health section: removed Mental Health sessions tile, now 2-column (Daily Meds + Weekly Meds only)
+- ✅ Removed `dash-mental-sessions` widget, CSS, and all JS references from `dashRenderHealth`
 
 **Ready for next session:**
-- All code on main (v7.70)
+- All code on main (v7.71)
 - Working tree clean
-- Feature branch `claude/add-2026-sessions-y2ao1` still exists remotely (can delete)
-- User ID: `ae560260-5fab-4b00-9d3e-00d982f97de7`
+- Shared Supabase: both Cath Hub and Baker Hub use `ziwycymhaqghdiznyhhw` — same tables, no migration needed
